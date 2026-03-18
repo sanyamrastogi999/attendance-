@@ -63,7 +63,8 @@
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.55;font-size:14px}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.55;font-size:14px;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+button,a,[onclick]{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
@@ -124,7 +125,8 @@ input[type="date"],input[type="time"]{color-scheme:light}
 .field input,.field select,.field textarea{
   width:100%;background:var(--surface2);border:1.5px solid var(--border);
   border-radius:var(--r2);padding:11px 14px;color:var(--text);
-  font-size:.9rem;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:.2s
+  font-size:.9rem;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:.2s;
+  min-height:44px;
 }
 .field input:focus,.field select:focus,.field textarea:focus{
   border-color:var(--brand);background:var(--surface);
@@ -148,6 +150,8 @@ input[type="date"],input[type="time"]{color-scheme:light}
 
 /* ══ APP LAYOUT ══ */
 #appScreen{flex-direction:row}
+/* Prevent double scrollbars on app screen */
+#appScreen .main{overflow-y:auto;height:100vh}
 .sidebar{
   width:240px;background:var(--text);
   display:flex;flex-direction:column;min-height:100vh;
@@ -167,7 +171,9 @@ input[type="date"],input[type="time"]{color-scheme:light}
 nav a{
   display:flex;align-items:center;gap:10px;padding:9px 20px;
   color:rgba(255,255,255,.6);font-size:.84rem;font-weight:500;
-  border-left:2px solid transparent;transition:.15s;cursor:pointer;text-decoration:none
+  border-left:2px solid transparent;transition:.15s;cursor:pointer;text-decoration:none;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  user-select:none;
 }
 nav a:hover{color:rgba(255,255,255,.9);background:rgba(255,255,255,.06)}
 nav a.active{
@@ -250,7 +256,8 @@ nav a .role-pill{
   cursor:pointer;display:flex;align-items:center;
   justify-content:center;gap:18px;
   font-family:'Plus Jakarta Sans',sans-serif;transition:.25s;
-  margin-bottom:18px;box-shadow:0 0 0 4px rgba(22,163,74,.06)
+  margin-bottom:18px;box-shadow:0 0 0 4px rgba(22,163,74,.06);
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
 }
 .big-mark-btn:hover{background:linear-gradient(135deg,#bbf7d0,#dcfce7);box-shadow:0 4px 24px rgba(22,163,74,.18);transform:translateY(-1px)}
 .big-mark-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
@@ -276,7 +283,20 @@ nav a .role-pill{
 .btn-punch{width:100%;padding:11px;border:none;border-radius:var(--r2);font-size:.88rem;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;margin-top:12px;transition:.2s}
 .btn-punch:disabled{opacity:.35;cursor:not-allowed}
 .bp-in{background:var(--green);color:#fff}.bp-in:hover:not(:disabled){background:#15803d;box-shadow:0 4px 16px rgba(22,163,74,.3)}
-.bp-out{background:var(--red);color:#fff}.bp-out:hover:not(:disabled){background:#b91c1c;box-shadow:0 4px 16px rgba(220,38,38,.3)}
+.bp-out{background:var(--red);color:#fff}
+.btn-mark-agent{
+  width:100%;padding:12px 16px;
+  border:1.5px solid var(--border2);border-radius:var(--r2);
+  background:var(--surface2);color:var(--text2);
+  cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.86rem;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:.2s;margin-bottom:16px;
+  touch-action:manipulation;min-height:44px;
+}
+.btn-mark-agent:hover,.btn-mark-agent:active{
+  border-color:var(--green);color:var(--green);background:var(--green-bg);
+}.bp-out:hover:not(:disabled){background:#b91c1c;box-shadow:0 4px 16px rgba(220,38,38,.3)}
 .btn-break{width:100%;padding:10px;border:none;border-radius:var(--r2);font-size:.85rem;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;margin-top:8px;transition:.2s;background:var(--amber);color:#fff}
 .btn-break:disabled{opacity:.35;cursor:not-allowed}
 .btn-break.on-break{background:var(--purple);color:#fff}
@@ -320,7 +340,7 @@ tr:hover td{background:var(--surface2)}
 .b-pending{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(217,119,6,.2)}
 .b-approved{background:var(--green-bg);color:var(--green);border:1px solid rgba(22,163,74,.2)}
 .b-rejected{background:var(--red-bg);color:var(--red);border:1px solid rgba(220,38,38,.2)}
-.act-btn{padding:5px 10px;border:none;border-radius:6px;font-size:.73rem;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:.2s;margin-right:4px}
+.act-btn{padding:6px 11px;border:none;border-radius:6px;font-size:.73rem;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:.2s;margin-right:4px;min-height:32px;touch-action:manipulation}
 .ab-ok{background:var(--green-bg);color:var(--green);border:1px solid rgba(22,163,74,.2)}.ab-ok:hover{background:#bbf7d0}
 .ab-no{background:var(--red-bg);color:var(--red);border:1px solid rgba(220,38,38,.2)}.ab-no:hover{background:#fecaca}
 .ab-view{background:var(--brand-bg);color:var(--brand);border:1px solid rgba(59,79,216,.2)}.ab-view:hover{background:#dde1fb}
@@ -489,6 +509,7 @@ tr:hover td{background:var(--surface2)}
   color:#fff;font-size:1.2rem;font-weight:700;
   font-family:'DM Mono',monospace;cursor:pointer;
   transition:.15s;user-select:none;
+  min-height:52px;touch-action:manipulation;
 }
 .pin-key:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.25)}
 .pin-key:active{transform:scale(.95);background:rgba(255,255,255,.2)}
@@ -507,7 +528,7 @@ tr:hover td{background:var(--surface2)}
   flex-direction:column;gap:0;
 }
 #siteLockOverlay.hide{display:none!important}
-.lock-content{text-align:center;padding:40px 24px;max-width:420px}
+.lock-content{text-align:center;padding:40px 24px;max-width:420px;width:100%}
 .lock-icon{font-size:4rem;margin-bottom:16px;animation:float 3s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .lock-title{font-size:1.6rem;font-weight:800;color:#fff;margin-bottom:8px;letter-spacing:-.03em}
@@ -561,20 +582,350 @@ tr:hover td{background:var(--surface2)}
   padding:10px 18px;display:inline-block;margin-bottom:12px
 }
 
-.btn-admin-pin{
-  width:100%;padding:11px;border:1.5px solid rgba(180,83,9,.4);
-  border-radius:var(--r2);background:var(--gold-bg);color:var(--gold);
-  font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;font-weight:700;
-  cursor:pointer;transition:.2s;display:block;
-}
-.btn-admin-pin:hover{background:#fde68a;border-color:var(--gold);}
 
+/* ── SALARY SLIPS ── */
+.slip-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:20px;margin-bottom:14px;box-shadow:var(--shadow);
+  transition:.2s;
+}
+.slip-card:hover{box-shadow:var(--shadow2);border-color:var(--border2)}
+.slip-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.slip-month{font-size:1rem;font-weight:800;color:var(--text);letter-spacing:-.02em}
+.slip-emp{font-size:.78rem;color:var(--text2);margin-top:2px;font-family:'DM Mono',monospace}
+.slip-amount{font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--green)}
+.slip-status-new{display:inline-flex;align-items:center;gap:5px;background:var(--green-bg);color:var(--green);border:1px solid rgba(22,163,74,.2);font-size:.7rem;font-weight:700;padding:2px 9px;border-radius:20px}
+.slip-status-seen{display:inline-flex;align-items:center;gap:5px;background:var(--surface2);color:var(--text3);border:1px solid var(--border);font-size:.7rem;font-weight:700;padding:2px 9px;border-radius:20px}
+.slip-rows{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-bottom:12px}
+.slip-row{display:flex;justify-content:space-between;font-size:.79rem;padding:4px 0;border-bottom:1px solid var(--border)}
+.slip-row:last-child{border:none}
+.slip-row-label{color:var(--text2)}
+.slip-row-val{font-family:'DM Mono',monospace;font-weight:600;color:var(--text)}
+.slip-row-val.pos{color:var(--green)}.slip-row-val.neg{color:var(--red)}
+.slip-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.slip-locked{display:flex;align-items:center;gap:8px;background:var(--amber-bg);border:1px solid rgba(217,119,6,.2);border-radius:var(--r2);padding:10px 14px;font-size:.82rem;color:var(--amber);margin-bottom:18px}
+.slip-available{display:flex;align-items:center;gap:8px;background:var(--green-bg);border:1px solid rgba(22,163,74,.2);border-radius:var(--r2);padding:10px 14px;font-size:.82rem;color:var(--green);margin-bottom:18px}
+
+/* Salary Slip Print/Preview modal */
+.slip-preview{
+  background:#fff;color:#1a1a2e;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  padding:32px;border-radius:12px;max-width:600px;width:100%;
+  box-shadow:0 8px 40px rgba(0,0,0,.15);
+}
+.slip-preview-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #3b4fd8}
+.slip-preview-company{font-size:1.1rem;font-weight:800;color:#3b4fd8}
+.slip-preview-title{font-size:.85rem;color:#666;margin-top:3px}
+.slip-preview-period{text-align:right;font-size:.82rem;color:#444}
+.slip-preview-emp{background:#f8f9ff;border-radius:8px;padding:12px 16px;margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.sp-row{font-size:.79rem}.sp-label{color:#666;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em}.sp-val{font-weight:600;color:#1a1a2e;font-family:'DM Mono',monospace}
+.slip-preview-table{width:100%;border-collapse:collapse;margin-bottom:16px}
+.slip-preview-table th{background:#3b4fd8;color:#fff;padding:7px 12px;font-size:.73rem;text-align:left;font-weight:600}
+.slip-preview-table td{padding:7px 12px;font-size:.8rem;border-bottom:1px solid #e8eaf8}
+.slip-preview-table tr:last-child td{border:none}
+.slip-preview-net{background:#f0f2f7;border-radius:8px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.sp-net-label{font-weight:700;color:#1a1a2e;font-size:.9rem}
+.sp-net-val{font-size:1.4rem;font-weight:800;color:#16a34a;font-family:'DM Mono',monospace}
+.slip-preview-footer{font-size:.72rem;color:#888;text-align:center;border-top:1px solid #e8eaf8;padding-top:10px}
+
+/* ── PASSWORD CHANGE SCREEN ── */
+#changePassScreen{
+  align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#e8eaf8 0%,#f0f2f7 40%,#e4ecf8 100%);
+  position:relative;overflow:hidden;
+  overflow-y:auto;
+}
+#changePassScreen::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 20% 80%,rgba(220,38,38,.08),transparent 50%),
+              radial-gradient(circle at 80% 20%,rgba(59,79,216,.08),transparent 50%);
+  pointer-events:none;
+}
+.cp-card{
+  position:relative;z-index:1;background:var(--surface);
+  border:1px solid var(--border);border-radius:24px;
+  padding:36px 32px;width:100%;max-width:440px;
+  box-shadow:0 8px 40px rgba(30,40,100,.12);
+}
+.cp-expiry-badge{
+  display:flex;align-items:center;gap:8px;
+  background:var(--red-bg);border:1px solid rgba(220,38,38,.25);
+  border-radius:var(--r2);padding:10px 14px;margin-bottom:20px;
+  font-size:.82rem;color:var(--red);font-weight:600;
+}
+.cp-expiry-badge.warn{background:var(--amber-bg);border-color:rgba(217,119,6,.25);color:var(--amber)}
+.cp-title{font-size:1.4rem;font-weight:800;letter-spacing:-.03em;margin-bottom:3px}
+.cp-sub{font-size:.84rem;color:var(--text2);margin-bottom:22px}
+
+/* Password strength meter */
+.pass-wrap{position:relative;display:block}
+.pass-wrap input{padding-right:42px!important}
+.pass-toggle{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;
+  color:var(--text3);padding:5px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  transition:.15s;border-radius:5px;
+  width:28px;height:28px;
+}
+.pass-toggle:hover{color:var(--brand);background:var(--brand-bg)}
+.pass-toggle svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
+.strength-bar{display:flex;gap:4px;margin-top:7px;margin-bottom:4px}
+.strength-seg{height:4px;flex:1;border-radius:20px;background:var(--border);transition:.3s}
+.strength-seg.s1{background:var(--red)}
+.strength-seg.s2{background:var(--amber)}
+.strength-seg.s3{background:#facc15}
+.strength-seg.s4{background:var(--green)}
+.strength-label{font-size:.72rem;font-weight:600;margin-bottom:10px}
+.pass-rules{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r2);padding:10px 13px;margin-bottom:14px}
+.pass-rule{display:flex;align-items:center;gap:7px;font-size:.77rem;color:var(--text2);margin-bottom:4px}
+.pass-rule:last-child{margin-bottom:0}
+.pass-rule.ok{color:var(--green)}.pass-rule.ok .pr-dot::before{content:'✓'}
+.pass-rule .pr-dot::before{content:'○';font-size:.75rem}
+.pass-rule.ok .pr-dot{color:var(--green)}
+.pass-history-warn{
+  background:var(--red-bg);border:1px solid rgba(220,38,38,.2);
+  border-radius:var(--r2);padding:9px 13px;font-size:.8rem;
+  color:var(--red);font-weight:600;margin-bottom:10px;display:none;
+}
+.suggestions-box{
+  background:var(--brand-bg);border:1px solid rgba(59,79,216,.2);
+  border-radius:var(--r2);padding:12px 14px;margin-top:14px
+}
+.suggestions-title{font-size:.78rem;font-weight:700;color:var(--brand);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.suggestion-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--surface);border:1px solid rgba(59,79,216,.25);
+  border-radius:20px;padding:7px 13px;font-size:.76rem;
+  font-family:'DM Mono',monospace;font-weight:500;color:var(--brand);
+  cursor:pointer;margin:3px;transition:.15s;touch-action:manipulation;
+  min-height:36px;
+}
+.suggestion-chip:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
+.pass-expiry-warning{
+  background:var(--amber-bg);border-left:3px solid var(--amber);
+  border-radius:var(--r2);padding:10px 14px;margin-bottom:14px;
+  font-size:.82rem;color:var(--amber);display:flex;align-items:center;gap:8px;
+}
+
+.week-off-badge{display:inline-flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 9px;font-size:.69rem;font-weight:700;color:var(--text3)}
+.badge-short{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(217,119,6,.2);font-size:.69rem;font-weight:700;padding:2px 8px;border-radius:20px}
+.badge-half{background:var(--brand-bg);color:var(--brand);border:1px solid rgba(59,79,216,.2);font-size:.69rem;font-weight:700;padding:2px 8px;border-radius:20px}
+.btn-admin-pin{
+  width:100%;padding:12px 16px;border:2px solid rgba(180,83,9,.5);
+  border-radius:var(--r2);background:var(--gold-bg);color:var(--gold);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;font-weight:800;
+  cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  min-height:48px;letter-spacing:.01em;
+}
+.btn-admin-pin:hover,.btn-admin-pin:active{background:#fde68a;border-color:var(--gold);}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — TABLET (≤900px)
+═══════════════════════════════════════ */
 @media(max-width:900px){
-  .sidebar{width:52px}
+  .sidebar{width:56px;flex-shrink:0}
   .sb-brand-name,nav a span:not(.ni),.sb-uname,.sb-rolebadge,.sb-empid,.sb-section-label,.role-pill{display:none}
-  nav a{padding:12px 16px;justify-content:center}.content{padding:14px}
+  nav a{padding:11px 0;justify-content:center;border-left:none;border-bottom:2px solid transparent}
+  nav a.active{border-left:none;border-bottom-color:#7c9dff;background:rgba(124,157,255,.12)}
+  .content{padding:16px}
   .punch-grid,.leave-cols,.two-col,.three-col{grid-template-columns:1fr}
-  .stat-grid{grid-template-columns:1fr 1fr}.modal-actions{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .modal-actions{grid-template-columns:1fr}
+  .topbar{padding:12px 16px}
+  .topbar-right{gap:6px}
+  .clock{font-size:.8rem;padding:5px 10px}
+  #passExpiryBtn span{display:none}
+  .field-row{grid-template-columns:1fr}
+  .auth-card{padding:28px 20px}
+  .cp-card{padding:24px 18px}
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — MOBILE (≤600px)
+   Full bottom-nav layout
+═══════════════════════════════════════ */
+@media(max-width:600px){
+  /* App layout: sidebar becomes bottom tab bar */
+  #appScreen{flex-direction:column}
+  .sidebar{
+    width:100%!important;height:auto;min-height:0;
+    position:fixed;bottom:0;left:0;right:0;
+    flex-direction:row;z-index:100;
+    border-right:none;border-top:1px solid rgba(255,255,255,.1);
+    overflow-x:auto;overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+  }
+  .sb-brand{display:none}
+  #sideNav{
+    display:flex;flex-direction:row;width:100%;
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;padding:4px 6px;
+  }
+  #sideNav::-webkit-scrollbar{display:none}
+  nav a{
+    flex-direction:column;padding:6px 10px;gap:2px;
+    border-left:none!important;border-bottom:none;
+    min-width:52px;flex-shrink:0;font-size:.6rem;
+    border-bottom:2px solid transparent;border-radius:0;
+    align-items:center;
+  }
+  nav a span:not(.ni){display:block!important;font-size:.6rem;line-height:1.2;white-space:nowrap}
+  nav a .ni{font-size:1.1rem;width:auto}
+  nav a.active{background:rgba(124,157,255,.15);border-bottom-color:#7c9dff}
+  .sb-user{display:none}
+
+  /* Main content: full width, padded for bottom nav */
+  .main{
+    width:100%;min-width:0;
+    padding-bottom:72px; /* space for bottom nav */
+  }
+
+  /* Topbar: compact */
+  .topbar{padding:10px 14px;gap:8px}
+  .topbar-title{font-size:.92rem}
+  .topbar-right{gap:5px}
+  .clock{font-size:.76rem;padding:4px 8px;display:none} /* hide clock on mobile */
+  #passExpiryBtn{padding:5px 8px}
+  #passExpiryBtn svg{width:13px;height:13px}
+  #passExpiryBtnTxt{display:none}
+
+  /* Content */
+  .content{padding:12px 12px 16px}
+
+  /* Cards */
+  .card{padding:14px;border-radius:10px}
+  .card-title{font-size:.88rem;margin-bottom:12px}
+
+  /* Grids: all single column */
+  .punch-grid,.leave-cols,.two-col,.three-col,
+  .stat-grid,.field-row,.shift-grid{grid-template-columns:1fr!important}
+
+  /* Stats: 2 col on mobile */
+  .stat-grid{grid-template-columns:1fr 1fr!important}
+  .stat{padding:12px}
+  .stat-val{font-size:1.5rem}
+
+  /* Big mark attendance button */
+  .big-mark-btn{padding:18px 14px;gap:12px}
+  .bm-icon{width:40px;height:40px;font-size:1.2rem;border-radius:10px}
+  .bm-text .bm-title{font-size:1rem}
+  .bm-time{font-size:1.2rem}
+
+  /* Punch cards */
+  .punch-time{font-size:1.5rem}
+
+  /* Page header */
+  .page-hdr h2{font-size:1.1rem}
+
+  /* Tables: horizontal scroll + bigger touch targets */
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -12px;padding:0 12px}
+  table{min-width:500px}
+  th,td{padding:8px 10px;font-size:.78rem}
+  .act-btn{padding:6px 10px;font-size:.72rem;margin-bottom:2px}
+
+  /* Modal */
+  .modal-overlay{align-items:flex-end;padding:0}
+  .modal-box{border-radius:20px 20px 0 0;max-height:88vh;border-bottom:none;padding:20px 18px}
+  .modal-actions{grid-template-columns:1fr 1fr 1fr}
+
+  /* Auth screens */
+  #loginScreen,#enrollScreen,#changePassScreen,#adminPinScreen{
+    align-items:flex-start;padding-top:0;
+    overflow-y:auto;
+  }
+  .auth-title{font-size:1.4rem;margin-bottom:2px}
+  .auth-sub{margin-bottom:16px}
+  .hint-box{padding:8px 11px;font-size:.75rem;margin-bottom:14px}
+  .brand{margin-bottom:16px}
+  .field{margin-bottom:11px}
+  .btn-primary{padding:11px;margin-top:2px}
+  .auth-switch{margin-top:12px}
+  .auth-wrap{
+    padding:0;max-width:100%;
+    height:100vh;overflow-y:auto;
+    display:block; /* not flex — lets card scroll naturally */
+  }
+  .auth-card{
+    border-radius:0;border:none;box-shadow:none;
+    min-height:100vh;padding:40px 20px 32px;
+    display:flex;flex-direction:column;justify-content:flex-start;
+    overflow:visible;
+  }
+  .cp-card{
+    border-radius:0;border:none;box-shadow:none;
+    min-height:100vh;padding:40px 18px 32px;
+    display:flex;flex-direction:column;justify-content:flex-start;
+  }
+
+  /* PIN screen */
+  #adminPinScreen .auth-wrap{height:100vh}
+  .pin-card{border-radius:0;border:none;min-height:100vh;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:32px 24px}
+  .pin-key{padding:14px 6px;font-size:1.1rem}
+
+  /* Leave form */
+  .leave-cols{grid-template-columns:1fr!important}
+
+  /* Salary slips */
+  .slip-rows{grid-template-columns:1fr!important}
+  .slip-header{flex-direction:column;gap:6px}
+  .slip-amount{font-size:1.2rem}
+
+  /* Site toggle card */
+  .site-toggle-card{flex-direction:column;gap:14px;padding:16px}
+  .site-toggle-wrap{align-self:flex-start}
+
+  /* Toast: full width on mobile */
+  .toast{top:auto;bottom:80px;right:10px;left:10px;max-width:100%;transform:translateY(80px);border-radius:10px}
+  .toast.show{transform:translateY(0)}
+
+  /* Idle badge: above bottom nav */
+  .idle-badge{bottom:76px;right:10px;font-size:.76rem;padding:8px 12px}
+
+  /* Tabs: scrollable */
+  .tabs{overflow-x:auto;width:100%;-webkit-overflow-scrolling:touch}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{white-space:nowrap;flex-shrink:0;padding:7px 12px;font-size:.78rem}
+
+  /* Divider */
+  .divider{margin:10px 0}
+
+  /* Admin divider tighter on mobile */
+  .auth-divider{margin:12px 0 10px!important}
+
+  /* Strength bar on change password */
+  .pass-rules{font-size:.76rem}
+  .pass-rule{font-size:.75rem}
+  .suggestions-box{padding:10px}
+  .suggestion-chip{font-size:.72rem;padding:4px 9px}
+
+  /* LB banner */
+  .lb-banner{flex-direction:column;gap:10px;padding:14px}
+  .lb-divider{width:100%;height:1px;margin:2px 0}
+  .lb-num{font-size:2.2rem}
+
+  /* HR Panel */
+  .wf-block{padding:12px}
+  .hol-item{flex-wrap:wrap;gap:4px}
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — SMALL MOBILE (≤380px)
+═══════════════════════════════════════ */
+@media(max-width:380px){
+  nav a{min-width:44px;padding:6px 6px}
+  nav a span:not(.ni){font-size:.55rem}
+  .stat-val{font-size:1.3rem}
+  .punch-time{font-size:1.3rem}
+  .auth-card,.cp-card{padding:24px 14px}
+  .bm-title{font-size:.9rem!important}
+  .topbar-right{gap:4px}
+  .hint-box{display:none} /* too tall on small phones — admin PIN shown on button itself */
+  .auth-title{font-size:1.3rem}
+  .auth-sub{font-size:.8rem;margin-bottom:16px}
 }
 </style>
 </head>
@@ -645,6 +996,82 @@ tr:hover td{background:var(--surface2)}
   </div>
 </div>
 
+<!-- CHANGE PASSWORD SCREEN -->
+<div class="screen" id="changePassScreen">
+  <div class="auth-grid-bg"></div>
+  <div class="auth-wrap">
+    <div class="cp-card">
+      <div class="brand" style="margin-bottom:20px">
+        <div class="brand-mark">⚡</div>
+        <div class="brand-name">Work<span>Pulse</span></div>
+      </div>
+      <div id="cpExpiryBadge" class="cp-expiry-badge">🔒 Your password has expired. Please set a new one to continue.</div>
+      <div class="cp-title" id="cpTitle">Change Password</div>
+      <div class="cp-sub" id="cpSub">Create a strong new password to secure your account.</div>
+
+      <div class="field">
+        <label>Current Password</label>
+        <div class="pass-wrap">
+          <input type="password" id="cpCurrent" placeholder="Enter current password" autocomplete="current-password">
+          <button class="pass-toggle" onclick="togglePassVis('cpCurrent',this)" tabindex="-1" data-open="1" title="Show/hide password"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>New Password</label>
+        <div class="pass-wrap">
+          <input type="password" id="cpNew" placeholder="Min. 9 chars · numbers · special chars"
+            autocomplete="new-password" oninput="cpNewChanged()" style="padding-right:40px">
+          <button class="pass-toggle" onclick="togglePassVis('cpNew',this)" tabindex="-1" data-open="1" title="Show/hide password"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <div class="strength-bar" id="cpStrengthBar">
+          <div class="strength-seg" id="cpseg0"></div>
+          <div class="strength-seg" id="cpseg1"></div>
+          <div class="strength-seg" id="cpseg2"></div>
+          <div class="strength-seg" id="cpseg3"></div>
+        </div>
+        <div class="strength-label" id="cpStrengthLabel" style="color:var(--text3)">Enter a password</div>
+      </div>
+
+      <div class="pass-rules" id="cpRules">
+        <div class="pass-rule" id="pr-len"><span class="pr-dot"></span>At least 9 characters</div>
+        <div class="pass-rule" id="pr-num"><span class="pr-dot"></span>At least one number (0–9)</div>
+        <div class="pass-rule" id="pr-special"><span class="pr-dot"></span>At least one special character (!@#$%^&*)</div>
+        <div class="pass-rule" id="pr-upper"><span class="pr-dot"></span>At least one uppercase letter</div>
+        <div class="pass-rule" id="pr-lower"><span class="pr-dot"></span>At least one lowercase letter</div>
+      </div>
+
+      <div class="pass-history-warn" id="cpHistoryWarn">
+        ⚠ <span id="cpHistoryMsg">Password already used — cannot reuse last 5 passwords.</span>
+      </div>
+
+      <div class="field">
+        <label>Confirm New Password</label>
+        <div class="pass-wrap">
+          <input type="password" id="cpConfirm" placeholder="Re-enter new password"
+            autocomplete="new-password" style="padding-right:40px"
+            onkeydown="if(event.key==='Enter')doChangePass()">
+          <button class="pass-toggle" onclick="togglePassVis('cpConfirm',this)" tabindex="-1" data-open="1" title="Show/hide password"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+      </div>
+
+      <div id="cpError" style="display:none;background:var(--red-bg);border:1px solid rgba(220,38,38,.2);border-radius:var(--r2);padding:9px 13px;font-size:.8rem;color:var(--red);margin-bottom:10px"></div>
+
+      <button class="btn-primary" onclick="doChangePass()">Update Password →</button>
+
+      <div id="cpSuggestions" class="suggestions-box" style="display:none">
+        <div class="suggestions-title">💡 Suggested strong passwords — click to use</div>
+        <div id="cpSuggestionsList"></div>
+        <div style="font-size:.71rem;color:var(--text2);margin-top:6px">These are generated suggestions. Save it somewhere safe before using.</div>
+      </div>
+
+      <div id="cpSkipWrap" style="text-align:center;margin-top:14px;display:none">
+        <a onclick="cpSkip()" style="font-size:.8rem;color:var(--text3);cursor:pointer;text-decoration:underline">Remind me later (skip for now)</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- LOGIN -->
 <div class="screen active" id="loginScreen">
   <div class="auth-grid-bg"></div>
@@ -666,8 +1093,11 @@ tr:hover td{background:var(--surface2)}
       </div>
       <div class="field">
         <label>Password</label>
-        <input type="password" id="lgPass" placeholder="••••••••" autocomplete="current-password"
-          onkeydown="if(event.key==='Enter')doLogin()">
+        <div class="pass-wrap">
+          <input type="password" id="lgPass" placeholder="••••••••" autocomplete="current-password"
+            onkeydown="if(event.key==='Enter')doLogin()">
+          <button class="pass-toggle" onclick="togglePassVis('lgPass',this)" tabindex="-1" data-open="1" title="Show/hide password"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
       </div>
       <div class="field">
         <label>Role</label>
@@ -683,7 +1113,7 @@ tr:hover td{background:var(--surface2)}
       <div class="auth-switch">New employee? <a onclick="goEnroll()">Register here</a></div>
 
       <!-- Admin Access divider -->
-      <div style="display:flex;align-items:center;gap:10px;margin:18px 0 14px">
+      <div class="auth-divider" style="display:flex;align-items:center;gap:10px;margin:18px 0 14px">
         <div style="flex:1;height:1px;background:var(--border)"></div>
         <span style="font-size:.72rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.1em">or</span>
         <div style="flex:1;height:1px;background:var(--border)"></div>
@@ -696,7 +1126,7 @@ tr:hover td{background:var(--surface2)}
 <!-- ENROLL -->
 <div class="screen" id="enrollScreen">
   <div class="auth-grid-bg"></div>
-  <div class="auth-wrap" style="max-width:480px">
+  <div class="auth-wrap" style="max-width:480px;overflow-y:auto">
     <div class="auth-card">
       <div class="brand"><div class="brand-mark">⚡</div><div class="brand-name">Work<span>Pulse</span></div></div>
       <div class="auth-title">Create account</div>
@@ -712,7 +1142,12 @@ tr:hover td{background:var(--surface2)}
           oninput="this.value=this.value.toUpperCase()" onblur="checkEmpIdDupe()">
         <div id="empIdCheck" style="font-size:.74rem;margin-top:5px"></div>
       </div>
-      <div class="field"><label>Password</label><input type="password" id="enPass" placeholder="Min. 6 characters" autocomplete="new-password"></div>
+      <div class="field"><label>Password</label>
+        <div class="pass-wrap">
+          <input type="password" id="enPass" placeholder="Min 9 chars · number · special char" autocomplete="new-password">
+          <button class="pass-toggle" onclick="togglePassVis('enPass',this)" tabindex="-1" data-open="1" title="Show/hide password"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+      </div>
       <div class="field"><label>Role</label>
         <select id="enRole" onchange="onEnrollRoleChange()">
           <option value="agent">Agent</option>
@@ -760,6 +1195,18 @@ tr:hover td{background:var(--surface2)}
       <div class="topbar-title" id="pageTitle">Dashboard</div>
       <div class="topbar-right">
         <div class="clock" id="liveClock"></div>
+        <button onclick="showChangePassScreen(false)" id="passExpiryBtn" title="Change Password" style="
+          display:inline-flex;align-items:center;gap:5px;
+          padding:6px 12px;border-radius:var(--r2);
+          background:var(--surface2);color:var(--text2);
+          border:1px solid var(--border);cursor:pointer;
+          font-family:'Plus Jakarta Sans',sans-serif;
+          font-size:.78rem;font-weight:600;transition:.2s;
+        " onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)';this.style.background='var(--brand-bg)'"
+           onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)';this.style.background='var(--surface2)'">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span id="passExpiryBtnTxt">Password</span>
+        </button>
         <button class="btn-xs btn-logout" onclick="doLogout()">Sign Out</button>
       </div>
     </div>
@@ -810,19 +1257,125 @@ function avatarClass(role){
    LEAVE BALANCE ENGINE
 ══════════════════════════════════ */
 function leavesAccruedThisYear(){ return(new Date().getMonth()+1)*2; }
-function approvedLeaveDaysThisYear(userId){
-  const yr=new Date().getFullYear();let total=0;
-  DB.leaves.filter(l=>l.userId===userId&&l.status==='approved'&&(l.fromDate||'').startsWith(String(yr))).forEach(l=>{
-    let d=new Date(l.fromDate+'T00:00:00'),end=new Date(l.toDate+'T00:00:00');
-    while(d<=end){if(d.getDay()!==0&&d.getDay()!==6)total++;d.setDate(d.getDate()+1);}
-  });
-  return total;
+
+/* ── Leave day value for a single record (returns decimal) ──
+   short_leave  = 0.5 day  (2 short leaves = 1 half day in deduction)
+   half_day     = 0.5 day
+   full         = N weekdays (incl. weekend sandwich)
+   Returns the decimal days this leave consumes from balance.
+*/
+function leaveDayValue(l){
+  const t=l.subType||'full';
+  if(t==='short_leave') return 0.5;
+  if(t==='half_day')    return 0.5;
+  // full leave — count weekdays, apply sandwich rule
+  return countLeaveDaysWithSandwich(l.fromDate, l.toDate);
 }
-function leaveBalanceFor(userId){ return Math.max(0,leavesAccruedThisYear()-approvedLeaveDaysThisYear(userId)); }
+
+/* Count weekdays Mon-Fri between two dates (inclusive) */
 function countLeaveDays(from,to){
   let n=0,d=new Date(from+'T00:00:00'),end=new Date(to+'T00:00:00');
   while(d<=end){if(d.getDay()!==0&&d.getDay()!==6)n++;d.setDate(d.getDate()+1);}
   return n;
+}
+
+/* Weekend sandwich rule:
+   If leave starts on Monday (prev day = Sunday) AND ends on Friday (next = Saturday),
+   OR more generally if the leave span brackets a weekend, those weekend days are counted.
+   Specifically: if fromDate is Monday and the leave before it ended on Friday (or vice versa),
+   the intervening weekend counts.
+   Simplified rule as specified: if user takes Fri leave AND Mon leave (separately or same span),
+   the 4 days (Fri, Sat, Sun, Mon) all count.
+   Implementation: when counting days for a leave, if it spans Fri-Mon (even across a weekend),
+   include Sat+Sun in the count.
+*/
+function countLeaveDaysWithSandwich(from,to){
+  const fromD=new Date(from+'T00:00:00');
+  const toD=new Date(to+'T00:00:00');
+  // Check if any Friday and the following Monday are both covered (directly or via weekend)
+  // Simple approach: count all calendar days between if the range bridges a weekend
+  let weekdays=0;
+  let d=new Date(fromD);
+  while(d<=toD){
+    if(d.getDay()!==0&&d.getDay()!==6)weekdays++;
+    d.setDate(d.getDate()+1);
+  }
+  // Sandwich: if fromDate is Mon and toDate is Fri (or range includes Fri→Mon crossing)
+  // we already counted weekdays; sandwich means the weekend between Fri and Mon also counts
+  // Only applies when range explicitly crosses weekend (fromDate<=Fri && toDate>=Mon of next week)
+  const dayMs=86400000;
+  let hasSandwich=false;
+  let dd=new Date(fromD);
+  while(dd<=toD){
+    if(dd.getDay()===5){ // Friday inside range
+      const nextMon=new Date(dd.getTime()+3*dayMs);
+      if(nextMon<=toD) hasSandwich=true; // Monday also within range
+    }
+    dd.setDate(dd.getDate()+1);
+  }
+  return hasSandwich ? weekdays+2 : weekdays; // +2 for Sat+Sun sandwich
+}
+
+/* Check sandwich across TWO SEPARATE approved leaves for same user:
+   If user has an approved leave ending on Friday AND another starting on Monday,
+   mark the intervening weekend as counted. Returns extra days to add. */
+function sandwichDaysForUser(userId, excludeLeaveId){
+  const yr=new Date().getFullYear();
+  const approved=DB.leaves.filter(l=>
+    l.userId===userId && l.status==='approved' &&
+    l.id!==excludeLeaveId &&
+    (l.fromDate||'').startsWith(String(yr)) &&
+    (l.subType||'full')==='full'
+  );
+  let extra=0;
+  // Check each pair
+  for(let i=0;i<approved.length;i++){
+    for(let j=0;j<approved.length;j++){
+      if(i===j)continue;
+      const a=approved[i], b=approved[j];
+      const aEnd=new Date(a.toDate+'T00:00:00');
+      const bStart=new Date(b.fromDate+'T00:00:00');
+      // a ends on Friday and b starts on the following Monday
+      if(aEnd.getDay()===5){
+        const nextMon=new Date(aEnd.getTime()+3*86400000);
+        if(bStart.getTime()===nextMon.getTime()){
+          extra+=2; // Sat + Sun counted
+        }
+      }
+    }
+  }
+  // Divide by 2 because each pair is counted twice (i→j and j→i)
+  return extra/2;
+}
+
+function approvedLeaveDaysThisYear(userId){
+  const yr=new Date().getFullYear();
+  let total=0;
+  const approved=DB.leaves.filter(l=>
+    l.userId===userId && l.status==='approved' &&
+    (l.fromDate||'').startsWith(String(yr))
+  );
+  approved.forEach(l=>{
+    const t=l.subType||'full';
+    if(t==='short_leave') total+=0.5;
+    else if(t==='half_day') total+=0.5;
+    else total+=countLeaveDaysWithSandwich(l.fromDate,l.toDate);
+  });
+  // Add sandwich days from cross-leave weekend rule
+  total+=sandwichDaysForUser(userId,null);
+  return total;
+}
+
+function leaveBalanceFor(userId){ return Math.max(0,leavesAccruedThisYear()-approvedLeaveDaysThisYear(userId)); }
+
+/* Get short leave count for a user (to show 2SL = 1HD rule) */
+function shortLeaveCountThisYear(userId){
+  const yr=new Date().getFullYear();
+  return DB.leaves.filter(l=>
+    l.userId===userId && l.status==='approved' &&
+    l.subType==='short_leave' &&
+    (l.fromDate||'').startsWith(String(yr))
+  ).length;
 }
 function runJanReset(){
   const yr=new Date().getFullYear();if(DB.lastResetYear===yr)return;
@@ -831,16 +1384,40 @@ function runJanReset(){
   DB.leaves=DB.leaves.filter(l=>parseInt((l.fromDate||'0').slice(0,4))>=yr);
   DB.lastResetYear=yr;saveDB();
 }
+function fmtDays(n){
+  if(n===0)return'0';
+  if(n===Math.floor(n))return String(n);
+  return n.toFixed(1);
+}
 function leaveBalanceBanner(userId){
-  const ac=leavesAccruedThisYear(),used=approvedLeaveDaysThisYear(userId),bal=Math.max(0,ac-used);
+  const ac=leavesAccruedThisYear(),used=approvedLeaveDaysThisYear(userId);
+  const bal=Math.max(0,ac-used);
   const pct=ac>0?Math.round((bal/ac)*100):100,isLow=bal<=2,isGone=bal===0;
   const mo=new Date().toLocaleString('default',{month:'long'});
+  const slCount=shortLeaveCountThisYear(userId);
+  const slPending=slCount%2; // if odd, 1 short leave pending (doesn't deduct yet)
   return`<div class="lb-banner">
-    <div><div class="lb-label">Leave Balance</div><div style="display:flex;align-items:baseline;gap:5px"><div class="lb-num" style="color:${isGone?'var(--red)':isLow?'var(--amber)':'var(--green)'}">${bal}</div><div class="lb-denom">/ ${ac}</div></div><div style="font-size:.7rem;color:var(--text3);margin-top:2px">days remaining</div></div>
+    <div>
+      <div class="lb-label">Leave Balance</div>
+      <div style="display:flex;align-items:baseline;gap:5px">
+        <div class="lb-num" style="color:${isGone?'var(--red)':isLow?'var(--amber)':'var(--green)'}">${fmtDays(bal)}</div>
+        <div class="lb-denom">/ ${ac}</div>
+      </div>
+      <div style="font-size:.7rem;color:var(--text3);margin-top:2px">days remaining</div>
+    </div>
     <div class="lb-divider"></div>
-    <div class="lb-meta"><div class="lb-meta-item">Accrued to ${mo}: <span>${ac}</span></div><div class="lb-meta-item">Used (approved): <span>${used}</span></div></div>
+    <div class="lb-meta">
+      <div class="lb-meta-item">Accrued to ${mo}: <span>${ac}</span></div>
+      <div class="lb-meta-item">Used (approved): <span>${fmtDays(used)}</span></div>
+      ${slPending?`<div class="lb-meta-item" style="color:var(--amber)">Short leave pending: <span style="color:var(--amber)">1 (needs 1 more = ½ day)</span></div>`:''}
+    </div>
     <div class="lb-divider"></div>
-    <div class="lb-bar-wrap"><div class="lb-label">Balance Used</div><div class="lb-bar-track"><div class="lb-bar-fill ${isLow?'low':''}" style="width:${100-pct}%"></div></div>${isGone?'<div style="font-size:.76rem;color:var(--red);margin-top:3px;font-weight:700">⚠ Balance exhausted</div>':isLow?`<div style="font-size:.76rem;color:var(--amber);margin-top:3px">⚠ Only ${bal} day${bal===1?'':'s'} left</div>`:''}<div style="font-size:.71rem;color:var(--text3);margin-top:5px">Resets Jan 1 · 2 days/month</div></div>
+    <div class="lb-bar-wrap">
+      <div class="lb-label">Balance Used</div>
+      <div class="lb-bar-track"><div class="lb-bar-fill ${isLow?'low':''}" style="width:${100-pct}%"></div></div>
+      ${isGone?'<div style="font-size:.76rem;color:var(--red);margin-top:3px;font-weight:700">⚠ Balance exhausted</div>':isLow?`<div style="font-size:.76rem;color:var(--amber);margin-top:3px">⚠ Only ${fmtDays(bal)} day${bal===1?'':'s'} left</div>`:''}
+      <div style="font-size:.71rem;color:var(--text3);margin-top:5px">Resets Jan 1 · 2 days/month · 2 Short = ½ Day · 2 Half = 1 Day</div>
+    </div>
   </div>`;
 }
 
@@ -854,19 +1431,19 @@ function loadDB(){
   const db={
     users:[
       // Admin — full system access + DB management
-      {id:'u_adm1',empId:'ADMIN001',first:'System',last:'Admin',pass:'admin123',role:'admin',workflow:'',tlId:'',createdAt:'2025-01-01T00:00:00.000Z'},
+      {id:'u_adm1',empId:'ADMIN001',first:'System',last:'Admin',pass:'admin123',role:'admin',workflow:'',tlId:'',createdAt:'2025-01-01T00:00:00.000Z',passChangedAt:'2025-01-01T00:00:00.000Z',passHistory:[]},
       // HR
-      {id:'u_hr01',empId:'HR001',first:'Sarah',last:'Mills',pass:'pass123',role:'hr',workflow:'',tlId:'',createdAt:'2025-01-01T00:00:00.000Z'},
+      {id:'u_hr01',empId:'HR001',first:'Sarah',last:'Mills',pass:'pass123',role:'hr',workflow:'',tlId:'',createdAt:'2025-01-01T00:00:00.000Z',passChangedAt:'2025-01-01T00:00:00.000Z',passHistory:[]},
       // TLs
-      {id:'u_tl01',empId:'TL001',first:'Alex',last:'Torres',pass:'pass123',role:'tl',workflow:'NSBI',tlId:'',createdAt:'2025-01-01T00:00:00.000Z'},
-      {id:'u_tl02',empId:'TL002',first:'Ben',last:'Clark',pass:'pass123',role:'tl',workflow:'NSBI',tlId:'',createdAt:'2025-01-01T00:00:00.000Z'},
-      {id:'u_tl03',empId:'TL003',first:'Priya',last:'Patel',pass:'pass123',role:'tl',workflow:'Account Receivable',tlId:'',createdAt:'2025-01-01T00:00:00.000Z'},
-      {id:'u_tl04',empId:'TL004',first:'Jake',last:'Mason',pass:'pass123',role:'tl',workflow:'Account Receivable',tlId:'',createdAt:'2025-01-01T00:00:00.000Z'},
-      {id:'u_tl05',empId:'TL005',first:'Lily',last:'Chen',pass:'pass123',role:'tl',workflow:'Medical',tlId:'',createdAt:'2025-01-01T00:00:00.000Z'},
-      {id:'u_tl06',empId:'TL006',first:'Omar',last:'Hassan',pass:'pass123',role:'tl',workflow:'Medical',tlId:'',createdAt:'2025-01-01T00:00:00.000Z'},
+      {id:'u_tl01',empId:'TL001',first:'Alex',last:'Torres',pass:'pass123',role:'tl',workflow:'NSBI',tlId:'',createdAt:'2025-01-01T00:00:00.000Z',passChangedAt:'2025-01-01T00:00:00.000Z',passHistory:[]},
+      {id:'u_tl02',empId:'TL002',first:'Ben',last:'Clark',pass:'pass123',role:'tl',workflow:'NSBI',tlId:'',createdAt:'2025-01-01T00:00:00.000Z',passChangedAt:'2025-01-01T00:00:00.000Z',passHistory:[]},
+      {id:'u_tl03',empId:'TL003',first:'Priya',last:'Patel',pass:'pass123',role:'tl',workflow:'Account Receivable',tlId:'',createdAt:'2025-01-01T00:00:00.000Z',passChangedAt:'2025-01-01T00:00:00.000Z',passHistory:[]},
+      {id:'u_tl04',empId:'TL004',first:'Jake',last:'Mason',pass:'pass123',role:'tl',workflow:'Account Receivable',tlId:'',createdAt:'2025-01-01T00:00:00.000Z',passChangedAt:'2025-01-01T00:00:00.000Z',passHistory:[]},
+      {id:'u_tl05',empId:'TL005',first:'Lily',last:'Chen',pass:'pass123',role:'tl',workflow:'Medical',tlId:'',createdAt:'2025-01-01T00:00:00.000Z',passChangedAt:'2025-01-01T00:00:00.000Z',passHistory:[]},
+      {id:'u_tl06',empId:'TL006',first:'Omar',last:'Hassan',pass:'pass123',role:'tl',workflow:'Medical',tlId:'',createdAt:'2025-01-01T00:00:00.000Z',passChangedAt:'2025-01-01T00:00:00.000Z',passHistory:[]},
       // Agents
-      {id:'u_ag01',empId:'AG001',first:'Dana',last:'Lee',pass:'pass123',role:'agent',workflow:'NSBI',tlId:'u_tl01',createdAt:'2025-01-01T00:00:00.000Z'},
-      {id:'u_ag02',empId:'AG002',first:'Mike',last:'Brown',pass:'pass123',role:'agent',workflow:'Account Receivable',tlId:'u_tl03',createdAt:'2025-01-01T00:00:00.000Z'},
+      {id:'u_ag01',empId:'AG001',first:'Dana',last:'Lee',pass:'pass123',role:'agent',workflow:'NSBI',tlId:'u_tl01',createdAt:'2025-01-01T00:00:00.000Z',passChangedAt:'2025-01-01T00:00:00.000Z',passHistory:[]},
+      {id:'u_ag02',empId:'AG002',first:'Mike',last:'Brown',pass:'pass123',role:'agent',workflow:'Account Receivable',tlId:'u_tl03',createdAt:'2025-01-01T00:00:00.000Z',passChangedAt:'2025-01-01T00:00:00.000Z',passHistory:[]},
     ],
     attendance:[],leaves:[],workLogs:[],
     holidays:[
@@ -884,7 +1461,8 @@ function loadDB(){
     },
     lastResetYear:new Date().getFullYear(),
     adminCode:'108',
-    siteActive:true
+    siteActive:true,
+    salarySlips:[]
   };
   saveDB(db);return db;
 }
@@ -893,11 +1471,20 @@ function migrateLegacy(db){
   if(!db.shiftTimings)db.shiftTimings={'NSBI':{start:'09:00',grace:15},'Account Receivable':{start:'09:30',grace:15},'Medical':{start:'08:00',grace:10}};
   if(!db.adminCode)db.adminCode='108';
   if(db.siteActive===undefined)db.siteActive=true;
-  (db.leaves||[]).forEach(l=>{ if(!l.leaveDays)l.leaveDays=countLeaveDays(l.fromDate,l.toDate); });
+  if(!db.salarySlips)db.salarySlips=[];
+  (db.leaves||[]).forEach(l=>{
+    if(!l.leaveDays)l.leaveDays=countLeaveDays(l.fromDate,l.toDate);
+    if(!l.subType)l.subType='full';
+  });
   // Add admin if missing
   if(!db.users.find(u=>u.role==='admin')){
-    db.users.unshift({id:'u_adm1',empId:'ADMIN001',first:'System',last:'Admin',pass:'admin123',role:'admin',workflow:'',tlId:'',createdAt:'2025-01-01T00:00:00.000Z'});
+    db.users.unshift({id:'u_adm1',empId:'ADMIN001',first:'System',last:'Admin',pass:'admin123',role:'admin',workflow:'',tlId:'',createdAt:'2025-01-01T00:00:00.000Z',passChangedAt:'2025-01-01T00:00:00.000Z',passHistory:[]});
   }
+  // Migrate: add passChangedAt + passHistory to existing users
+  (db.users||[]).forEach(u=>{
+    if(!u.passChangedAt) u.passChangedAt='2025-01-01T00:00:00.000Z';
+    if(!u.passHistory) u.passHistory=[];
+  });
 }
 let DB=loadDB();
 
@@ -963,9 +1550,9 @@ function getShiftFor(user){
 ══════════════════════════════════ */
 const ROLE_PAGES={
   admin:  ['dashboard','userAdmin','dbAdmin','employeesMgmt','allAttendance','lateReport','shiftMgmt','hrPanel','calendar'],
-  hr:     ['dashboard','attendance','workLog','markAttendance','allAttendance','lateReport','shiftMgmt','leaveApproval','employeesMgmt','hrPanel','calendar'],
-  tl:     ['dashboard','attendance','workLog','markAttendance','teamView','lateReport','leaveApproval','leave','employeesMgmt','calendar'],
-  agent:  ['dashboard','attendance','workLog','leave','calendar'],
+  hr:     ['dashboard','attendance','workLog','markAttendance','allAttendance','lateReport','shiftMgmt','leaveApproval','employeesMgmt','hrPanel','salarySlips','calendar'],
+  tl:     ['dashboard','attendance','workLog','markAttendance','teamView','lateReport','leaveApproval','leave','employeesMgmt','salarySlips','calendar'],
+  agent:  ['dashboard','attendance','workLog','leave','salarySlips','calendar'],
 };
 function canAccess(page){ return (ROLE_PAGES[CU?.role]||[]).includes(page); }
 function requireAccess(page){
@@ -1103,11 +1690,12 @@ function doEnroll(){
   const workflow=role!=='hr'?document.getElementById('enWorkflow').value:'';
   const tlId=role==='agent'?document.getElementById('enTL').value:'';
   if(!first||!last||!empId||!pass){showToast('Please fill all fields','t-err');return;}
-  if(pass.length<6){showToast('Password must be at least 6 characters','t-err');return;}
+  const passErr=validatePassword(pass);
+  if(passErr){showToast(passErr,'t-err');return;}
   if(!/^[A-Z0-9_-]{3,15}$/.test(empId)){showToast('Employee ID: 3-15 alphanumeric characters','t-err');return;}
   if(getUserByEmpId(empId)){showToast('Employee ID already taken','t-err');return;}
   if(role==='agent'&&!tlId){showToast('Please select your Team Leader','t-err');return;}
-  DB.users.push({id:uid(),empId,first,last,pass,role,workflow,tlId,createdAt:ts()});
+  DB.users.push({id:uid(),empId,first,last,pass,role,workflow,tlId,createdAt:ts(),passChangedAt:ts(),passHistory:[]});
   saveDB();showToast('Account created! You can now sign in.','t-ok');
   showScreen('loginScreen');
   document.getElementById('lgEmpId').value=empId;
@@ -1158,6 +1746,16 @@ function doLogin(){
   // Success — set current user
   CU=user;
 
+  // Check password expiry (90 days)
+  const passExpired=isPasswordExpired(CU);
+  const passDaysLeft=daysUntilPassExpiry(CU);
+  if(passExpired){
+    // Force password change before accessing app
+    showChangePassScreen(true);
+    document.getElementById('lgPass').value='';
+    return;
+  }
+
   // Restore today's punch state fresh
   const rec=DB.attendance.find(a=>a.userId===CU.id&&a.date===today());
   if(rec){
@@ -1176,6 +1774,12 @@ function doLogin(){
   initApp();
   showScreen('appScreen');
   if(PS.punchedIn&&!PS.punchedOut)startIdleTracking();
+
+  // Show expiry warning if < 10 days left
+  const _daysLeft=daysUntilPassExpiry(CU);
+  if(_daysLeft!==null&&_daysLeft<=10&&_daysLeft>0){
+    setTimeout(()=>showToast(`⚠ Password expires in ${_daysLeft} day${_daysLeft===1?'':'s'} — please change it soon`,'t-warn'),600);
+  }
 
   // Clear password field after successful login
   document.getElementById('lgPass').value='';
@@ -1220,6 +1824,7 @@ const NAV_CFG={
     {id:'leaveApproval',icon:'📋',label:'Leave Approvals'},
     {id:'employeesMgmt',icon:'🪪',label:'Employees'},
     {id:'hrPanel',icon:'⚙️',label:'HR Panel'},
+    {id:'salarySlips',icon:'💰',label:'Salary Slips'},
     {id:'calendar',icon:'📅',label:'Calendar'},
   ],
   tl:[
@@ -1232,6 +1837,7 @@ const NAV_CFG={
     {id:'leaveApproval',icon:'📋',label:'Leave Approvals'},
     {id:'leave',icon:'🏖',label:'My Leave'},
     {id:'employeesMgmt',icon:'🪪',label:'Employees'},
+    {id:'salarySlips',icon:'💰',label:'Salary Slips'},
     {id:'calendar',icon:'📅',label:'Calendar'},
   ],
   agent:[
@@ -1239,6 +1845,7 @@ const NAV_CFG={
     {id:'attendance',icon:'🕐',label:'My Attendance'},
     {id:'workLog',icon:'⏱',label:'Work Log'},
     {id:'leave',icon:'🏖',label:'Leave Request'},
+    {id:'salarySlips',icon:'💰',label:'Salary Slips'},
     {id:'calendar',icon:'📅',label:'Calendar'},
   ],
 };
@@ -1250,6 +1857,7 @@ const PAGE_TITLES={
   leaveApproval:'Leave Approvals',employeesMgmt:'Employee Management',
   hrPanel:'HR Panel',calendar:'Calendar',
   userAdmin:'User Administration',dbAdmin:'Database Manager',
+  salarySlips:'Salary Slips',
 };
 function initApp(){
   document.getElementById('sbName').textContent=fullName(CU);
@@ -1277,7 +1885,7 @@ function navTo(page){
     lateReport:pgLateReport,shiftMgmt:pgShiftMgmt,
     leave:pgLeave,leaveApproval:pgLeaveApproval,
     employeesMgmt:pgEmployees,hrPanel:pgHRPanel,calendar:pgCalendar,
-    userAdmin:pgUserAdmin,dbAdmin:pgDBAdmin,
+    userAdmin:pgUserAdmin,dbAdmin:pgDBAdmin,salarySlips:pgSalarySlips,
   };
   if(fns[page])fns[page]();
 }
@@ -1336,6 +1944,13 @@ function pgDashboard(){
   </div>
   ${showPunchBtn?(alreadyIn?`<div class="already-in-banner"><div class="ai-icon">✅</div><div class="ai-text"><div class="ai-title">Punched in since ${fmtTime(todayRec.punchIn)}</div><div class="ai-sub">Go to My Attendance to manage breaks or punch out</div></div></div>`:!isHoliday?`<button class="big-mark-btn" onclick="quickMarkAttendance()"><div class="bm-icon">✋</div><div class="bm-text"><div class="bm-title">Mark My Attendance</div><div class="bm-sub">Tap to punch in and start your shift now</div></div><div class="bm-time" id="dashClock2">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></button>`:`<div class="already-in-banner"><div class="ai-icon">🎌</div><div class="ai-text"><div class="ai-title">Today is a holiday — ${isHoliday.name}</div><div class="ai-sub">Enjoy your day off!</div></div></div>`):''}
   ${markBtn}
+  ${(()=>{
+    const dl=daysUntilPassExpiry(CU);
+    if(dl===null)return'';
+    if(dl<=0)return'<div class="pass-expiry-warning">🔒 Your password has <strong>expired</strong>. <a onclick="showChangePassScreen(true)" style="color:var(--red);font-weight:700;cursor:pointer;text-decoration:underline">Click here to change it now</a></div>';
+    if(dl<=10)return`<div class="pass-expiry-warning">⚠ Password expires in <strong>${dl} day${dl===1?'':'s'}</strong>. <a onclick="showChangePassScreen(false)" style="color:var(--amber);font-weight:700;cursor:pointer;text-decoration:underline">Change it now</a></div>`;
+    return'';
+  })()}
   ${CU.role==='admin'?`<div class="site-toggle-card" style="margin-bottom:16px">
     <div class="stc-left">
       <div class="stc-title">&#x1F4CD; Site Status</div>
@@ -1815,7 +2430,7 @@ function renderAttTable(users,label){
   const showMarkBtn=CU.role==='hr'||CU.role==='tl';
   document.getElementById('mainContent').innerHTML=`
   <div class="page-hdr"><h2>${label} Attendance</h2><p>${new Date().toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'})}</p></div>
-  ${showMarkBtn?`<button onclick="openMarkAtt()" style="width:100%;padding:11px;border:1.5px solid var(--green);border-radius:var(--r2);background:var(--green-bg);color:var(--green);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;font-weight:700;margin-bottom:14px;transition:.2s">✅ Mark Agent Attendance →</button>`:''}
+  ${showMarkBtn?`<button class="btn-mark-agent" style="border-color:var(--green);color:var(--green);background:var(--green-bg)" onclick="openMarkAtt()">✅ Mark Agent Attendance →</button>`:''}
   <div class="card"><div class="tbl-wrap"><table>
     <tr><th>Employee</th><th>Emp ID</th><th>Role</th><th>Workflow</th><th>In</th><th>Out</th><th>Late</th><th>Break</th><th>Worked</th><th>Marked By</th><th>Status</th></tr>
     ${rows.join('')||'<tr><td colspan="11" class="empty-state">No employees</td></tr>'}
@@ -1827,25 +2442,49 @@ function renderAttTable(users,label){
 ══════════════════════════════════ */
 function pgLeave(){
   if(!requireAccess('leave'))return;
+  const canMarkOthers=(CU.role==='hr'||CU.role==='tl');
   let approverOpts='';
   if(CU.tlId){const tl=getUser(CU.tlId);if(tl)approverOpts+=`<option value="${tl.id}">${fullName(tl)} — ${tl.empId} (TL)</option>`;}
   DB.users.filter(u=>u.role==='hr').forEach(h=>approverOpts+=`<option value="${h.id}">${fullName(h)} — ${h.empId} (HR)</option>`);
   if(!approverOpts)approverOpts='<option value="">No approvers available</option>';
+  // Build employee list for HR/TL to mark on behalf
+  let empOpts='<option value="">-- Self --</option>';
+  if(CU.role==='hr'){
+    DB.users.filter(u=>u.role==='agent'||u.role==='tl').forEach(u=>empOpts+=`<option value="${u.id}">${fullName(u)} (${u.empId})</option>`);
+  } else if(CU.role==='tl'){
+    DB.users.filter(u=>u.tlId===CU.id).forEach(u=>empOpts+=`<option value="${u.id}">${fullName(u)} (${u.empId})</option>`);
+  }
   const myL=DB.leaves.filter(l=>l.userId===CU.id).reverse();
   const approved=myL.filter(l=>l.status==='approved'),rejected=myL.filter(l=>l.status==='rejected'),pending=myL.filter(l=>l.status==='pending');
   const bal=leaveBalanceFor(CU.id);
   document.getElementById('mainContent').innerHTML=`
   ${leaveBalanceBanner(CU.id)}
-  <div class="accrual-note"><strong>📅 Leave Policy:</strong> 2 leaves/month (24/year max). Resets Jan 1st. Only <strong>approved</strong> leaves deduct balance.</div>
+  <div class="accrual-note">
+    <strong>📅 Leave Policy:</strong> 2 leaves/month (24/year). Only <strong>approved</strong> leaves deduct balance.<br>
+    <span style="color:var(--amber)">⚡ Short Leave:</span> 2 Short Leaves = 1 Half Day &nbsp;|&nbsp;
+    <span style="color:var(--brand)">½ Half Day:</span> 2 Half Days = 1 Full Day &nbsp;|&nbsp;
+    <span style="color:var(--red)">🗓 Weekend Sandwich:</span> Fri + Mon leave = 4 days counted (incl. Sat+Sun)
+  </div>
   <div class="leave-cols">
     <div><div class="card">
       <div class="card-title">📝 Apply for Leave</div>
       ${bal===0?'<div class="warning-box">⚠ Balance exhausted — will be treated as unpaid.</div>':''}
-      <div class="field"><label>Leave Type</label><select id="lvType"><option>Sick Leave</option><option>Casual Leave</option><option>Emergency Leave</option><option>Unpaid Leave</option><option>Work From Home</option></select></div>
-      <div class="field"><label>From Date</label><input type="date" id="lvFrom" min="${today()}" onchange="showLeaveDays()"></div>
-      <div class="field"><label>To Date</label><input type="date" id="lvTo" min="${today()}" onchange="showLeaveDays()"></div>
+      ${canMarkOthers?`<div class="field"><label>Mark Leave For</label><select id="lvForUser" onchange="lvForUserChanged()">${empOpts}</select></div>`:''}
+      <div class="field">
+        <label>Duration Type</label>
+        <select id="lvSubType" onchange="lvSubTypeChanged()">
+          <option value="full">Full Day Leave</option>
+          <option value="half_day">Half Day Leave (0.5 day)</option>
+          <option value="short_leave">Short Leave (0.5 day, 2 needed for ½ day deduction)</option>
+        </select>
+      </div>
+      <div class="field"><label>Leave Category</label><select id="lvType"><option>Sick Leave</option><option>Casual Leave</option><option>Emergency Leave</option><option>Unpaid Leave</option><option>Work From Home</option></select></div>
+      <div id="lvDateFields">
+        <div class="field"><label>From Date</label><input type="date" id="lvFrom" onchange="showLeaveDays()"></div>
+        <div id="lvToDateField" class="field"><label>To Date</label><input type="date" id="lvTo" onchange="showLeaveDays()"></div>
+      </div>
       <div id="leaveDaysPreview" style="margin-bottom:12px"></div>
-      <div class="field"><label>Send To</label><select id="lvApprover">${approverOpts}</select></div>
+      <div id="lvApproverField" class="field"><label>Send To</label><select id="lvApprover">${approverOpts}</select></div>
       <div class="field"><label>Reason</label><textarea id="lvReason" placeholder="Describe your reason…"></textarea></div>
       <button class="btn-primary" onclick="submitLeave()">Submit Request</button>
     </div></div>
@@ -1855,39 +2494,143 @@ function pgLeave(){
       <div class="card" style="border-left:3px solid var(--red)"><div class="card-title">❌ Not Approved (${rejected.length})</div>${leaveListHtml(rejected)}</div>
     </div>
   </div>`;
+  lvSubTypeChanged();
+}
+
+function lvForUserChanged(){
+  const uid=document.getElementById('lvForUser')?.value||'';
+  const target=uid?getUser(uid):CU;
+  if(!target)return;
+  // Update approver dropdown based on target user
+  const appSel=document.getElementById('lvApprover');
+  if(!appSel)return;
+  let opts='';
+  if(target.tlId){const tl=getUser(target.tlId);if(tl)opts+=`<option value="${tl.id}">${fullName(tl)} (${tl.empId}) — TL</option>`;}
+  DB.users.filter(u=>u.role==='hr').forEach(h=>opts+=`<option value="${h.id}">${fullName(h)} (${h.empId}) — HR</option>`);
+  // HR/TL can self-approve short/half-day for agent
+  if(CU.role==='hr'||CU.role==='tl') opts=`<option value="${CU.id}">${fullName(CU)} (${CU.empId}) — ${CU.role.toUpperCase()} (You)</option>`+opts;
+  appSel.innerHTML=opts||'<option value="">No approvers</option>';
+}
+
+function lvSubTypeChanged(){
+  const sub=document.getElementById('lvSubType')?.value||'full';
+  const toField=document.getElementById('lvToDateField');
+  if(sub==='short_leave'||sub==='half_day'){
+    if(toField)toField.classList.add('hide');
+  } else {
+    if(toField)toField.classList.remove('hide');
+  }
+  showLeaveDays();
 }
 function showLeaveDays(){
-  const from=document.getElementById('lvFrom').value,to=document.getElementById('lvTo').value;
-  const prev=document.getElementById('leaveDaysPreview');
-  if(!from||!to||to<from){prev.innerHTML='';return;}
-  const days=countLeaveDays(from,to),bal=leaveBalanceFor(CU.id);
-  prev.innerHTML=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r2);padding:8px 13px;font-size:.8rem">📅 <strong style="font-family:'DM Mono',monospace">${days}</strong> working day${days===1?'':'s'} · After approval: <strong style="color:${days>bal?'var(--red)':'var(--green)'};font-family:'DM Mono',monospace">${Math.max(0,bal-days)}</strong> remaining${days>bal?'<br><span style="color:var(--amber)">⚠ Exceeds balance</span>':''}</div>`;
+  const prev=document.getElementById('leaveDaysPreview');if(!prev)return;
+  const sub=document.getElementById('lvSubType')?.value||'full';
+  const from=document.getElementById('lvFrom')?.value||'';
+  const to=(sub==='full'?(document.getElementById('lvTo')?.value||''):from);
+  if(!from){prev.innerHTML='';return;}
+  // Determine which user's balance to show
+  const uid=document.getElementById('lvForUser')?.value||CU.id;
+  const target=uid?getUser(uid):CU;
+  const bal=leaveBalanceFor(target?.id||CU.id);
+  const slCount=shortLeaveCountThisYear(target?.id||CU.id);
+  let days,note='',warn='';
+  if(sub==='short_leave'){
+    days=0.5;
+    const pending=slCount%2; // existing odd short leaves
+    if(pending===0){
+      // This will be the 1st of a pair — no deduction yet
+      note=`<span style="color:var(--amber)">⚠ 1st short leave — no balance deducted yet. Needs 1 more short leave to deduct ½ day.</span>`;
+    } else {
+      // This is the 2nd — will deduct 0.5 day
+      note=`<span style="color:var(--green)">✓ 2nd short leave — ½ day (0.5) will be deducted from balance.</span>`;
+    }
+  } else if(sub==='half_day'){
+    days=0.5;
+    note=`<span style="color:var(--brand)">½ day leave — 0.5 day deducted on approval.</span>`;
+  } else {
+    if(!to||to<from){prev.innerHTML='';return;}
+    days=countLeaveDaysWithSandwich(from,to);
+    const plain=countLeaveDays(from,to);
+    if(days>plain){
+      warn=`<br><span style="color:var(--red)">🗓 Weekend sandwich rule applied — ${days-plain} weekend day${days-plain>1?'s':''} added (Fri→Mon leave)</span>`;
+    }
+  }
+  const afterBal=Math.max(0,bal-days);
+  prev.innerHTML=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r2);padding:9px 13px;font-size:.8rem;line-height:1.7">
+    📅 <strong style="font-family:'DM Mono',monospace">${fmtDays(days)}</strong> day${days===1?'':'s'} requested
+    · After approval: <strong style="color:${days>bal?'var(--red)':'var(--green)'};font-family:'DM Mono',monospace">${fmtDays(afterBal)}</strong> remaining
+    ${days>bal?'<br><span style="color:var(--amber)">⚠ Exceeds balance — may be unpaid</span>':''}
+    ${warn}
+    ${note?'<br>'+note:''}
+  </div>`;
+}
+function subTypeLabel(t){
+  if(t==='short_leave')return'<span style="background:var(--amber-bg);color:var(--amber);border:1px solid rgba(217,119,6,.2);font-size:.68rem;font-weight:700;padding:1px 7px;border-radius:20px">⚡ Short Leave</span>';
+  if(t==='half_day')return'<span style="background:var(--brand-bg);color:var(--brand);border:1px solid rgba(59,79,216,.2);font-size:.68rem;font-weight:700;padding:1px 7px;border-radius:20px">½ Half Day</span>';
+  return'<span style="background:var(--surface2);color:var(--text2);border:1px solid var(--border);font-size:.68rem;font-weight:600;padding:1px 7px;border-radius:20px">Full Day</span>';
 }
 function leaveListHtml(leaves){
   if(!leaves.length)return'<div class="empty-state">None</div>';
   return leaves.map(l=>{
     const approver=getUser(l.approverId),cls={approved:'b-approved',rejected:'b-rejected',pending:'b-pending'}[l.status]||'b-pending';
-    const days=l.leaveDays||countLeaveDays(l.fromDate,l.toDate);
-    const note=l.status==='approved'?`<span style="font-size:.71rem;color:var(--green)">✓ ${days}d deducted</span>`:l.status==='rejected'?`<span style="font-size:.71rem;color:var(--text3)">✗ No impact</span>`:`<span style="font-size:.71rem;color:var(--text3)">⏳ Awaiting</span>`;
+    const sub=l.subType||'full';
+    const dv=leaveDayValue(l);
+    const dDisplay=fmtDays(dv);
+    const note=l.status==='approved'?`<span style="font-size:.71rem;color:var(--green)">✓ ${dDisplay}d deducted</span>`:l.status==='rejected'?`<span style="font-size:.71rem;color:var(--text3)">✗ No impact</span>`:`<span style="font-size:.71rem;color:var(--text3)">⏳ Awaiting</span>`;
+    const markedFor=l.markedForId&&l.markedForId!==l.userId?`<div style="font-size:.72rem;color:var(--brand)">Marked by: ${getUser(l.markedForId)?fullName(getUser(l.markedForId))+'('+getUser(l.markedForId).empId+')':'—'}</div>`:'';
+    const canEdit=(CU.role==='hr'||CU.role==='tl')&&l.status!=='rejected';
     return`<div style="padding:9px 0;border-bottom:1px solid var(--border)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px"><span style="font-weight:600;font-size:.86rem">${l.type}</span><span class="badge ${cls}">${l.status==='rejected'?'NOT APPROVED':l.status.toUpperCase()}</span></div>
-      <div style="font-size:.74rem;color:var(--text2);font-family:'DM Mono',monospace">${fmtDate(l.fromDate)} → ${fmtDate(l.toDate)} <span style="background:var(--surface2);border:1px solid var(--border);padding:1px 6px;border-radius:8px">${days}d</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;gap:6px;flex-wrap:wrap">
+        <span style="font-weight:600;font-size:.86rem">${l.type}</span>
+        <div style="display:flex;gap:5px;align-items:center">${subTypeLabel(sub)}<span class="badge ${cls}">${l.status==='rejected'?'NOT APPROVED':l.status.toUpperCase()}</span></div>
+      </div>
+      <div style="font-size:.74rem;color:var(--text2);font-family:'DM Mono',monospace">${fmtDate(l.fromDate)}${sub==='full'&&l.toDate!==l.fromDate?' → '+fmtDate(l.toDate):''} <span style="background:var(--surface2);border:1px solid var(--border);padding:1px 6px;border-radius:8px">${dDisplay}d</span></div>
       <div style="margin:2px 0">${note}</div>
+      ${markedFor}
       <div style="font-size:.74rem;color:var(--text2)">To: ${approver?fullName(approver)+' ('+approver.empId+')':'—'}</div>
       <div style="font-size:.8rem;margin-top:2px;color:var(--text2)">${l.reason}</div>
+      ${canEdit?`<div style="margin-top:6px"><button class="act-btn ab-view" onclick="editLeaveModal('${l.id}')">✏️ Edit</button></div>`:''}
     </div>`;
   }).join('');
 }
 function submitLeave(){
-  const type=document.getElementById('lvType').value,from=document.getElementById('lvFrom').value,to=document.getElementById('lvTo').value;
-  const appId=document.getElementById('lvApprover').value,reason=document.getElementById('lvReason').value.trim();
-  if(!from||!to||!reason){showToast('Please fill all fields','t-err');return;}
-  if(to<from){showToast('End date must be after start date','t-err');return;}
+  const sub=document.getElementById('lvSubType')?.value||'full';
+  const type=document.getElementById('lvType').value;
+  const from=document.getElementById('lvFrom')?.value||'';
+  const to=sub==='full'?(document.getElementById('lvTo')?.value||''):from;
+  const appId=document.getElementById('lvApprover')?.value||'';
+  const reason=document.getElementById('lvReason')?.value.trim()||'';
+  const forUserId=document.getElementById('lvForUser')?.value||'';
+  const targetId=forUserId||CU.id;
+  if(!from||!reason){showToast('Please fill all required fields','t-err');return;}
+  if(sub==='full'&&to<from){showToast('End date must be on or after start date','t-err');return;}
   if(!appId){showToast('Please select an approver','t-err');return;}
-  const days=countLeaveDays(from,to),bal=leaveBalanceFor(CU.id);
-  if(days>bal&&!confirm(`Requesting ${days}d but only ${bal} balance. May be unpaid. Submit anyway?`))return;
-  DB.leaves.push({id:uid(),userId:CU.id,approverId:appId,type,fromDate:from,toDate:to,reason,leaveDays:days,status:'pending',createdAt:ts(),decidedAt:''});
-  saveDB();showToast(`Leave submitted — ${days} day${days===1?'':'s'}`,'t-ok');pgLeave();
+  const dv = sub==='short_leave'?0.5 : sub==='half_day'?0.5 : countLeaveDaysWithSandwich(from,to);
+  const bal=leaveBalanceFor(targetId);
+  // For HR/TL marking short/half-day for agents: auto-approve
+  const autoApprove=(CU.role==='hr'||CU.role==='tl')&&forUserId&&(sub==='short_leave'||sub==='half_day');
+  // Short leave deduction rule: only deduct if this makes an even pair
+  let deductNow=true;
+  if(sub==='short_leave'){
+    const existing=shortLeaveCountThisYear(targetId);
+    if(existing%2===0) deductNow=false; // 1st of pair — no deduction yet
+  }
+  if(deductNow&&dv>bal&&!confirm(`Requesting ${fmtDays(dv)}d but only ${fmtDays(bal)} balance. May be unpaid. Submit anyway?`))return;
+  const rec={
+    id:uid(),userId:targetId,approverId:appId,
+    type,subType:sub,
+    fromDate:from,toDate:to,
+    reason,leaveDays:dv,
+    status:autoApprove?'approved':'pending',
+    markedById:forUserId?CU.id:null,
+    createdAt:ts(),decidedAt:autoApprove?ts():''
+  };
+  DB.leaves.push(rec);
+  saveDB();
+  const target=getUser(targetId);
+  const who=forUserId?` for ${fullName(target)}`:'';
+  showToast(`${autoApprove?'Leave approved':'Leave submitted'}${who} — ${fmtDays(dv)}d`,'t-ok');
+  pgLeave();
 }
 
 /* ══════════════════════════════════
@@ -1900,14 +2643,16 @@ function pgLeaveApproval(){
   else{pending=DB.leaves.filter(l=>l.approverId===CU.id&&l.status==='pending');decided=DB.leaves.filter(l=>l.approverId===CU.id&&l.status!=='pending').reverse().slice(0,20);}
   const leaveRow=(l,showAct)=>{
     const emp=getUser(l.userId),cls={approved:'b-approved',rejected:'b-rejected',pending:'b-pending'}[l.status]||'b-pending';
-    const days=l.leaveDays||countLeaveDays(l.fromDate,l.toDate);
+    const sub=l.subType||'full';
+    const dv=leaveDayValue(l);
     return`<tr><td><div class="emp-chip"><div class="avatar ${avatarClass(emp?.role)}" style="width:22px;height:22px;font-size:.58rem">${emp?ini(emp):'?'}</div>${emp?fullName(emp):'?'}</div></td>
-      <td><span class="eid-tag">${emp?emp.empId:'—'}</span></td><td>${l.type}</td>
-      <td class="mono" style="font-size:.76rem">${fmtDate(l.fromDate)} → ${fmtDate(l.toDate)}</td>
-      <td style="max-width:140px;font-size:.78rem;color:var(--text2)">${l.reason}</td>
+      <td><span class="eid-tag">${emp?emp.empId:'—'}</span></td>
+      <td>${l.type}<br>${subTypeLabel(sub)}</td>
+      <td class="mono" style="font-size:.76rem">${fmtDate(l.fromDate)}${sub==='full'&&l.toDate!==l.fromDate?' → '+fmtDate(l.toDate):''}</td>
+      <td style="max-width:120px;font-size:.78rem;color:var(--text2)">${l.reason}</td>
       <td><span class="badge ${cls}">${l.status==='rejected'?'NOT APPROVED':l.status.toUpperCase()}</span></td>
-      <td class="mono">${days}d</td>
-      <td>${showAct?`<button class="act-btn ab-ok" onclick="actLeave('${l.id}','approved')">Approve</button><button class="act-btn ab-no" onclick="actLeave('${l.id}','rejected')">Reject</button>`:'—'}</td>
+      <td class="mono">${fmtDays(dv)}d</td>
+      <td>${showAct?`<button class="act-btn ab-ok" onclick="actLeave('${l.id}','approved')">Approve</button><button class="act-btn ab-no" onclick="actLeave('${l.id}','rejected')">Reject</button><button class="act-btn ab-view" onclick="editLeaveModal('${l.id}')">✏️</button>`:`<button class="act-btn ab-view" onclick="editLeaveModal('${l.id}')">✏️ Edit</button>`}</td>
     </tr>`;
   };
   document.getElementById('mainContent').innerHTML=`
@@ -1928,18 +2673,96 @@ function filterDecided(filter,el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
   const items=filter==='all'?window._decided:window._decided.filter(l=>l.status===filter);
   const leaveRow=(l)=>{
-    const emp=getUser(l.userId),cls={approved:'b-approved',rejected:'b-rejected',pending:'b-pending'}[l.status]||'b-pending';const days=l.leaveDays||countLeaveDays(l.fromDate,l.toDate);
+    const emp=getUser(l.userId),cls={approved:'b-approved',rejected:'b-rejected',pending:'b-pending'}[l.status]||'b-pending';
+    const sub=l.subType||'full';const dv=leaveDayValue(l);
     return`<tr><td><div class="emp-chip"><div class="avatar ${avatarClass(emp?.role)}" style="width:22px;height:22px;font-size:.58rem">${emp?ini(emp):'?'}</div>${emp?fullName(emp):'?'}</div></td>
-      <td><span class="eid-tag">${emp?emp.empId:'—'}</span></td><td>${l.type}</td><td class="mono" style="font-size:.76rem">${fmtDate(l.fromDate)} → ${fmtDate(l.toDate)}</td>
-      <td style="max-width:140px;font-size:.78rem;color:var(--text2)">${l.reason}</td><td><span class="badge ${cls}">${l.status==='rejected'?'NOT APPROVED':l.status.toUpperCase()}</span></td><td class="mono">${days}d</td><td>—</td></tr>`;
+      <td><span class="eid-tag">${emp?emp.empId:'—'}</span></td><td>${l.type}<br>${subTypeLabel(sub)}</td><td class="mono" style="font-size:.76rem">${fmtDate(l.fromDate)}${sub==='full'&&l.toDate!==l.fromDate?' → '+fmtDate(l.toDate):''}</td>
+      <td style="max-width:120px;font-size:.78rem;color:var(--text2)">${l.reason}</td><td><span class="badge ${cls}">${l.status==='rejected'?'NOT APPROVED':l.status.toUpperCase()}</span></td><td class="mono">${fmtDays(dv)}d</td><td><button class="act-btn ab-view" onclick="editLeaveModal('${l.id}')">✏️ Edit</button></td></tr>`;
   };
   document.getElementById('decidedTbl').innerHTML=`<tr><th>Employee</th><th>Emp ID</th><th>Type</th><th>Dates</th><th>Reason</th><th>Status</th><th>Days</th><th></th></tr>${items.map(leaveRow).join('')||'<tr><td colspan="8" class="empty-state">No records</td></tr>'}`;
 }
 function actLeave(id,status){
   const l=DB.leaves.find(x=>x.id===id);if(!l)return;
   l.status=status;l.decidedAt=ts();saveDB();
-  const days=l.leaveDays||countLeaveDays(l.fromDate,l.toDate);
-  showToast(status==='approved'?`Approved — ${days}d deducted. Balance: ${leaveBalanceFor(l.userId)}`:'Leave rejected — no balance impact',status==='approved'?'t-ok':'t-info');
+  const dv=leaveDayValue(l);
+  showToast(status==='approved'?`Approved — ${fmtDays(dv)}d. Balance: ${fmtDays(leaveBalanceFor(l.userId))}`:'Leave rejected — no balance impact',status==='approved'?'t-ok':'t-info');
+  pgLeaveApproval();
+}
+
+/* ── Edit Leave Modal (HR/TL) ── */
+function editLeaveModal(id){
+  const l=DB.leaves.find(x=>x.id===id);if(!l)return;
+  if(CU.role!=='hr'&&CU.role!=='tl'){showToast('Only HR or TL can edit leaves','t-err');return;}
+  const emp=getUser(l.userId);
+  const modal=document.createElement('div');
+  modal.id='editLeaveModalEl';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(26,31,58,.55);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)';
+  modal.innerHTML=`
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:440px;box-shadow:var(--shadow2);position:relative;max-height:90vh;overflow-y:auto">
+      <div style="position:absolute;top:14px;right:14px;cursor:pointer;font-size:.9rem;color:var(--text2);background:var(--surface2);border:1px solid var(--border);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center" onclick="document.getElementById('editLeaveModalEl').remove()">✕</div>
+      <div style="font-size:1.1rem;font-weight:800;margin-bottom:3px">✏️ Edit Leave</div>
+      <div style="font-size:.82rem;color:var(--text2);margin-bottom:18px">Employee: <strong>${emp?fullName(emp)+' ('+emp.empId+')':'?'}</strong></div>
+      <div class="field"><label>Duration Type</label>
+        <select id="elSubType" onchange="elSubChanged()">
+          <option value="full" ${(l.subType||'full')==='full'?'selected':''}>Full Day Leave</option>
+          <option value="half_day" ${l.subType==='half_day'?'selected':''}>Half Day (0.5)</option>
+          <option value="short_leave" ${l.subType==='short_leave'?'selected':''}>Short Leave (0.5)</option>
+        </select>
+      </div>
+      <div class="field"><label>Leave Category</label>
+        <select id="elType">
+          <option ${l.type==='Sick Leave'?'selected':''}>Sick Leave</option>
+          <option ${l.type==='Casual Leave'?'selected':''}>Casual Leave</option>
+          <option ${l.type==='Emergency Leave'?'selected':''}>Emergency Leave</option>
+          <option ${l.type==='Unpaid Leave'?'selected':''}>Unpaid Leave</option>
+          <option ${l.type==='Work From Home'?'selected':''}>Work From Home</option>
+        </select>
+      </div>
+      <div class="field"><label>From Date</label><input type="date" id="elFrom" value="${l.fromDate}"></div>
+      <div id="elToField" class="field"><label>To Date</label><input type="date" id="elTo" value="${l.toDate}"></div>
+      <div class="field"><label>Status</label>
+        <select id="elStatus">
+          <option value="pending" ${l.status==='pending'?'selected':''}>Pending</option>
+          <option value="approved" ${l.status==='approved'?'selected':''}>Approved</option>
+          <option value="rejected" ${l.status==='rejected'?'selected':''}>Rejected</option>
+        </select>
+      </div>
+      <div class="field"><label>Reason</label><textarea id="elReason">${l.reason}</textarea></div>
+      <div style="display:flex;gap:10px">
+        <button class="btn-primary" style="flex:1;padding:11px" onclick="saveEditLeave('${id}')">Save Changes</button>
+        <button class="btn-danger" onclick="if(confirm('Delete this leave record?')){deleteLeave('${id}')}">Delete</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  elSubChanged();
+}
+function elSubChanged(){
+  const sub=document.getElementById('elSubType')?.value||'full';
+  const tf=document.getElementById('elToField');
+  if(tf)tf.style.display=(sub==='full')?'':'none';
+}
+function saveEditLeave(id){
+  const l=DB.leaves.find(x=>x.id===id);if(!l)return;
+  const sub=document.getElementById('elSubType').value;
+  const from=document.getElementById('elFrom').value;
+  const to=sub==='full'?document.getElementById('elTo').value:from;
+  const type=document.getElementById('elType').value;
+  const status=document.getElementById('elStatus').value;
+  const reason=document.getElementById('elReason').value.trim();
+  if(!from||!reason){showToast('Fill all fields','t-err');return;}
+  l.subType=sub; l.fromDate=from; l.toDate=to;
+  l.type=type; l.status=status; l.reason=reason;
+  l.leaveDays=sub==='short_leave'||sub==='half_day'?0.5:countLeaveDaysWithSandwich(from,to);
+  if(status==='approved'&&!l.decidedAt)l.decidedAt=ts();
+  saveDB();
+  document.getElementById('editLeaveModalEl')?.remove();
+  showToast('Leave record updated','t-ok');
+  pgLeaveApproval();
+}
+function deleteLeave(id){
+  DB.leaves=DB.leaves.filter(x=>x.id!==id);saveDB();
+  document.getElementById('editLeaveModalEl')?.remove();
+  showToast('Leave record deleted','t-ok');
   pgLeaveApproval();
 }
 
@@ -2072,10 +2895,19 @@ function filterUserAdminTable(){
 }
 function adminResetPass(id){
   const u=getUser(id);if(!u)return;
-  const np=prompt(`Reset password for ${fullName(u)} (${u.empId}).\n\nEnter new password (min 6 chars):`);
+  const np=prompt(`Reset password for ${fullName(u)} (${u.empId}).\n\nEnter new strong password:\n• Min 9 characters\n• At least 1 number\n• At least 1 special character (!@#$%^&*)\n• At least 1 uppercase + 1 lowercase`);
   if(!np)return;
-  if(np.length<6){showToast('Password must be at least 6 characters','t-err');return;}
-  u.pass=np;saveDB();showToast(`Password reset for ${u.empId}`,'t-ok');
+  const err=validatePassword(np);
+  if(err){showToast(err,'t-err');return;}
+  if(isPasswordReused(u,np)){showToast(getPasswordReuseMessage(u,np),'t-err');return;}
+  const hist=[...(u.passHistory||[])];
+  hist.push(u.pass);
+  if(hist.length>PASS_HISTORY_LEN)hist.shift();
+  u.passHistory=hist;
+  u.pass=np;
+  u.passChangedAt=ts();
+  saveDB();
+  showToast(`Password reset for ${u.empId} ✅`,'t-ok');
 }
 function adminDeleteUser(id){
   const u=getUser(id);if(!u)return;
@@ -2257,6 +3089,712 @@ function buildCal(month,year){
   </div>`;
 }
 
+
+/* ══════════════════════════════════
+   SALARY SLIPS
+   Rules:
+   • HR creates/uploads salary slips (any time)
+   • Slips become VISIBLE to TL + Agent only from the 10th of each month
+   • Before the 10th → locked with countdown
+   • Each slip is per-employee, per-month
+   • Agent can "email" their slip (mailto link with slip body)
+   • TL sees slips of their team members only
+   • HR sees everyone's slips and can create/edit/delete
+══════════════════════════════════ */
+
+function isSlipVisible(){
+  // Slips visible from the 10th of current month onwards
+  return new Date().getDate()>=10;
+}
+
+function daysUntilTenth(){
+  const now=new Date();
+  const tenth=new Date(now.getFullYear(),now.getMonth(),10);
+  if(now>=tenth)return 0;
+  return Math.ceil((tenth-now)/86400000);
+}
+
+function slipMonthKey(year,month){
+  // month = 0-indexed
+  return `${year}-${String(month+1).padStart(2,'0')}`;
+}
+
+function slipMonthLabel(key){
+  const [y,m]=key.split('-');
+  const d=new Date(parseInt(y),parseInt(m)-1,1);
+  return d.toLocaleString('default',{month:'long',year:'numeric'});
+}
+
+function getVisibleSlipsForUser(userId){
+  const u=getUser(userId);
+  if(!u)return[];
+  let slips=DB.salarySlips.filter(s=>s.userId===userId);
+  // Non-HR sees current month slip only after 10th
+  if(u.role!=='hr'){
+    const now=new Date();
+    const curKey=slipMonthKey(now.getFullYear(),now.getMonth());
+    slips=slips.filter(s=>{
+      if(s.monthKey===curKey&&!isSlipVisible())return false;
+      return true;
+    });
+  }
+  return slips.sort((a,b)=>b.monthKey.localeCompare(a.monthKey));
+}
+
+function pgSalarySlips(){
+  if(!requireAccess('salarySlips'))return;
+  const isHR=CU.role==='hr';
+  const isTL=CU.role==='tl';
+  const isAgent=CU.role==='agent';
+  const visible=isSlipVisible();
+  const daysLeft=daysUntilTenth();
+
+  if(isHR){
+    // HR: create + manage all slips
+    const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const now=new Date();
+    const allEmps=DB.users.filter(u=>u.role==='tl'||u.role==='agent');
+    const empOpts=allEmps.map(u=>`<option value="${u.id}">${fullName(u)} — ${u.empId} (${u.role.toUpperCase()})</option>`).join('');
+    const yearOpts=[now.getFullYear()-1,now.getFullYear()].map(y=>`<option value="${y}" ${y===now.getFullYear()?'selected':''}>${y}</option>`).join('');
+    const monthOpts=MONTHS.map((m,i)=>`<option value="${i}" ${i===now.getMonth()?'selected':''}>${m}</option>`).join('');
+
+    // Build all existing slips grouped by employee
+    const rows=DB.salarySlips.slice().sort((a,b)=>b.monthKey.localeCompare(a.monthKey)).map(s=>{
+      const emp=getUser(s.userId);
+      return`<tr>
+        <td><div class="emp-chip"><div class="avatar ${avatarClass(emp?.role)}" style="width:22px;height:22px;font-size:.58rem">${emp?ini(emp):'?'}</div>${emp?fullName(emp):'?'}</div></td>
+        <td><span class="eid-tag">${emp?.empId||'—'}</span></td>
+        <td>${slipMonthLabel(s.monthKey)}</td>
+        <td class="mono" style="color:var(--green);font-weight:700">₹${Number(s.netSalary).toLocaleString('en-IN')}</td>
+        <td><span class="${s.seen?'slip-status-seen':'slip-status-new'}">${s.seen?'Viewed':'New'}</span></td>
+        <td>
+          <button class="act-btn ab-view" onclick="previewSlip('${s.id}')">👁 View</button>
+          <button class="act-btn ab-ok" onclick="editSlipModal('${s.id}')">✏️ Edit</button>
+          <button class="act-btn ab-no" onclick="deleteSlip('${s.id}')">🗑</button>
+        </td>
+      </tr>`;
+    });
+
+    document.getElementById('mainContent').innerHTML=`
+    <div class="page-hdr"><h2>Salary Slips</h2><p>Create and manage salary slips — visible to employees from the <strong>10th of each month</strong></p></div>
+    <div class="info-box" style="margin-bottom:14px">💡 Slips are released to employees on the <strong>10th of each month</strong>. You can create slips any time.</div>
+
+    <div class="card" style="border-left:3px solid var(--brand)">
+      <div class="card-title">➕ Create Salary Slip</div>
+      <div class="field-row">
+        <div class="field"><label>Employee</label><select id="ssEmp">${empOpts}</select></div>
+        <div class="field"><label>Month</label><select id="ssMonth">${monthOpts}</select></div>
+      </div>
+      <div class="field"><label>Year</label><select id="ssYear">${yearOpts}</select></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="field"><label>Basic Salary (₹)</label><input type="number" id="ssBasic" placeholder="e.g. 25000" min="0"></div>
+        <div class="field"><label>HRA (₹)</label><input type="number" id="ssHRA" placeholder="e.g. 8000" min="0" value="0"></div>
+        <div class="field"><label>Special Allowance (₹)</label><input type="number" id="ssSA" placeholder="e.g. 5000" min="0" value="0"></div>
+        <div class="field"><label>Other Earnings (₹)</label><input type="number" id="ssOther" placeholder="e.g. 0" min="0" value="0"></div>
+        <div class="field"><label>PF Deduction (₹)</label><input type="number" id="ssPF" placeholder="e.g. 1800" min="0" value="0"></div>
+        <div class="field"><label>TDS / Tax (₹)</label><input type="number" id="ssTDS" placeholder="e.g. 0" min="0" value="0"></div>
+        <div class="field"><label>Other Deductions (₹)</label><input type="number" id="ssDeduct" placeholder="e.g. 0" min="0" value="0"></div>
+        <div class="field"><label>Days Present</label><input type="number" id="ssDaysPresent" placeholder="e.g. 26" min="0" max="31" value="26"></div>
+      </div>
+      <div class="field"><label>Remarks / Notes</label><input type="text" id="ssRemarks" placeholder="e.g. Performance bonus included"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+        <button class="btn-primary" style="flex:1;max-width:240px" onclick="createSlip()">💰 Create Salary Slip</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="justify-content:space-between">
+        <span>📋 All Salary Slips (${DB.salarySlips.length})</span>
+      </div>
+      ${DB.salarySlips.length===0?'<div class="empty-state">No salary slips created yet</div>':`
+      <div class="tbl-wrap"><table>
+        <tr><th>Employee</th><th>Emp ID</th><th>Month</th><th>Net Salary</th><th>Status</th><th>Actions</th></tr>
+        ${rows.join('')}
+      </table></div>`}
+    </div>`;
+  } else {
+    // TL / Agent — view own or team slips
+    let targetUsers=[];
+    if(isTL){
+      targetUsers=[CU,...DB.users.filter(u=>u.tlId===CU.id)];
+    } else {
+      targetUsers=[CU];
+    }
+
+    const lockBanner=!visible?`<div class="slip-locked">🔒 Salary slips for this month are released on the <strong>10th</strong>. Available in <strong>${daysLeft} day${daysLeft===1?'':'s'}</strong>.</div>`
+      :`<div class="slip-available">✅ Salary slips for this month are now available.</div>`;
+
+    let html=lockBanner;
+
+    targetUsers.forEach(u=>{
+      const slips=getVisibleSlipsForUser(u.id);
+      if(u.id!==CU.id){
+        html+=`<div style="font-size:.82rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 8px">${fullName(u)} — ${u.empId}</div>`;
+      }
+      if(!slips.length){
+        html+=`<div class="empty-state" style="text-align:left;padding:10px 0">No salary slips available${!visible?' until the 10th':''}</div>`;
+      } else {
+        slips.forEach(s=>{
+          html+=buildSlipCard(s,u);
+        });
+      }
+    });
+
+    document.getElementById('mainContent').innerHTML=`
+    <div class="page-hdr"><h2>Salary Slips</h2><p>${isTL?`Your salary slips and your team's slips`:'Your salary slips — released every 10th of month'}</p></div>
+    ${html}`;
+  }
+}
+
+function buildSlipCard(s,u){
+  const isOwn=u.id===CU.id;
+  const canEmail=isOwn&&u.email;
+  const earningsTotal=(+s.basic||0)+(+s.hra||0)+(+s.sa||0)+(+s.otherEarnings||0);
+  const deductTotal=(+s.pf||0)+(+s.tds||0)+(+s.otherDeductions||0);
+  const net=+s.netSalary||0;
+  return`<div class="slip-card">
+    <div class="slip-header">
+      <div>
+        <div class="slip-month">${slipMonthLabel(s.monthKey)}</div>
+        <div class="slip-emp">${fullName(u)} · ${u.empId}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="slip-amount">₹${Number(net).toLocaleString('en-IN')}</div>
+        <span class="${s.seen?'slip-status-seen':'slip-status-new'}">${s.seen?'✓ Viewed':'● New'}</span>
+      </div>
+    </div>
+    <div class="slip-rows">
+      <div class="slip-row"><span class="slip-row-label">Basic Salary</span><span class="slip-row-val pos">₹${Number(s.basic||0).toLocaleString('en-IN')}</span></div>
+      <div class="slip-row"><span class="slip-row-label">HRA</span><span class="slip-row-val pos">₹${Number(s.hra||0).toLocaleString('en-IN')}</span></div>
+      <div class="slip-row"><span class="slip-row-label">Special Allowance</span><span class="slip-row-val pos">₹${Number(s.sa||0).toLocaleString('en-IN')}</span></div>
+      <div class="slip-row"><span class="slip-row-label">Other Earnings</span><span class="slip-row-val pos">₹${Number(s.otherEarnings||0).toLocaleString('en-IN')}</span></div>
+      <div class="slip-row"><span class="slip-row-label">PF Deduction</span><span class="slip-row-val neg">-₹${Number(s.pf||0).toLocaleString('en-IN')}</span></div>
+      <div class="slip-row"><span class="slip-row-label">TDS / Tax</span><span class="slip-row-val neg">-₹${Number(s.tds||0).toLocaleString('en-IN')}</span></div>
+      <div class="slip-row"><span class="slip-row-label">Other Deductions</span><span class="slip-row-val neg">-₹${Number(s.otherDeductions||0).toLocaleString('en-IN')}</span></div>
+      <div class="slip-row"><span class="slip-row-label">Days Present</span><span class="slip-row-val">${s.daysPresent||'—'}</span></div>
+    </div>
+    ${s.remarks?`<div style="font-size:.77rem;color:var(--text2);background:var(--surface2);border-radius:6px;padding:6px 10px;margin-bottom:8px">📝 ${s.remarks}</div>`:''}
+    <div class="slip-actions">
+      <button class="act-btn ab-view" onclick="previewSlip('${s.id}')">👁 View Full Slip</button>
+      ${isOwn?`<button class="act-btn ab-ok" onclick="emailSlip('${s.id}')">📧 Email to Me</button>`:''}
+      <button class="act-btn" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border)" onclick="printSlip('${s.id}')">🖨 Print</button>
+    </div>
+  </div>`;
+}
+
+function createSlip(){
+  const userId=document.getElementById('ssEmp').value;
+  const month=parseInt(document.getElementById('ssMonth').value);
+  const year=parseInt(document.getElementById('ssYear').value);
+  const basic=parseFloat(document.getElementById('ssBasic').value)||0;
+  const hra=parseFloat(document.getElementById('ssHRA').value)||0;
+  const sa=parseFloat(document.getElementById('ssSA').value)||0;
+  const otherEarnings=parseFloat(document.getElementById('ssOther').value)||0;
+  const pf=parseFloat(document.getElementById('ssPF').value)||0;
+  const tds=parseFloat(document.getElementById('ssTDS').value)||0;
+  const otherDeductions=parseFloat(document.getElementById('ssDeduct').value)||0;
+  const daysPresent=parseInt(document.getElementById('ssDaysPresent').value)||0;
+  const remarks=document.getElementById('ssRemarks').value.trim();
+  if(!userId){showToast('Please select an employee','t-err');return;}
+  if(!basic){showToast('Please enter basic salary','t-err');return;}
+  const monthKey=slipMonthKey(year,month);
+  // Check for existing slip
+  const existing=DB.salarySlips.find(s=>s.userId===userId&&s.monthKey===monthKey);
+  if(existing&&!confirm(`A salary slip for ${slipMonthLabel(monthKey)} already exists for this employee. Replace it?`))return;
+  if(existing)DB.salarySlips=DB.salarySlips.filter(s=>s.id!==existing.id);
+  const earnings=basic+hra+sa+otherEarnings;
+  const deductions=pf+tds+otherDeductions;
+  const netSalary=earnings-deductions;
+  const slip={
+    id:uid(),userId,monthKey,
+    basic,hra,sa,otherEarnings,
+    pf,tds,otherDeductions,
+    daysPresent,remarks,
+    netSalary,earnings,deductions,
+    createdBy:CU.id,createdAt:ts(),seen:false
+  };
+  DB.salarySlips.push(slip);
+  saveDB();
+  showToast(`Salary slip created for ${slipMonthLabel(monthKey)}  ✅`,'t-ok');
+  pgSalarySlips();
+}
+
+function deleteSlip(id){
+  if(!confirm('Delete this salary slip?'))return;
+  DB.salarySlips=DB.salarySlips.filter(s=>s.id!==id);
+  saveDB();showToast('Salary slip deleted','t-ok');pgSalarySlips();
+}
+
+function editSlipModal(id){
+  const s=DB.salarySlips.find(x=>x.id===id);if(!s)return;
+  const emp=getUser(s.userId);
+  const modal=document.createElement('div');
+  modal.id='editSlipModalEl';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(26,31,58,.55);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px);overflow-y:auto';
+  modal.innerHTML=`
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:500px;box-shadow:var(--shadow2);position:relative">
+      <div style="position:absolute;top:14px;right:14px;cursor:pointer;color:var(--text2);background:var(--surface2);border:1px solid var(--border);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:.9rem" onclick="document.getElementById('editSlipModalEl').remove()">✕</div>
+      <div style="font-size:1.05rem;font-weight:800;margin-bottom:3px">✏️ Edit Salary Slip</div>
+      <div style="font-size:.81rem;color:var(--text2);margin-bottom:16px">${emp?fullName(emp)+' — '+emp.empId:'?'} · ${slipMonthLabel(s.monthKey)}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="field"><label>Basic Salary</label><input type="number" id="es_basic" value="${s.basic||0}" min="0"></div>
+        <div class="field"><label>HRA</label><input type="number" id="es_hra" value="${s.hra||0}" min="0"></div>
+        <div class="field"><label>Special Allowance</label><input type="number" id="es_sa" value="${s.sa||0}" min="0"></div>
+        <div class="field"><label>Other Earnings</label><input type="number" id="es_other" value="${s.otherEarnings||0}" min="0"></div>
+        <div class="field"><label>PF Deduction</label><input type="number" id="es_pf" value="${s.pf||0}" min="0"></div>
+        <div class="field"><label>TDS / Tax</label><input type="number" id="es_tds" value="${s.tds||0}" min="0"></div>
+        <div class="field"><label>Other Deductions</label><input type="number" id="es_deduct" value="${s.otherDeductions||0}" min="0"></div>
+        <div class="field"><label>Days Present</label><input type="number" id="es_days" value="${s.daysPresent||0}" min="0" max="31"></div>
+      </div>
+      <div class="field"><label>Remarks</label><input type="text" id="es_remarks" value="${s.remarks||''}"></div>
+      <button class="btn-primary" style="margin-top:8px" onclick="saveEditSlip('${id}')">Save Changes</button>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+function saveEditSlip(id){
+  const s=DB.salarySlips.find(x=>x.id===id);if(!s)return;
+  s.basic=parseFloat(document.getElementById('es_basic').value)||0;
+  s.hra=parseFloat(document.getElementById('es_hra').value)||0;
+  s.sa=parseFloat(document.getElementById('es_sa').value)||0;
+  s.otherEarnings=parseFloat(document.getElementById('es_other').value)||0;
+  s.pf=parseFloat(document.getElementById('es_pf').value)||0;
+  s.tds=parseFloat(document.getElementById('es_tds').value)||0;
+  s.otherDeductions=parseFloat(document.getElementById('es_deduct').value)||0;
+  s.daysPresent=parseInt(document.getElementById('es_days').value)||0;
+  s.remarks=document.getElementById('es_remarks').value.trim();
+  s.earnings=s.basic+s.hra+s.sa+s.otherEarnings;
+  s.deductions=s.pf+s.tds+s.otherDeductions;
+  s.netSalary=s.earnings-s.deductions;
+  s.seen=false; // reset seen on edit
+  saveDB();
+  document.getElementById('editSlipModalEl')?.remove();
+  showToast('Salary slip updated','t-ok');
+  pgSalarySlips();
+}
+
+function buildSlipHTML(s){
+  const emp=getUser(s.userId);
+  const createdBy=getUser(s.createdBy);
+  return`
+    <div class="slip-preview" id="slipPreviewContent_${s.id}">
+      <div class="slip-preview-header">
+        <div>
+          <div class="slip-preview-company">WorkPulse Solutions</div>
+          <div class="slip-preview-title">Salary Slip / Pay Statement</div>
+        </div>
+        <div class="slip-preview-period">
+          <div style="font-weight:700;color:#3b4fd8">${slipMonthLabel(s.monthKey)}</div>
+          <div style="font-size:.75rem;color:#666">Generated: ${fmtDate(s.createdAt?.slice(0,10)||today())}</div>
+        </div>
+      </div>
+      <div class="slip-preview-emp">
+        <div><div class="sp-label">Employee Name</div><div class="sp-val">${emp?fullName(emp):'—'}</div></div>
+        <div><div class="sp-label">Employee ID</div><div class="sp-val">${emp?.empId||'—'}</div></div>
+        <div><div class="sp-label">Role</div><div class="sp-val">${(emp?.role||'').toUpperCase()}</div></div>
+        <div><div class="sp-label">Workflow</div><div class="sp-val">${emp?.workflow||'—'}</div></div>
+        <div><div class="sp-label">Days Present</div><div class="sp-val">${s.daysPresent||'—'}</div></div>
+        <div><div class="sp-label">Pay Period</div><div class="sp-val">${slipMonthLabel(s.monthKey)}</div></div>
+      </div>
+      <table class="slip-preview-table">
+        <tr><th>Earnings</th><th>Amount (₹)</th><th>Deductions</th><th>Amount (₹)</th></tr>
+        <tr><td>Basic Salary</td><td>${Number(s.basic||0).toLocaleString('en-IN')}</td><td>Provident Fund</td><td>${Number(s.pf||0).toLocaleString('en-IN')}</td></tr>
+        <tr><td>HRA</td><td>${Number(s.hra||0).toLocaleString('en-IN')}</td><td>TDS / Tax</td><td>${Number(s.tds||0).toLocaleString('en-IN')}</td></tr>
+        <tr><td>Special Allowance</td><td>${Number(s.sa||0).toLocaleString('en-IN')}</td><td>Other Deductions</td><td>${Number(s.otherDeductions||0).toLocaleString('en-IN')}</td></tr>
+        <tr><td>Other Earnings</td><td>${Number(s.otherEarnings||0).toLocaleString('en-IN')}</td><td></td><td></td></tr>
+        <tr style="background:#f8f9ff;font-weight:700"><td>Total Earnings</td><td style="color:#16a34a">${Number(s.earnings||0).toLocaleString('en-IN')}</td><td>Total Deductions</td><td style="color:#dc2626">${Number(s.deductions||0).toLocaleString('en-IN')}</td></tr>
+      </table>
+      <div class="slip-preview-net">
+        <div class="sp-net-label">Net Salary (Take-Home)</div>
+        <div class="sp-net-val">₹${Number(s.netSalary||0).toLocaleString('en-IN')}</div>
+      </div>
+      ${s.remarks?`<div style="font-size:.78rem;color:#555;background:#f8f9ff;border-radius:6px;padding:8px 12px;margin-bottom:12px">📝 Remarks: ${s.remarks}</div>`:''}
+      <div class="slip-preview-footer">This is a system-generated salary slip from WorkPulse · ${createdBy?'Prepared by '+fullName(createdBy):'HR'}</div>
+    </div>`;
+}
+
+function previewSlip(id){
+  const s=DB.salarySlips.find(x=>x.id===id);if(!s)return;
+  // Mark as seen
+  s.seen=true;saveDB();
+  const modal=document.createElement('div');
+  modal.id='slipPreviewModal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(26,31,58,.6);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);overflow-y:auto';
+  modal.innerHTML=`
+    <div style="position:relative;max-width:640px;width:100%">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="color:#fff;font-size:.85rem;font-weight:600">Salary Slip Preview</span>
+        <div style="display:flex;gap:8px">
+          <button onclick="printSlip('${id}')" style="padding:7px 14px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer">🖨 Print</button>
+          ${CU.id===s.userId?`<button onclick="emailSlip('${id}')" style="padding:7px 14px;background:#3b4fd8;color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer">📧 Email</button>`:''}
+          <button onclick="document.getElementById('slipPreviewModal').remove()" style="padding:7px 14px;background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer">✕ Close</button>
+        </div>
+      </div>
+      ${buildSlipHTML(s)}
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+function printSlip(id){
+  const s=DB.salarySlips.find(x=>x.id===id);if(!s)return;
+  s.seen=true;saveDB();
+  const html=buildSlipHTML(s);
+  const win=window.open('','_blank','width=700,height=900');
+  // Write HTML to print window without embedding raw script/closing tags
+  const printCSS = [
+    'body{font-family:sans-serif;margin:0;padding:24px;background:#f0f2f7}',
+    '.slip-preview{background:#fff;color:#1a1a2e;padding:32px;border-radius:12px;max-width:600px;margin:0 auto}',
+    '.slip-preview-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #3b4fd8}',
+    '.slip-preview-company{font-size:1.1rem;font-weight:800;color:#3b4fd8}',
+    '.slip-preview-title{font-size:.85rem;color:#666;margin-top:3px}',
+    '.slip-preview-period{text-align:right;font-size:.82rem;color:#444}',
+    '.slip-preview-emp{background:#f8f9ff;border-radius:8px;padding:12px 16px;margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr;gap:6px}',
+    '.sp-label{color:#666;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em}',
+    '.sp-val{font-weight:600;color:#1a1a2e;font-family:monospace;font-size:.82rem}',
+    '.slip-preview-table{width:100%;border-collapse:collapse;margin-bottom:16px}',
+    '.slip-preview-table th{background:#3b4fd8;color:#fff;padding:7px 12px;font-size:.73rem;text-align:left;font-weight:600}',
+    '.slip-preview-table td{padding:7px 12px;font-size:.8rem;border-bottom:1px solid #e8eaf8}',
+    '.slip-preview-net{background:#f0f2f7;border-radius:8px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}',
+    '.sp-net-label{font-weight:700;color:#1a1a2e;font-size:.9rem}',
+    '.sp-net-val{font-size:1.4rem;font-weight:800;color:#16a34a;font-family:monospace}',
+    '.slip-preview-footer{font-size:.72rem;color:#888;text-align:center;border-top:1px solid #e8eaf8;padding-top:10px}',
+    '@media print{body{background:#fff;padding:0}.slip-preview{box-shadow:none}}'
+  ].join('');
+  win.document.head.innerHTML = '<title>Salary Slip</title><style>' + printCSS + '</style>';
+  win.document.body.innerHTML = html;
+  win.document.close();
+  setTimeout(()=>win.print(), 500);
+}
+
+function emailSlip(id){
+  const s=DB.salarySlips.find(x=>x.id===id);if(!s)return;
+  const emp=getUser(s.userId);
+  if(!emp){showToast('Employee not found','t-err');return;}
+  s.seen=true;saveDB();
+  // Build plain text slip body
+  const earn=(+s.basic||0)+(+s.hra||0)+(+s.sa||0)+(+s.otherEarnings||0);
+  const deduct=(+s.pf||0)+(+s.tds||0)+(+s.otherDeductions||0);
+  const body=encodeURIComponent(
+`SALARY SLIP - ${slipMonthLabel(s.monthKey)}
+WorkPulse Solutions
+========================================
+Employee: ${fullName(emp)}
+Employee ID: ${emp.empId}
+Designation: ${(emp.role||'').toUpperCase()}
+Workflow: ${emp.workflow||'—'}
+Days Present: ${s.daysPresent||'—'}
+Pay Period: ${slipMonthLabel(s.monthKey)}
+
+EARNINGS
+--------
+Basic Salary:       ₹${Number(s.basic||0).toLocaleString('en-IN')}
+HRA:                ₹${Number(s.hra||0).toLocaleString('en-IN')}
+Special Allowance:  ₹${Number(s.sa||0).toLocaleString('en-IN')}
+Other Earnings:     ₹${Number(s.otherEarnings||0).toLocaleString('en-IN')}
+Total Earnings:     ₹${Number(earn).toLocaleString('en-IN')}
+
+DEDUCTIONS
+----------
+Provident Fund:     ₹${Number(s.pf||0).toLocaleString('en-IN')}
+TDS / Tax:          ₹${Number(s.tds||0).toLocaleString('en-IN')}
+Other Deductions:   ₹${Number(s.otherDeductions||0).toLocaleString('en-IN')}
+Total Deductions:   ₹${Number(deduct).toLocaleString('en-IN')}
+
+========================================
+NET SALARY (TAKE-HOME): ₹${Number(s.netSalary||0).toLocaleString('en-IN')}
+========================================
+${s.remarks?'Remarks: '+s.remarks:''}
+
+This is a system-generated salary slip from WorkPulse.
+`);
+  const subject=encodeURIComponent(`Salary Slip - ${fullName(emp)} - ${slipMonthLabel(s.monthKey)}`);
+  const emailAddr=emp.email||'';
+  const mailtoLink=`mailto:${emailAddr}?subject=${subject}&body=${body}`;
+  window.open(mailtoLink,'_blank');
+  showToast('Email client opened with your salary slip  📧','t-ok');
+}
+
+
+/* ══════════════════════════════════
+   PASSWORD POLICY ENGINE
+   Rules:
+   • Min 9 chars, 1 number, 1 special char, 1 upper, 1 lower
+   • Expires every 90 days
+   • Cannot reuse last 5 passwords
+   • On expiry → forced change screen before app access
+   • Warning shown 10 days before expiry
+   • Suggestions generated on screen open
+══════════════════════════════════ */
+
+const PASS_MIN_LEN   = 9;
+const PASS_EXPIRY_DAYS = 90;
+const PASS_HISTORY_LEN = 5;
+
+function validatePassword(pass){
+  if(!pass||pass.length<PASS_MIN_LEN)
+    return `Password must be at least ${PASS_MIN_LEN} characters long`;
+  if(!/[0-9]/.test(pass))
+    return 'Password must contain at least one number (0–9)';
+  if(!/[!@#$%^&*()_\-+=\[\]{}|;:,.<>?\/\~"'£€]/.test(pass))
+    return 'Password must contain at least one special character (!@#$%^&* etc.)';
+  if(!/[A-Z]/.test(pass))
+    return 'Password must contain at least one uppercase letter';
+  if(!/[a-z]/.test(pass))
+    return 'Password must contain at least one lowercase letter';
+  return null; // valid
+}
+
+function passStrength(pass){
+  if(!pass)return{score:0,label:'',color:'var(--text3)'};
+  let score=0;
+  if(pass.length>=9)score++;
+  if(pass.length>=12)score++;
+  if(/[0-9]/.test(pass)&&/[a-z]/.test(pass)&&/[A-Z]/.test(pass))score++;
+  if(/[!@#$%^&*()_\-+=\[\]{}|;:,.<>?\/\~"'£€]/.test(pass))score++;
+  const labels=['','Weak','Fair','Good','Strong'];
+  const colors=['','var(--red)','var(--amber)','#facc15','var(--green)'];
+  return{score,label:labels[score]||'',color:colors[score]||'var(--text3)'};
+}
+
+function isPasswordExpired(user){
+  if(!user||!user.passChangedAt)return false;
+  const changed=new Date(user.passChangedAt);
+  const expiry=new Date(changed.getTime()+PASS_EXPIRY_DAYS*86400000);
+  return new Date()>expiry;
+}
+
+function daysUntilPassExpiry(user){
+  if(!user||!user.passChangedAt)return null;
+  const changed=new Date(user.passChangedAt);
+  const expiry=new Date(changed.getTime()+PASS_EXPIRY_DAYS*86400000);
+  const diff=Math.ceil((expiry-new Date())/86400000);
+  return diff;
+}
+
+function isPasswordReused(user,newPass){
+  const hist=user.passHistory||[];
+  return hist.includes(newPass)||user.pass===newPass;
+}
+
+function getPasswordReuseMessage(user,newPass){
+  // Returns which position in history it was (e.g., "last 2 passwords ago")
+  const hist=[...(user.passHistory||[])].reverse(); // most recent first
+  if(user.pass===newPass) return 'Password already used — this is your current password.';
+  const idx=hist.indexOf(newPass);
+  if(idx===0)return'Password already used — same as your last password.';
+  if(idx>0)return`Password already used — same as your password from ${idx+1} change${idx>0?'s':''} ago.`;
+  return'Password already used recently.';
+}
+
+function generateSuggestions(){
+  const specials='!@#$%&*';
+  const lowers='abcdefghjkmnpqrstuvwxyz';
+  const uppers='ABCDEFGHJKLMNPQRSTUVWXYZ';
+  const digits='23456789';
+  const suggestions=[];
+  for(let i=0;i<4;i++){
+    const len=10+Math.floor(Math.random()*3);
+    let pass='';
+    // Always include required chars
+    pass+=uppers[Math.floor(Math.random()*uppers.length)];
+    pass+=lowers[Math.floor(Math.random()*lowers.length)];
+    pass+=digits[Math.floor(Math.random()*digits.length)];
+    pass+=digits[Math.floor(Math.random()*digits.length)];
+    pass+=specials[Math.floor(Math.random()*specials.length)];
+    // Fill remaining
+    const all=lowers+uppers+digits;
+    for(let j=pass.length;j<len;j++){
+      pass+=all[Math.floor(Math.random()*all.length)];
+    }
+    // Shuffle
+    pass=pass.split('').sort(()=>Math.random()-.5).join('');
+    suggestions.push(pass);
+  }
+  return suggestions;
+}
+
+/* ── Change Password Screen ── */
+let _cpContext=null; // {forced:bool, userId:string}
+
+function showChangePassScreen(forced=false,userId=null){
+  const uid=userId||CU?.id;
+  _cpContext={forced,userId:uid};
+  const user=getUser(uid)||CU;
+  const daysLeft=daysUntilPassExpiry(user);
+
+  // Set up badge
+  const badge=document.getElementById('cpExpiryBadge');
+  if(forced){
+    badge.className='cp-expiry-badge';
+    badge.innerHTML='🔒 Your password has expired. Please set a new password to continue.';
+    badge.style.display='flex';
+  } else if(daysLeft!==null&&daysLeft<=10){
+    badge.className='cp-expiry-badge warn';
+    badge.innerHTML=`⚠ Your password expires in <strong>&nbsp;${daysLeft} day${daysLeft===1?'':'s'}</strong>&nbsp;. Change it now to avoid being locked out.`;
+    badge.style.display='flex';
+  } else {
+    badge.style.display='none';
+  }
+
+  // Title
+  document.getElementById('cpTitle').textContent=forced?'Password Expired':'Change Password';
+  document.getElementById('cpSub').textContent=forced
+    ?'Your password has expired. Please create a strong new password.'
+    :`Last changed: ${user?.passChangedAt?fmtDate(user.passChangedAt.slice(0,10)):'Never'}`;
+
+  // Skip link — only if not forced
+  document.getElementById('cpSkipWrap').style.display=forced?'none':'block';
+
+  // Clear fields
+  ['cpCurrent','cpNew','cpConfirm'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  document.getElementById('cpError').style.display='none';
+  document.getElementById('cpHistoryWarn').style.display='none';
+  resetStrengthUI();
+
+  // Generate suggestions
+  const suggs=generateSuggestions();
+  document.getElementById('cpSuggestions').style.display='block';
+  document.getElementById('cpSuggestionsList').innerHTML=suggs.map(s=>
+    `<span class="suggestion-chip" onclick="useSuggestion('${s}')" title="Click to use">${s}</span>`
+  ).join('');
+
+  showScreen('changePassScreen');
+  setTimeout(()=>document.getElementById('cpCurrent')?.focus(),80);
+}
+
+function useSuggestion(pass){
+  const el=document.getElementById('cpNew');
+  if(el){el.value=pass;el.type='text';cpNewChanged();}
+  const el2=document.getElementById('cpConfirm');
+  if(el2){el2.value=pass;}
+  showToast('Suggestion applied — remember to save it!','t-info');
+}
+
+function togglePassVis(id,btn){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const showing=el.type==='password';
+  el.type=showing?'text':'password';
+  btn.setAttribute('data-open', showing?'0':'1');
+  btn.title=showing?'Hide password':'Show password';
+  btn.innerHTML=showing?
+    `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`:
+    `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+}
+
+function resetStrengthUI(){
+  for(let i=0;i<4;i++){
+    const seg=document.getElementById('cpseg'+i);
+    if(seg){seg.className='strength-seg';}
+  }
+  const lbl=document.getElementById('cpStrengthLabel');
+  if(lbl){lbl.textContent='Enter a password';lbl.style.color='var(--text3)';}
+  ['pr-len','pr-num','pr-special','pr-upper','pr-lower'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.className='pass-rule';
+  });
+}
+
+function cpNewChanged(){
+  const pass=document.getElementById('cpNew')?.value||'';
+  const {score,label,color}=passStrength(pass);
+
+  // Strength bar
+  for(let i=0;i<4;i++){
+    const seg=document.getElementById('cpseg'+i);
+    if(seg)seg.className='strength-seg'+(i<score?' s'+score:'');
+  }
+  const lbl=document.getElementById('cpStrengthLabel');
+  if(lbl){lbl.textContent=label||'Enter a password';lbl.style.color=color;}
+
+  // Rules
+  const rules=[
+    {id:'pr-len',    ok:pass.length>=9},
+    {id:'pr-num',    ok:/[0-9]/.test(pass)},
+    {id:'pr-special',ok:/[!@#$%^&*()_\-+=\[\]{}|;:,.<>?\/\~"'£€]/.test(pass)},
+    {id:'pr-upper',  ok:/[A-Z]/.test(pass)},
+    {id:'pr-lower',  ok:/[a-z]/.test(pass)},
+  ];
+  rules.forEach(r=>{
+    const el=document.getElementById(r.id);
+    if(el)el.className='pass-rule'+(r.ok?' ok':'');
+  });
+
+  // History check live
+  if(CU&&pass.length>=9){
+    const user=getUser(_cpContext?.userId)||CU;
+    if(isPasswordReused(user,pass)){
+      const msg=getPasswordReuseMessage(user,pass);
+      const hw=document.getElementById('cpHistoryWarn');
+      document.getElementById('cpHistoryMsg').textContent=msg;
+      if(hw)hw.style.display='flex';
+    } else {
+      const hw=document.getElementById('cpHistoryWarn');
+      if(hw)hw.style.display='none';
+    }
+  }
+}
+
+function doChangePass(){
+  const current=document.getElementById('cpCurrent')?.value||'';
+  const newPass=document.getElementById('cpNew')?.value||'';
+  const confirm=document.getElementById('cpConfirm')?.value||'';
+  const errEl=document.getElementById('cpError');
+  const user=getUser(_cpContext?.userId)||CU;
+
+  errEl.style.display='none';
+
+  const showErr=(msg)=>{errEl.textContent=msg;errEl.style.display='block';};
+
+  if(!current||!newPass||!confirm){showErr('Please fill all fields.');return;}
+
+  // Verify current password
+  if(user.pass!==current){showErr('Current password is incorrect.');return;}
+
+  // Validate new password strength
+  const passErr=validatePassword(newPass);
+  if(passErr){showErr(passErr);return;}
+
+  if(newPass!==confirm){showErr('New passwords do not match.');return;}
+
+  // Check history
+  if(isPasswordReused(user,newPass)){
+    showErr(getPasswordReuseMessage(user,newPass));
+    return;
+  }
+
+  // All good — update password
+  const hist=[...(user.passHistory||[])];
+  hist.push(user.pass); // add old password to history
+  if(hist.length>PASS_HISTORY_LEN)hist.shift();
+  user.passHistory=hist;
+  user.pass=newPass;
+  user.passChangedAt=ts();
+  saveDB();
+
+  showToast('Password updated successfully! ✅','t-ok');
+
+  // Navigate appropriately
+  if(_cpContext?.forced){
+    // Was forced — now proceed to app
+    initApp();
+    showScreen('appScreen');
+    if(PS.punchedIn&&!PS.punchedOut)startIdleTracking();
+  } else {
+    // Was voluntary — go back to wherever they were
+    showScreen('appScreen');
+    pgDashboard();
+  }
+}
+
+function cpSkip(){
+  // Only allowed if not forced (expiry not yet)
+  if(_cpContext?.forced)return;
+  showScreen('appScreen');
+}
+
 /* ── INIT ── */
 onEnrollRoleChange();populateTLs();
 
@@ -2272,3 +3810,4 @@ checkSiteLock();
 </script>
 </body>
 </html>
+
