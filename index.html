@@ -584,6 +584,39 @@ tr:hover td{background:var(--surface2)}
 
 
 /* ── SALARY SLIPS ── */
+/* PDF upload */
+.pdf-upload-zone{
+  border:2px dashed var(--border2);border-radius:var(--r);
+  padding:24px;text-align:center;cursor:pointer;transition:.2s;
+  background:var(--surface2);position:relative;
+}
+.pdf-upload-zone:hover,.pdf-upload-zone.drag-over{
+  border-color:var(--brand);background:var(--brand-bg);
+}
+.pdf-upload-zone input[type=file]{
+  position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;
+}
+.pdf-upload-icon{font-size:2rem;margin-bottom:8px}
+.pdf-upload-label{font-size:.88rem;font-weight:600;color:var(--text2)}
+.pdf-upload-sub{font-size:.76rem;color:var(--text3);margin-top:4px}
+.pdf-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--red-bg);border:1px solid rgba(220,38,38,.2);
+  color:var(--red);border-radius:20px;padding:3px 10px;
+  font-size:.72rem;font-weight:700;
+}
+.pdf-preview-wrap{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--r2);padding:12px 14px;
+  display:flex;align-items:center;gap:10px;margin-top:8px;
+}
+.pdf-preview-icon{font-size:1.4rem;flex-shrink:0}
+.pdf-preview-name{font-size:.82rem;font-weight:600;color:var(--text);flex:1;word-break:break-all}
+.pdf-preview-size{font-size:.72rem;color:var(--text3)}
+.slip-type-tabs{display:flex;gap:2px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r2);padding:3px;margin-bottom:16px;width:fit-content}
+.slip-type-tab{padding:7px 18px;border-radius:6px;border:none;background:transparent;color:var(--text2);font-family:'Plus Jakarta Sans',sans-serif;font-size:.83rem;font-weight:600;cursor:pointer;transition:.2s}
+.slip-type-tab.active{background:var(--brand);color:#fff;box-shadow:0 2px 8px rgba(59,79,216,.25)}
+
 .slip-card{
   background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
   padding:20px;margin-bottom:14px;box-shadow:var(--shadow);
@@ -707,6 +740,180 @@ tr:hover td{background:var(--surface2)}
   border-radius:var(--r2);padding:10px 14px;margin-bottom:14px;
   font-size:.82rem;color:var(--amber);display:flex;align-items:center;gap:8px;
 }
+
+
+/* ── CHAT ── */
+.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 130px);min-height:400px}
+.chat-header{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r) var(--r) 0 0;
+  padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:none;
+}
+.chat-header-title{font-weight:800;font-size:.95rem;display:flex;align-items:center;gap:8px}
+.chat-online-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.chat-messages{
+  flex:1;overflow-y:auto;padding:16px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-top:none;border-bottom:none;
+  display:flex;flex-direction:column;gap:10px;
+}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-msg{display:flex;gap:9px;align-items:flex-end;max-width:78%}
+.chat-msg.mine{flex-direction:row-reverse;align-self:flex-end}
+.chat-msg .cm-av{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;font-weight:700;color:#fff;
+}
+.chat-bubble{
+  padding:9px 13px;border-radius:16px 16px 16px 4px;
+  font-size:.84rem;line-height:1.5;max-width:100%;word-break:break-word;
+  background:var(--surface);border:1px solid var(--border);
+  box-shadow:var(--shadow);
+}
+.chat-msg.mine .chat-bubble{
+  background:var(--brand);color:#fff;border-color:var(--brand);
+  border-radius:16px 16px 4px 16px;
+}
+.chat-msg-meta{font-size:.68rem;color:var(--text3);margin-top:3px;display:flex;align-items:center;gap:6px}
+.chat-msg.mine .chat-msg-meta{justify-content:flex-end}
+.chat-sender{font-weight:700;font-size:.72rem;color:var(--text2);margin-bottom:2px}
+.chat-msg.mine .chat-sender{text-align:right;color:rgba(255,255,255,.8)}
+.chat-input-row{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:0 0 var(--r) var(--r);border-top:1px solid var(--border);
+  padding:12px 14px;display:flex;gap:10px;align-items:flex-end;
+}
+.chat-input{
+  flex:1;background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:22px;padding:9px 16px;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.86rem;color:var(--text);outline:none;resize:none;
+  min-height:40px;max-height:100px;line-height:1.4;transition:.2s;
+}
+.chat-input:focus{border-color:var(--brand);background:var(--surface)}
+.chat-send-btn{
+  width:40px;height:40px;border-radius:50%;border:none;
+  background:var(--brand);color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:.2s;font-size:1rem;
+}
+.chat-send-btn:hover{background:var(--brand2);transform:scale(1.05)}
+.chat-send-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.chat-disabled-msg{
+  text-align:center;padding:40px 20px;
+  color:var(--text2);font-size:.88rem;
+}
+.chat-date-divider{
+  text-align:center;font-size:.7rem;color:var(--text3);
+  display:flex;align-items:center;gap:10px;margin:4px 0;
+}
+.chat-date-divider::before,.chat-date-divider::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+.chat-typing{font-size:.74rem;color:var(--text3);padding:0 4px;min-height:18px}
+.chat-channel-tabs{display:flex;gap:4px;margin-bottom:0;padding:0 14px 0;
+  background:var(--surface);border:1px solid var(--border);border-bottom:none;
+  border-top:none;padding-top:6px;padding-bottom:0;flex-wrap:nowrap;overflow-x:auto}
+.chat-channel-tab{
+  padding:6px 14px;border:none;background:transparent;
+  color:var(--text2);font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;
+  font-weight:600;cursor:pointer;border-bottom:2px solid transparent;
+  white-space:nowrap;transition:.15s;
+}
+.chat-channel-tab.active{color:var(--brand);border-bottom-color:var(--brand)}
+.chat-unread{
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--red);color:#fff;border-radius:50%;width:16px;height:16px;
+  font-size:.6rem;font-weight:700;margin-left:5px;
+}
+
+/* ── SERVICE SETTINGS ── */
+.service-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:18px 20px;margin-bottom:12px;box-shadow:var(--shadow);
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+.service-info{flex:1}
+.service-name{font-weight:700;font-size:.92rem;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:8px}
+.service-desc{font-size:.78rem;color:var(--text2);line-height:1.5}
+.service-toggle-wrap{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.svc-toggle{
+  width:52px;height:28px;border-radius:20px;border:none;cursor:pointer;
+  position:relative;transition:.3s;flex-shrink:0;
+}
+.svc-toggle.on{background:var(--green);box-shadow:0 2px 8px rgba(22,163,74,.3)}
+.svc-toggle.off{background:var(--border2)}
+.svc-toggle::after{
+  content:'';position:absolute;top:4px;width:20px;height:20px;
+  border-radius:50%;background:#fff;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2);
+}
+.svc-toggle.on::after{left:28px}
+.svc-toggle.off::after{left:4px}
+.svc-status{font-size:.75rem;font-weight:700;min-width:44px;text-align:right}
+.svc-status.on{color:var(--green)}.svc-status.off{color:var(--text3)}
+.disabled-account-row td{opacity:.5}
+.dis-badge{display:inline-flex;align-items:center;gap:4px;background:var(--red-bg);color:var(--red);border:1px solid rgba(220,38,38,.2);font-size:.69rem;font-weight:700;padding:2px 7px;border-radius:20px}
+.ena-badge{display:inline-flex;align-items:center;gap:4px;background:var(--green-bg);color:var(--green);border:1px solid rgba(22,163,74,.2);font-size:.69rem;font-weight:700;padding:2px 7px;border-radius:20px}
+
+
+/* ── LOCATION LOCK ── */
+.loc-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:20px;margin-bottom:14px;box-shadow:var(--shadow);
+}
+.loc-entry{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:14px 16px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--r2);margin-bottom:8px;transition:.2s;
+}
+.loc-entry.active{border-color:var(--green);background:var(--green-bg)}
+.loc-entry.inactive{opacity:.65}
+.loc-radio{
+  width:20px;height:20px;border-radius:50%;border:2px solid var(--border2);
+  flex-shrink:0;cursor:pointer;margin-top:2px;
+  display:flex;align-items:center;justify-content:center;transition:.2s;
+  background:var(--surface);
+}
+.loc-radio.checked{border-color:var(--green);background:var(--green)}
+.loc-radio.checked::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff}
+.loc-info{flex:1}
+.loc-name{font-weight:700;font-size:.9rem;color:var(--text);margin-bottom:2px}
+.loc-coords{font-family:'DM Mono',monospace;font-size:.74rem;color:var(--text2)}
+.loc-radius{font-size:.73rem;color:var(--text3);margin-top:2px}
+.loc-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.loc-master-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(135deg,#0f1228,#1a2040);
+  border:1px solid rgba(255,255,255,.1);border-radius:var(--r);
+  padding:20px 24px;margin-bottom:16px;flex-wrap:wrap;gap:14px;
+}
+.lmt-title{color:#fff;font-weight:800;font-size:1rem;margin-bottom:4px}
+.lmt-sub{color:rgba(255,255,255,.5);font-size:.8rem;line-height:1.5}
+.loc-get-btn{
+  padding:10px 16px;border:1.5px solid var(--brand);border-radius:var(--r2);
+  background:var(--brand-bg);color:var(--brand);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.83rem;font-weight:700;cursor:pointer;transition:.2s;
+  display:inline-flex;align-items:center;gap:7px;
+}
+.loc-get-btn:hover{background:var(--brand);color:#fff}
+.loc-blocked-screen{
+  position:fixed;inset:0;z-index:99998;
+  background:linear-gradient(135deg,#0f1228,#1a1f3a);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:0;
+}
+.loc-blocked-content{text-align:center;padding:40px 24px;max-width:420px}
+.loc-blocked-icon{font-size:3.5rem;margin-bottom:14px}
+.loc-blocked-title{font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:8px}
+.loc-blocked-sub{font-size:.88rem;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:20px}
+.loc-blocked-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(220,38,38,.2);border:1px solid rgba(220,38,38,.3);border-radius:20px;padding:7px 16px;font-size:.83rem;font-weight:700;color:#fca5a5;margin-bottom:16px}
+.loc-retry-btn{padding:11px 24px;border:none;border-radius:var(--r2);background:rgba(255,255,255,.1);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:.2s;margin-top:8px}
+.loc-retry-btn:hover{background:rgba(255,255,255,.2)}
+.loc-admin-hint{font-size:.74rem;color:rgba(255,255,255,.2);margin-top:18px;cursor:pointer}
+.loc-admin-hint:hover{color:rgba(255,255,255,.5)}
+.loc-dist-badge{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:20px}
+.loc-dist-ok{background:var(--green-bg);color:var(--green)}
+.loc-dist-far{background:var(--red-bg);color:var(--red)}
 
 .week-off-badge{display:inline-flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 9px;font-size:.69rem;font-weight:700;color:var(--text3)}
 .badge-short{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(217,119,6,.2);font-size:.69rem;font-weight:700;padding:2px 8px;border-radius:20px}
@@ -945,6 +1152,21 @@ tr:hover td{background:var(--surface2)}
     <div class="lock-sub">This WorkPulse instance has been temporarily disabled by the administrator. Please contact your administrator to restore access.</div>
     <div class="lock-badge"><div class="lock-badge-dot"></div>Access Suspended</div>
     <div class="lock-admin-hint" onclick="showAdminPinScreen()">Admin? Click here to log in &#x2192;</div>
+  </div>
+</div>
+
+<!-- LOCATION BLOCKED SCREEN -->
+<div id="locBlockedScreen" style="display:none" class="loc-blocked-screen">
+  <div class="loc-blocked-content">
+    <div class="loc-blocked-icon">📍</div>
+    <div class="loc-blocked-title">Location Restricted</div>
+    <div class="loc-blocked-sub">WorkPulse is only available at authorised locations.<br>You must be within the permitted area to access this system.</div>
+    <div class="loc-blocked-badge">
+      <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="locBlockedDetail">Access Denied</span>
+    </div>
+    <button class="loc-retry-btn" onclick="checkLocationAccess(true)">🔄 Retry Location Check</button>
+    <div class="loc-admin-hint" onclick="showAdminPinScreen()">Admin? Click here to bypass →</div>
   </div>
 </div>
 
@@ -1253,6 +1475,24 @@ function avatarClass(role){
   return{admin:'av-admin',hr:'av-hr',tl:'av-tl',agent:'av-agent'}[role]||'';
 }
 
+/* ── MOBILE DETECTION ──
+   Returns true if user is on a phone/tablet.
+   Used to restrict agent/TL to chat-only on mobile.
+*/
+function isMobile(){
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(navigator.userAgent)
+    || window.innerWidth <= 768;
+}
+
+/* Returns true if current user should be restricted to chat-only.
+   Rule: agent or tl on a mobile device → chat only.
+   HR and Admin always get full access. */
+function isMobileChatOnly(){
+  if(!CU)return false;
+  if(CU.role==='hr'||CU.role==='admin')return false;
+  return isMobile();
+}
+
 /* ══════════════════════════════════
    LEAVE BALANCE ENGINE
 ══════════════════════════════════ */
@@ -1462,7 +1702,16 @@ function loadDB(){
     lastResetYear:new Date().getFullYear(),
     adminCode:'108',
     siteActive:true,
-    salarySlips:[]
+    salarySlips:[],
+    chatMessages:[],
+    chatEnabled:true,
+    disabledAccounts:[],
+    concerns:[],
+    locationLock:{
+      enabled:false,
+      radiusKm:0.3,
+      locations:[]
+    }
   };
   saveDB(db);return db;
 }
@@ -1472,21 +1721,42 @@ function migrateLegacy(db){
   if(!db.adminCode)db.adminCode='108';
   if(db.siteActive===undefined)db.siteActive=true;
   if(!db.salarySlips)db.salarySlips=[];
+  if(!db.chatMessages)db.chatMessages=[];
+  if(db.chatEnabled===undefined)db.chatEnabled=true;
+  if(!db.disabledAccounts)db.disabledAccounts=[];
+  if(!db.locationLock)db.locationLock={enabled:false,radiusKm:0.3,locations:[]};
+  if(!db.concerns)db.concerns=[];
   (db.leaves||[]).forEach(l=>{
     if(!l.leaveDays)l.leaveDays=countLeaveDays(l.fromDate,l.toDate);
     if(!l.subType)l.subType='full';
   });
   // Add admin if missing
   if(!db.users.find(u=>u.role==='admin')){
-    db.users.unshift({id:'u_adm1',empId:'ADMIN001',first:'System',last:'Admin',pass:'admin123',role:'admin',workflow:'',tlId:'',createdAt:'2025-01-01T00:00:00.000Z',passChangedAt:'2025-01-01T00:00:00.000Z',passHistory:[]});
+    db.users.unshift({id:'u_adm1',empId:'ADMIN001',first:'System',last:'Admin',pass:'admin123',role:'admin',workflow:'',tlId:'',createdAt:ts(),passChangedAt:ts(),passHistory:[]});
   }
-  // Migrate: add passChangedAt + passHistory to existing users
+  // Migrate: add passChangedAt (set to TODAY so users don't get forced-reset on first access)
+  // and passHistory to existing users
   (db.users||[]).forEach(u=>{
-    if(!u.passChangedAt) u.passChangedAt='2025-01-01T00:00:00.000Z';
+    if(!u.passChangedAt||u.passChangedAt==='2025-01-01T00:00:00.000Z') u.passChangedAt=ts();
     if(!u.passHistory) u.passHistory=[];
   });
 }
+function autoCleanOldData(db){
+  // Auto-purge attendance, workLogs, and chatMessages older than 60 days to keep localStorage healthy
+  const cutoff=new Date();
+  cutoff.setDate(cutoff.getDate()-60);
+  const cutoffDate=cutoff.toISOString().slice(0,10); // 'YYYY-MM-DD'
+  const cutoffTs=cutoff.getTime();
+  const before={att:(db.attendance||[]).length,logs:(db.workLogs||[]).length,chat:(db.chatMessages||[]).length};
+  db.attendance=(db.attendance||[]).filter(a=>a.date>=cutoffDate);
+  db.workLogs=(db.workLogs||[]).filter(w=>w.date>=cutoffDate);
+  db.chatMessages=(db.chatMessages||[]).filter(m=>m.ts>cutoffTs);
+  const removed=(before.att-(db.attendance.length))+(before.logs-(db.workLogs.length))+(before.chat-(db.chatMessages.length));
+  if(removed>0) console.log(`[WorkPulse] Auto-cleaned ${removed} old records (>60 days)`);
+}
 let DB=loadDB();
+autoCleanOldData(DB);
+saveDB();
 
 /* ══════════════════════════════════
    SESSION STATE
@@ -1549,15 +1819,31 @@ function getShiftFor(user){
    RBAC — what each role can access
 ══════════════════════════════════ */
 const ROLE_PAGES={
-  admin:  ['dashboard','userAdmin','dbAdmin','employeesMgmt','allAttendance','lateReport','shiftMgmt','hrPanel','calendar'],
-  hr:     ['dashboard','attendance','workLog','markAttendance','allAttendance','lateReport','shiftMgmt','leaveApproval','employeesMgmt','hrPanel','salarySlips','calendar'],
-  tl:     ['dashboard','attendance','workLog','markAttendance','teamView','lateReport','leaveApproval','leave','employeesMgmt','salarySlips','calendar'],
-  agent:  ['dashboard','attendance','workLog','leave','salarySlips','calendar'],
+  admin:  ['dashboard','userAdmin','dbAdmin','employeesMgmt','serviceSettings','locationLock','calendar','chat'],
+  hr:     ['dashboard','attendance','workLog','markAttendance','allAttendance','lateReport','shiftMgmt','leaveApproval','employeesMgmt','hrPanel','salarySlips','serviceSettings','calendar','chat'],
+  tl:     ['dashboard','attendance','workLog','markAttendance','teamView','lateReport','leaveApproval','leave','employeesMgmt','salarySlips','calendar','chat','concerns'],
+  agent:  ['dashboard','attendance','workLog','leave','salarySlips','calendar','chat','concerns'],
 };
-function canAccess(page){ return (ROLE_PAGES[CU?.role]||[]).includes(page); }
+function canAccess(page){
+  // Mobile agent/TL: only chat is allowed
+  if(isMobileChatOnly() && page!=='chat') return false;
+  return (ROLE_PAGES[CU?.role]||[]).includes(page);
+}
 function requireAccess(page){
   if(!canAccess(page)){
-    document.getElementById('mainContent').innerHTML=`<div class="access-denied"><div class="ad-icon">🔒</div><h3>Access Denied</h3><p>You don't have permission to view this page.</p></div>`;
+    if(isMobileChatOnly()){
+      document.getElementById('mainContent').innerHTML=`
+        <div class="access-denied">
+          <div class="ad-icon">📱</div>
+          <h3>Mobile Mode</h3>
+          <p>On mobile, only <strong>Chat</strong> is available.<br>Use a desktop browser to access all features.</p>
+          <div style="margin-top:18px">
+            <button onclick="navTo('chat')" style="padding:10px 24px;background:var(--brand);color:#fff;border:none;border-radius:var(--r2);font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer">Go to Chat →</button>
+          </div>
+        </div>`;
+    } else {
+      document.getElementById('mainContent').innerHTML=`<div class="access-denied"><div class="ad-icon">🔒</div><h3>Access Denied</h3><p>You don't have permission to view this page.</p></div>`;
+    }
     return false;
   }
   return true;
@@ -1739,15 +2025,22 @@ function doLogin(){
   if(!user){
     errEl.textContent='Invalid Employee ID, password or role. Please check and try again.';
     errEl.style.display='block';
-    document.getElementById('lgPass').value=''; // clear password on fail
+    document.getElementById('lgPass').value='';
+    return;
+  }
+  // Check if account is disabled
+  if(DB.disabledAccounts&&DB.disabledAccounts.includes(user.id)){
+    errEl.textContent='Your account has been disabled. Please contact HR or Admin to re-enable it.';
+    errEl.style.display='block';
+    document.getElementById('lgPass').value='';
     return;
   }
 
   // Success — set current user
   CU=user;
 
-  // Check password expiry (90 days)
-  const passExpired=isPasswordExpired(CU);
+  // Check password expiry (90 days) — not applicable to Admin
+  const passExpired=CU.role!=='admin'&&isPasswordExpired(CU);
   const passDaysLeft=daysUntilPassExpiry(CU);
   if(passExpired){
     // Force password change before accessing app
@@ -1771,13 +2064,26 @@ function doLogin(){
   if(wl)idleSegments=wl.idleSegments||[];
 
   runJanReset();
-  initApp();
-  showScreen('appScreen');
-  if(PS.punchedIn&&!PS.punchedOut)startIdleTracking();
 
-  // Show expiry warning if < 10 days left
+  // Location lock check (skip for admin)
+  if(CU.role!=='admin'&&isLocationLockActive()){
+    checkLocationAccess().then(allowed=>{
+      if(allowed){
+        initApp();
+        showScreen('appScreen');
+        if(PS.punchedIn&&!PS.punchedOut)startIdleTracking();
+      }
+      // If not allowed, locBlockedScreen is shown by checkLocationAccess
+    });
+  } else {
+    initApp();
+    showScreen('appScreen');
+    if(PS.punchedIn&&!PS.punchedOut)startIdleTracking();
+  }
+
+  // Show expiry warning if < 10 days left (not for Admin)
   const _daysLeft=daysUntilPassExpiry(CU);
-  if(_daysLeft!==null&&_daysLeft<=10&&_daysLeft>0){
+  if(CU.role!=='admin'&&_daysLeft!==null&&_daysLeft<=10&&_daysLeft>0){
     setTimeout(()=>showToast(`⚠ Password expires in ${_daysLeft} day${_daysLeft===1?'':'s'} — please change it soon`,'t-warn'),600);
   }
 
@@ -1790,6 +2096,7 @@ function doLogout(){
   if(PS.punchedIn&&!PS.punchedOut&&!confirm('You haven\'t punched out yet. Logout anyway?'))return;
   resetSession();
   clearInterval(_clkTimer);
+  clearInterval(_chatTimer);
   showToast('Signed out successfully','t-info');
   showScreen('loginScreen');
   // Clear login form
@@ -1806,11 +2113,10 @@ const NAV_CFG={
     {id:'dashboard',icon:'📊',label:'Dashboard'},
     {id:'userAdmin',icon:'👤',label:'User Admin'},
     {id:'dbAdmin',icon:'🗄',label:'DB Manager'},
-    {id:'allAttendance',icon:'👥',label:'All Attendance'},
-    {id:'lateReport',icon:'⏰',label:'Late Report'},
-    {id:'shiftMgmt',icon:'⏲',label:'Shift Timings'},
     {id:'employeesMgmt',icon:'🪪',label:'Employees'},
-    {id:'hrPanel',icon:'⚙️',label:'HR Panel'},
+    {id:'serviceSettings',icon:'🔧',label:'Services'},
+    {id:'locationLock',icon:'📍',label:'Location Lock'},
+    {id:'chat',icon:'💬',label:'Chat'},
     {id:'calendar',icon:'📅',label:'Calendar'},
   ],
   hr:[
@@ -1825,6 +2131,8 @@ const NAV_CFG={
     {id:'employeesMgmt',icon:'🪪',label:'Employees'},
     {id:'hrPanel',icon:'⚙️',label:'HR Panel'},
     {id:'salarySlips',icon:'💰',label:'Salary Slips'},
+    {id:'serviceSettings',icon:'🔧',label:'Services'},
+    {id:'chat',icon:'💬',label:'Chat'},
     {id:'calendar',icon:'📅',label:'Calendar'},
   ],
   tl:[
@@ -1838,7 +2146,9 @@ const NAV_CFG={
     {id:'leave',icon:'🏖',label:'My Leave'},
     {id:'employeesMgmt',icon:'🪪',label:'Employees'},
     {id:'salarySlips',icon:'💰',label:'Salary Slips'},
+    {id:'chat',icon:'💬',label:'Chat'},
     {id:'calendar',icon:'📅',label:'Calendar'},
+    {id:'concerns',icon:'📬',label:'Concerns'},
   ],
   agent:[
     {id:'dashboard',icon:'📊',label:'Dashboard'},
@@ -1846,7 +2156,9 @@ const NAV_CFG={
     {id:'workLog',icon:'⏱',label:'Work Log'},
     {id:'leave',icon:'🏖',label:'Leave Request'},
     {id:'salarySlips',icon:'💰',label:'Salary Slips'},
+    {id:'chat',icon:'💬',label:'Chat'},
     {id:'calendar',icon:'📅',label:'Calendar'},
+    {id:'concerns',icon:'📬',label:'Concerns'},
   ],
 };
 const PAGE_TITLES={
@@ -1858,6 +2170,10 @@ const PAGE_TITLES={
   hrPanel:'HR Panel',calendar:'Calendar',
   userAdmin:'User Administration',dbAdmin:'Database Manager',
   salarySlips:'Salary Slips',
+  chat:'Team Chat',
+  serviceSettings:'Service Settings',
+  locationLock:'Location Lock',
+  concerns:'Concerns & Suggestions',
 };
 function initApp(){
   document.getElementById('sbName').textContent=fullName(CU);
@@ -1866,11 +2182,19 @@ function initApp(){
   const av=document.getElementById('sbAvatar');
   av.textContent=ini(CU);
   av.className='avatar '+avatarClass(CU.role);
-  buildNav();startClock();navTo('dashboard');
+  // Hide password change button for Admin — admin uses PIN, not password resets
+  const passBtn=document.getElementById('passExpiryBtn');
+  if(passBtn)passBtn.style.display=CU.role==='admin'?'none':'inline-flex';
+  buildNav();startClock();
+  // Mobile agent/TL → go straight to chat
+  if(isMobileChatOnly()){
+    navTo('chat');
+  } else {
+    navTo('dashboard');
+  }
 }
 function buildNav(){
-  const items=NAV_CFG[CU.role]||NAV_CFG.agent;
-  document.getElementById('sideNav').innerHTML=items.map(i=>`<a onclick="navTo('${i.id}')" id="nav_${i.id}"><span class="ni">${i.icon}</span><span>${i.label}</span></a>`).join('');
+  buildNavDynamic();
 }
 function navTo(page){
   if(!canAccess(page)){requireAccess(page);return;}
@@ -1885,7 +2209,7 @@ function navTo(page){
     lateReport:pgLateReport,shiftMgmt:pgShiftMgmt,
     leave:pgLeave,leaveApproval:pgLeaveApproval,
     employeesMgmt:pgEmployees,hrPanel:pgHRPanel,calendar:pgCalendar,
-    userAdmin:pgUserAdmin,dbAdmin:pgDBAdmin,salarySlips:pgSalarySlips,
+    userAdmin:pgUserAdmin,dbAdmin:pgDBAdmin,salarySlips:pgSalarySlips,chat:pgChat,serviceSettings:pgServiceSettings,locationLock:pgLocationLock,concerns:pgConcerns,
   };
   if(fns[page])fns[page]();
 }
@@ -2869,21 +3193,19 @@ function pgUserAdmin(){
   if(!requireAccess('userAdmin'))return;
   const users=DB.users;
   document.getElementById('mainContent').innerHTML=`
-  <div class="page-hdr"><h2>User Administration</h2><p>Admin-only: full user management including password resets</p></div>
-  <div class="amber-box">⚡ As Admin, you can reset passwords, change roles, and delete any user except the admin account.</div>
+  <div class="page-hdr"><h2>User Administration</h2><p>Admin-only: manage users and delete accounts</p></div>
+  <div class="amber-box">⚡ As Admin, you can change roles and delete any user except the admin account. Password resets are handled by each user through their own login. Admin PIN can be changed in DB Manager.</div>
   <div class="card">
     <input type="text" id="uAdminSearch" placeholder="🔍 Search users…" oninput="filterUserAdminTable()" style="width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r2);padding:9px 13px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.86rem;outline:none;margin-bottom:14px">
     <div class="tbl-wrap"><table id="uAdminTable">
-      <tr><th>Emp ID</th><th>Name</th><th>Role</th><th>Workflow</th><th>Password</th><th>Actions</th></tr>
+      <tr><th>Emp ID</th><th>Name</th><th>Role</th><th>Workflow</th><th>Actions</th></tr>
       ${users.map(u=>`<tr id="urow_${u.id}">
         <td><span class="eid-tag">${u.empId}</span></td>
         <td><div class="emp-chip"><div class="avatar ${avatarClass(u.role)}" style="width:22px;height:22px;font-size:.58rem">${ini(u)}</div>${fullName(u)}</div></td>
         <td><span class="pill ${u.role==='admin'?'p-gold':u.role==='hr'?'p-purple':u.role==='tl'?'p-amber':'p-blue'}"><span class="pill-dot"></span>${u.role.toUpperCase()}</span></td>
         <td>${u.workflow||'—'}</td>
-        <td class="mono" style="color:var(--text3);font-size:.75rem">••••••</td>
         <td>
-          ${u.role!=='admin'?`<button class="act-btn ab-view" onclick="adminResetPass('${u.id}')">🔑 Reset Pass</button>
-          <button class="act-btn ab-no" onclick="adminDeleteUser('${u.id}')">🗑 Delete</button>`:'<span style="color:var(--text3);font-size:.75rem">Protected</span>'}
+          ${u.role!=='admin'?`<button class="act-btn ab-no" onclick="adminDeleteUser('${u.id}')">🗑 Delete</button>`:'<span style="color:var(--text3);font-size:.75rem">Protected</span>'}
         </td>
       </tr>`).join('')}
     </table></div>
@@ -3030,7 +3352,7 @@ function pgHRPanel(){
   if(!requireAccess('hrPanel'))return;
   document.getElementById('mainContent').innerHTML=`
   <div class="page-hdr"><h2>HR Panel</h2></div>
-  <div class="tabs"><button class="tab active" onclick="hrTab('holidays',this)">🎌 Holidays</button><button class="tab" onclick="hrTab('occasions',this)">🎉 Occasions</button><button class="tab" onclick="hrTab('workflows',this)">🏢 Workflows</button></div>
+  <div class="tabs"><button class="tab active" onclick="hrTab('holidays',this)">🎌 Holidays</button><button class="tab" onclick="hrTab('occasions',this)">🎉 Occasions</button><button class="tab" onclick="hrTab('workflows',this)">🏢 Workflows</button><button class="tab" onclick="hrTab('concerns',this)">📬 Concerns & Suggestions</button></div>
   <div id="hrTabContent"></div>`;
   hrTab('holidays',document.querySelector('.tab'));
 }
@@ -3041,10 +3363,76 @@ function hrTab(tab,el){
     c.innerHTML=`<div class="two-col"><div class="card"><div class="card-title">➕ Add Holiday</div><div class="field"><label>Name</label><input type="text" id="hName" placeholder="e.g. Diwali"></div><div class="field"><label>Date</label><input type="date" id="hDate"></div><button class="btn-primary" onclick="addHoliday()">Add Holiday</button></div><div class="card"><div class="card-title">🎌 Holidays (${DB.holidays.length})</div><div id="holList">${renderHolList()}</div></div></div>`;
   }else if(tab==='occasions'){
     c.innerHTML=`<div class="two-col"><div class="card"><div class="card-title">➕ Add Occasion</div><div class="field"><label>Name</label><input type="text" id="oName" placeholder="e.g. Company Day"></div><div class="field"><label>Date</label><input type="date" id="oDate"></div><div class="field"><label>Description</label><textarea id="oDesc" placeholder="Brief description…"></textarea></div><button class="btn-primary" onclick="addOccasion()">Add Occasion</button></div><div class="card"><div class="card-title">🎉 Occasions</div><div id="occList">${renderOccList()}</div></div></div>`;
-  }else{
+  }else if(tab==='workflows'){
     const wfs=['NSBI','Account Receivable','Medical'];
     c.innerHTML=`<div class="card"><div class="card-title">🏢 Workflow Structure</div>${wfs.map(wf=>{const tls=DB.users.filter(u=>u.role==='tl'&&u.workflow===wf),agents=DB.users.filter(u=>u.role==='agent'&&u.workflow===wf),shift=DB.shiftTimings[wf];return`<div class="wf-block"><div class="wf-title">📁 ${wf} <span style="font-size:.73rem;color:var(--text2);font-weight:400">${agents.length} agents${shift?' · shift '+shift.start:''}</span></div><div>${tls.map(t=>`<span class="tl-pill"><div class="avatar av-tl" style="width:18px;height:18px;font-size:.57rem">${ini(t)}</div>${fullName(t)} <span class="eid-tag">${t.empId}</span></span>`).join('')||'<span style="color:var(--text3);font-size:.8rem">No TLs</span>'}</div></div>`;}).join('')}</div>`;
+  }else{
+    // concerns tab
+    const total=(DB.concerns||[]).length;
+    const pending=(DB.concerns||[]).filter(cn=>cn.status!=='resolved').length;
+    c.innerHTML=`
+    <div class="card" style="margin-bottom:14px">
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px">
+        <div style="flex:1;min-width:120px;background:var(--surface2);border-radius:var(--r2);padding:12px 16px;border:1px solid var(--border)"><div style="font-size:.72rem;color:var(--text3)">Total Submitted</div><div style="font-size:1.4rem;font-weight:700;color:var(--brand)">${total}</div></div>
+        <div style="flex:1;min-width:120px;background:var(--surface2);border-radius:var(--r2);padding:12px 16px;border:1px solid var(--border)"><div style="font-size:.72rem;color:var(--text3)">Pending / In Review</div><div style="font-size:1.4rem;font-weight:700;color:var(--amber)">${pending}</div></div>
+        <div style="flex:1;min-width:120px;background:var(--surface2);border-radius:var(--r2);padding:12px 16px;border:1px solid var(--border)"><div style="font-size:.72rem;color:var(--text3)">Resolved</div><div style="font-size:1.4rem;font-weight:700;color:var(--green)">${total-pending}</div></div>
+      </div>
+      <div id="concernsList">${renderConcernsList()}</div>
+    </div>`;
   }
+}
+function renderConcernsList(){
+  if(!DB.concerns||!DB.concerns.length)return'<div class="empty-state">No concerns or suggestions submitted yet.</div>';
+  return DB.concerns.slice().reverse().map(cn=>{
+    const u=getUser(cn.userId);
+    const statusColor=cn.status==='resolved'?'var(--green)':cn.status==='reviewing'?'var(--amber)':'var(--brand)';
+    const statusLabel=cn.status==='resolved'?'✅ Resolved':cn.status==='reviewing'?'🔍 Reviewing':'🆕 New';
+    return`<div style="border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;margin-bottom:10px;background:var(--surface2)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="avatar ${avatarClass(u?.role)}" style="width:26px;height:26px;font-size:.6rem">${u?ini(u):'?'}</div>
+          <div>
+            <div style="font-weight:600;font-size:.85rem">${cn.anonymous?'Anonymous':'<span>'+fullName(u)+'</span>'} <span class="eid-tag">${cn.anonymous?'🕶 Hidden':u?.empId||''}</span></div>
+            <div style="font-size:.73rem;color:var(--text3)">${fmtDate(cn.submittedAt.slice(0,10))} · <span style="color:${cn.type==='concern'?'var(--red)':'var(--brand)'}">${cn.type==='concern'?'⚠ Concern':'💡 Suggestion'}</span></div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:.72rem;font-weight:600;color:${statusColor};background:var(--surface);border:1px solid ${statusColor};border-radius:20px;padding:3px 10px">${statusLabel}</span>
+          <select onchange="updateConcernStatus('${cn.id}',this.value)" style="font-size:.75rem;padding:4px 8px;border-radius:var(--r2);border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer">
+            <option value="new" ${cn.status==='new'?'selected':''}>New</option>
+            <option value="reviewing" ${cn.status==='reviewing'?'selected':''}>Reviewing</option>
+            <option value="resolved" ${cn.status==='resolved'?'selected':''}>Resolved</option>
+          </select>
+          <button class="del-btn" onclick="deleteConcern('${cn.id}')">🗑</button>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:.84rem;color:var(--text);line-height:1.55;white-space:pre-wrap">${cn.message}</div>
+      ${cn.hrNote?`<div style="margin-top:8px;padding:8px 12px;background:var(--brand-bg);border-left:3px solid var(--brand);border-radius:0 var(--r2) var(--r2) 0;font-size:.8rem;color:var(--text2)"><strong style="color:var(--brand)">HR Note:</strong> ${cn.hrNote}</div>`:''}
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <input type="text" id="note_${cn.id}" placeholder="Add a note for this concern…" value="${cn.hrNote||''}" style="flex:1;font-size:.8rem;padding:6px 10px;border-radius:var(--r2);border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif">
+        <button onclick="saveConcernNote('${cn.id}')" style="font-size:.78rem;padding:5px 12px;border-radius:var(--r2);background:var(--brand);color:#fff;border:none;cursor:pointer;font-weight:600">Save Note</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function updateConcernStatus(id,status){
+  const cn=DB.concerns.find(c=>c.id===id);if(!cn)return;
+  cn.status=status;saveDB();
+  document.getElementById('concernsList').innerHTML=renderConcernsList();
+  showToast('Status updated','t-ok');
+}
+function saveConcernNote(id){
+  const cn=DB.concerns.find(c=>c.id===id);if(!cn)return;
+  const note=document.getElementById('note_'+id)?.value.trim()||'';
+  cn.hrNote=note;saveDB();
+  document.getElementById('concernsList').innerHTML=renderConcernsList();
+  showToast('Note saved','t-ok');
+}
+function deleteConcern(id){
+  if(!confirm('Delete this concern/suggestion?'))return;
+  DB.concerns=DB.concerns.filter(c=>c.id!==id);saveDB();
+  document.getElementById('concernsList').innerHTML=renderConcernsList();
+  showToast('Deleted','t-ok');
 }
 function renderHolList(){return DB.holidays.sort((a,b)=>a.date.localeCompare(b.date)).map(h=>`<div class="hol-item"><div><div class="hol-name">${h.name}</div><div class="hol-date">${fmtDate(h.date)}</div></div><button class="del-btn" onclick="delHoliday('${h.id}')">🗑</button></div>`).join('')||'<div class="empty-state">None</div>';}
 function renderOccList(){return DB.occasions.sort((a,b)=>a.date.localeCompare(b.date)).map(o=>`<div class="hol-item"><div><div class="hol-name">${o.name}</div><div class="hol-date">${fmtDate(o.date)} · ${o.desc}</div></div><button class="del-btn" onclick="delOccasion('${o.id}')">🗑</button></div>`).join('')||'<div class="empty-state">None</div>';}
@@ -3052,6 +3440,65 @@ function addHoliday(){const name=document.getElementById('hName').value.trim(),d
 function delHoliday(id){if(!confirm('Delete this holiday?'))return;DB.holidays=DB.holidays.filter(h=>h.id!==id);saveDB();document.getElementById('holList').innerHTML=renderHolList();}
 function addOccasion(){const name=document.getElementById('oName').value.trim(),date=document.getElementById('oDate').value,desc=document.getElementById('oDesc').value.trim();if(!name||!date){showToast('Fill all fields','t-err');return;}DB.occasions.push({id:uid(),name,date,desc});saveDB();showToast('Occasion added!','t-ok');document.getElementById('occList').innerHTML=renderOccList();document.getElementById('oName').value='';document.getElementById('oDate').value='';document.getElementById('oDesc').value='';}
 function delOccasion(id){if(!confirm('Delete?'))return;DB.occasions=DB.occasions.filter(o=>o.id!==id);saveDB();document.getElementById('occList').innerHTML=renderOccList();}
+
+/* ══════════════════════════════════
+   CONCERNS & SUGGESTIONS
+══════════════════════════════════ */
+function pgConcerns(){
+  if(!requireAccess('concerns'))return;
+  const mine=(DB.concerns||[]).filter(c=>c.userId===CU.id).slice().reverse();
+  const statusColor=s=>s==='resolved'?'var(--green)':s==='reviewing'?'var(--amber)':'var(--brand)';
+  const statusLabel=s=>s==='resolved'?'✅ Resolved':s==='reviewing'?'🔍 Reviewing':'🆕 New';
+  document.getElementById('mainContent').innerHTML=`
+  <div class="page-hdr"><h2>Concerns & Suggestions</h2><p>Share feedback, raise concerns, or suggest improvements — optionally anonymously.</p></div>
+  <div class="two-col" style="align-items:start">
+    <div class="card">
+      <div class="card-title">📬 Submit a Concern or Suggestion</div>
+      <div class="field">
+        <label>Type</label>
+        <select id="cnType" style="width:100%;padding:9px 12px;border-radius:var(--r2);border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem">
+          <option value="concern">⚠ Concern</option>
+          <option value="suggestion">💡 Suggestion</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Message</label>
+        <textarea id="cnMsg" rows="5" placeholder="Describe your concern or suggestion in detail…" style="width:100%;padding:10px 12px;border-radius:var(--r2);border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.84rem;resize:vertical;line-height:1.55;box-sizing:border-box"></textarea>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+        <input type="checkbox" id="cnAnon" style="width:16px;height:16px;accent-color:var(--brand);cursor:pointer">
+        <label for="cnAnon" style="font-size:.83rem;color:var(--text2);cursor:pointer;margin:0">Submit anonymously <span style="color:var(--text3);font-size:.76rem">(HR won't see your name)</span></label>
+      </div>
+      <button class="btn-primary" onclick="submitConcern()">Submit →</button>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 My Submissions (${mine.length})</div>
+      ${mine.length?mine.map(cn=>`
+        <div style="border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;margin-bottom:10px;background:var(--surface)">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+            <span style="font-size:.78rem;font-weight:700;color:${cn.type==='concern'?'var(--red)':'var(--brand)'}">${cn.type==='concern'?'⚠ Concern':'💡 Suggestion'}</span>
+            <span style="font-size:.72rem;font-weight:600;color:${statusColor(cn.status)};background:var(--surface2);border:1px solid ${statusColor(cn.status)};border-radius:20px;padding:2px 9px">${statusLabel(cn.status)}</span>
+          </div>
+          <div style="margin-top:8px;font-size:.83rem;color:var(--text);line-height:1.5;white-space:pre-wrap">${cn.message}</div>
+          <div style="margin-top:6px;font-size:.72rem;color:var(--text3)">${fmtDate(cn.submittedAt.slice(0,10))} · ${cn.anonymous?'🕶 Anonymous':''}</div>
+          ${cn.hrNote?`<div style="margin-top:8px;padding:7px 10px;background:var(--brand-bg);border-left:3px solid var(--brand);border-radius:0 var(--r2) var(--r2) 0;font-size:.79rem;color:var(--text2)"><strong style="color:var(--brand)">HR Reply:</strong> ${cn.hrNote}</div>`:''}
+        </div>`).join('')
+      :'<div class="empty-state">You haven\'t submitted anything yet.</div>'}
+    </div>
+  </div>`;
+}
+function submitConcern(){
+  const type=document.getElementById('cnType').value;
+  const message=document.getElementById('cnMsg').value.trim();
+  const anonymous=document.getElementById('cnAnon').checked;
+  if(!message){showToast('Please write a message first','t-err');return;}
+  if(message.length<10){showToast('Message too short — please add more detail','t-warn');return;}
+  if(!DB.concerns)DB.concerns=[];
+  DB.concerns.push({id:uid(),userId:CU.id,type,message,anonymous,status:'new',hrNote:'',submittedAt:new Date().toISOString()});
+  saveDB();
+  showToast('Submitted successfully! HR will review it.','t-ok');
+  pgConcerns();
+}
 
 /* ══════════════════════════════════
    CALENDAR
@@ -3167,9 +3614,11 @@ function pgSalarySlips(){
         <td>${slipMonthLabel(s.monthKey)}</td>
         <td class="mono" style="color:var(--green);font-weight:700">₹${Number(s.netSalary).toLocaleString('en-IN')}</td>
         <td><span class="${s.seen?'slip-status-seen':'slip-status-new'}">${s.seen?'Viewed':'New'}</span></td>
+        <td>${s.pdfData?'<span class="pdf-badge">📄 PDF</span>':''}</td>
         <td>
           <button class="act-btn ab-view" onclick="previewSlip('${s.id}')">👁 View</button>
-          <button class="act-btn ab-ok" onclick="editSlipModal('${s.id}')">✏️ Edit</button>
+          ${s.pdfData?`<button class="act-btn" style="background:var(--red-bg);color:var(--red);border:1px solid rgba(220,38,38,.2)" onclick="downloadPdf('${s.id}')">📥 PDF</button>`:''}
+          ${!s.pdfData?`<button class="act-btn ab-ok" onclick="editSlipModal('${s.id}')">✏️ Edit</button>`:''}
           <button class="act-btn ab-no" onclick="deleteSlip('${s.id}')">🗑</button>
         </td>
       </tr>`;
@@ -3181,24 +3630,64 @@ function pgSalarySlips(){
 
     <div class="card" style="border-left:3px solid var(--brand)">
       <div class="card-title">➕ Create Salary Slip</div>
+      <div class="slip-type-tabs">
+        <button class="slip-type-tab active" id="stab-manual" onclick="switchSlipTab('manual')">📝 Manual Entry</button>
+        <button class="slip-type-tab" id="stab-pdf" onclick="switchSlipTab('pdf')">📄 Upload PDF</button>
+      </div>
+
+      <!-- SHARED: employee + month/year -->
       <div class="field-row">
         <div class="field"><label>Employee</label><select id="ssEmp">${empOpts}</select></div>
         <div class="field"><label>Month</label><select id="ssMonth">${monthOpts}</select></div>
       </div>
       <div class="field"><label>Year</label><select id="ssYear">${yearOpts}</select></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="field"><label>Basic Salary (₹)</label><input type="number" id="ssBasic" placeholder="e.g. 25000" min="0"></div>
-        <div class="field"><label>HRA (₹)</label><input type="number" id="ssHRA" placeholder="e.g. 8000" min="0" value="0"></div>
-        <div class="field"><label>Special Allowance (₹)</label><input type="number" id="ssSA" placeholder="e.g. 5000" min="0" value="0"></div>
-        <div class="field"><label>Other Earnings (₹)</label><input type="number" id="ssOther" placeholder="e.g. 0" min="0" value="0"></div>
-        <div class="field"><label>PF Deduction (₹)</label><input type="number" id="ssPF" placeholder="e.g. 1800" min="0" value="0"></div>
-        <div class="field"><label>TDS / Tax (₹)</label><input type="number" id="ssTDS" placeholder="e.g. 0" min="0" value="0"></div>
-        <div class="field"><label>Other Deductions (₹)</label><input type="number" id="ssDeduct" placeholder="e.g. 0" min="0" value="0"></div>
-        <div class="field"><label>Days Present</label><input type="number" id="ssDaysPresent" placeholder="e.g. 26" min="0" max="31" value="26"></div>
+
+      <!-- MANUAL ENTRY PANEL -->
+      <div id="ssManualPanel">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="field"><label>Basic Salary (₹)</label><input type="number" id="ssBasic" placeholder="e.g. 25000" min="0"></div>
+          <div class="field"><label>HRA (₹)</label><input type="number" id="ssHRA" placeholder="e.g. 8000" min="0" value="0"></div>
+          <div class="field"><label>Special Allowance (₹)</label><input type="number" id="ssSA" placeholder="e.g. 5000" min="0" value="0"></div>
+          <div class="field"><label>Other Earnings (₹)</label><input type="number" id="ssOther" placeholder="e.g. 0" min="0" value="0"></div>
+          <div class="field"><label>PF Deduction (₹)</label><input type="number" id="ssPF" placeholder="e.g. 1800" min="0" value="0"></div>
+          <div class="field"><label>TDS / Tax (₹)</label><input type="number" id="ssTDS" placeholder="e.g. 0" min="0" value="0"></div>
+          <div class="field"><label>Other Deductions (₹)</label><input type="number" id="ssDeduct" placeholder="e.g. 0" min="0" value="0"></div>
+          <div class="field"><label>Days Present</label><input type="number" id="ssDaysPresent" placeholder="e.g. 26" min="0" max="31" value="26"></div>
+        </div>
+        <div class="field"><label>Remarks / Notes</label><input type="text" id="ssRemarks" placeholder="e.g. Performance bonus included"></div>
+        <div class="field"><label>Net Salary Override (₹) <span style='font-weight:400;color:var(--text3)'>optional — leave blank to auto-calculate</span></label>
+          <input type="number" id="ssNetOverride" placeholder="Auto: Earnings − Deductions" min="0">
+        </div>
+        <button class="btn-primary" style="max-width:260px" onclick="createSlip()">💰 Create Salary Slip</button>
       </div>
-      <div class="field"><label>Remarks / Notes</label><input type="text" id="ssRemarks" placeholder="e.g. Performance bonus included"></div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
-        <button class="btn-primary" style="flex:1;max-width:240px" onclick="createSlip()">💰 Create Salary Slip</button>
+
+      <!-- PDF UPLOAD PANEL -->
+      <div id="ssPdfPanel" style="display:none">
+        <div class="pdf-upload-zone" id="pdfDropZone"
+          ondragover="pdfDragOver(event)" ondragleave="pdfDragLeave(event)" ondrop="pdfDrop(event)">
+          <input type="file" id="ssPdfFile" accept=".pdf,application/pdf" onchange="pdfFileSelected(this)">
+          <div class="pdf-upload-icon">📄</div>
+          <div class="pdf-upload-label">Click to browse or drag & drop a PDF</div>
+          <div class="pdf-upload-sub">Only PDF files · Max 5 MB</div>
+        </div>
+        <div id="pdfFilePreview" style="display:none">
+          <div class="pdf-preview-wrap">
+            <div class="pdf-preview-icon">📄</div>
+            <div>
+              <div class="pdf-preview-name" id="pdfFileName"></div>
+              <div class="pdf-preview-size" id="pdfFileSize"></div>
+            </div>
+            <button onclick="clearPdfFile()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:1.1rem;padding:4px" title="Remove">✕</button>
+          </div>
+        </div>
+        <div id="pdfError" class="warning-box" style="display:none;margin-top:8px"></div>
+        <div class="field" style="margin-top:12px"><label>Net Salary (₹) <span style='color:var(--red)'>*</span></label>
+          <input type="number" id="ssPdfNet" placeholder="Enter net salary from the PDF" min="0">
+        </div>
+        <div class="field"><label>Remarks / Notes</label>
+          <input type="text" id="ssPdfRemarks" placeholder="e.g. April 2025 salary slip">
+        </div>
+        <button class="btn-primary" style="max-width:260px" onclick="uploadPdfSlip()">📤 Upload & Save Slip</button>
       </div>
     </div>
 
@@ -3208,7 +3697,7 @@ function pgSalarySlips(){
       </div>
       ${DB.salarySlips.length===0?'<div class="empty-state">No salary slips created yet</div>':`
       <div class="tbl-wrap"><table>
-        <tr><th>Employee</th><th>Emp ID</th><th>Month</th><th>Net Salary</th><th>Status</th><th>Actions</th></tr>
+        <tr><th>Employee</th><th>Emp ID</th><th>Month</th><th>Net Salary</th><th>Status</th><th>Type</th><th>Actions</th></tr>
         ${rows.join('')}
       </table></div>`}
     </div>`;
@@ -3275,10 +3764,15 @@ function buildSlipCard(s,u){
     </div>
     ${s.remarks?`<div style="font-size:.77rem;color:var(--text2);background:var(--surface2);border-radius:6px;padding:6px 10px;margin-bottom:8px">📝 ${s.remarks}</div>`:''}
     <div class="slip-actions">
-      <button class="act-btn ab-view" onclick="previewSlip('${s.id}')">👁 View Full Slip</button>
-      ${isOwn?`<button class="act-btn ab-ok" onclick="emailSlip('${s.id}')">📧 Email to Me</button>`:''}
-      <button class="act-btn" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border)" onclick="printSlip('${s.id}')">🖨 Print</button>
+      ${s.pdfData
+        ? `<button class="act-btn" style="background:var(--red-bg);color:var(--red);border:1px solid rgba(220,38,38,.2);font-weight:700" onclick="downloadPdf('${s.id}')">📄 View PDF</button>
+           <button class="act-btn" style="background:var(--green-bg);color:var(--green);border:1px solid rgba(22,163,74,.2);font-weight:700" onclick="downloadPdf('${s.id}',true)">📥 Download PDF</button>`
+        : `<button class="act-btn ab-view" onclick="previewSlip('${s.id}')">👁 View Slip</button>
+           <button class="act-btn" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border)" onclick="printSlip('${s.id}')">🖨 Print</button>`
+      }
+      ${isOwn?`<button class="act-btn ab-ok" onclick="emailSlip('${s.id}')">📧 Email</button>`:''}
     </div>
+    ${s.pdfData?`<div style="margin-top:8px"><span class="pdf-badge">📄 PDF Salary Slip</span> <span style="font-size:.72rem;color:var(--text3);margin-left:6px">Uploaded by HR</span></div>`:''}
   </div>`;
 }
 
@@ -3415,23 +3909,40 @@ function buildSlipHTML(s){
 
 function previewSlip(id){
   const s=DB.salarySlips.find(x=>x.id===id);if(!s)return;
-  // Mark as seen
   s.seen=true;saveDB();
   const modal=document.createElement('div');
   modal.id='slipPreviewModal';
   modal.style.cssText='position:fixed;inset:0;background:rgba(26,31,58,.6);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);overflow-y:auto';
-  modal.innerHTML=`
-    <div style="position:relative;max-width:640px;width:100%">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <span style="color:#fff;font-size:.85rem;font-weight:600">Salary Slip Preview</span>
-        <div style="display:flex;gap:8px">
-          <button onclick="printSlip('${id}')" style="padding:7px 14px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer">🖨 Print</button>
-          ${CU.id===s.userId?`<button onclick="emailSlip('${id}')" style="padding:7px 14px;background:#3b4fd8;color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer">📧 Email</button>`:''}
-          <button onclick="document.getElementById('slipPreviewModal').remove()" style="padding:7px 14px;background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer">✕ Close</button>
+  const isOwn=CU.id===s.userId;
+  if(s.pdfData){
+    // PDF slip — show inline PDF viewer
+    modal.innerHTML=`
+      <div style="position:relative;width:100%;max-width:800px;height:90vh;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="color:#fff;font-size:.88rem;font-weight:700">📄 PDF Salary Slip — ${slipMonthLabel(s.monthKey)}</span>
+          <div style="display:flex;gap:8px">
+            <button onclick="downloadPdf('${id}')" style="padding:7px 14px;background:#dc2626;color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer">📥 Download</button>
+            ${isOwn?`<button onclick="emailSlip('${id}')" style="padding:7px 14px;background:#3b4fd8;color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer">📧 Email</button>`:''}
+            <button onclick="document.getElementById('slipPreviewModal').remove()" style="padding:7px 14px;background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer">✕ Close</button>
+          </div>
         </div>
-      </div>
-      ${buildSlipHTML(s)}
-    </div>`;
+        <iframe src="${s.pdfData}" style="flex:1;border:none;border-radius:12px;background:#fff" title="Salary Slip PDF"></iframe>
+      </div>`;
+  } else {
+    // Manual slip — show HTML preview
+    modal.innerHTML=`
+      <div style="position:relative;max-width:640px;width:100%">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <span style="color:#fff;font-size:.85rem;font-weight:600">Salary Slip Preview</span>
+          <div style="display:flex;gap:8px">
+            <button onclick="printSlip('${id}')" style="padding:7px 14px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer">🖨 Print</button>
+            ${isOwn?`<button onclick="emailSlip('${id}')" style="padding:7px 14px;background:#3b4fd8;color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer">📧 Email</button>`:''}
+            <button onclick="document.getElementById('slipPreviewModal').remove()" style="padding:7px 14px;background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer">✕ Close</button>
+          </div>
+        </div>
+        ${buildSlipHTML(s)}
+      </div>`;
+  }
   document.body.appendChild(modal);
 }
 
@@ -3471,6 +3982,13 @@ function emailSlip(id){
   const emp=getUser(s.userId);
   if(!emp){showToast('Employee not found','t-err');return;}
   s.seen=true;saveDB();
+  // PDF slip: prompt to download then email manually
+  if(s.pdfData){
+    if(confirm('This is a PDF salary slip.\n\nClick OK to download the PDF so you can attach it to your email manually.')){
+      downloadPdf(id, true);
+    }
+    return;
+  }
   // Build plain text slip body
   const earn=(+s.basic||0)+(+s.hra||0)+(+s.sa||0)+(+s.otherEarnings||0);
   const deduct=(+s.pf||0)+(+s.tds||0)+(+s.otherDeductions||0);
@@ -3795,6 +4313,765 @@ function cpSkip(){
   showScreen('appScreen');
 }
 
+
+/* ══════════════════════════════════
+   PDF SALARY SLIP — UPLOAD & MANAGE
+   PDF stored as base64 data URL in slip.pdfData
+   Max 5MB enforced client-side
+══════════════════════════════════ */
+
+let _pdfFileData = null; // {dataUrl, name, size}
+
+function switchSlipTab(tab){
+  document.getElementById('stab-manual').classList.toggle('active', tab==='manual');
+  document.getElementById('stab-pdf').classList.toggle('active', tab==='pdf');
+  document.getElementById('ssManualPanel').style.display = tab==='manual' ? '' : 'none';
+  document.getElementById('ssPdfPanel').style.display   = tab==='pdf'    ? '' : 'none';
+  if(tab==='pdf') clearPdfFile();
+}
+
+function pdfDragOver(e){
+  e.preventDefault();
+  document.getElementById('pdfDropZone').classList.add('drag-over');
+}
+function pdfDragLeave(e){
+  document.getElementById('pdfDropZone').classList.remove('drag-over');
+}
+function pdfDrop(e){
+  e.preventDefault();
+  document.getElementById('pdfDropZone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if(file) processPdfFile(file);
+}
+function pdfFileSelected(input){
+  const file = input.files[0];
+  if(file) processPdfFile(file);
+}
+
+function processPdfFile(file){
+  const errEl = document.getElementById('pdfError');
+  errEl.style.display='none';
+  if(!file.type.includes('pdf') && !file.name.endsWith('.pdf')){
+    errEl.textContent='Only PDF files are allowed.';
+    errEl.style.display='block';
+    return;
+  }
+  const MAX_MB = 5;
+  if(file.size > MAX_MB * 1024 * 1024){
+    errEl.textContent=`File too large — maximum size is ${MAX_MB} MB. Your file: ${(file.size/1024/1024).toFixed(1)} MB`;
+    errEl.style.display='block';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    _pdfFileData = { dataUrl: e.target.result, name: file.name, size: file.size };
+    document.getElementById('pdfFileName').textContent = file.name;
+    document.getElementById('pdfFileSize').textContent = (file.size/1024).toFixed(1)+' KB';
+    document.getElementById('pdfFilePreview').style.display = 'block';
+    document.getElementById('pdfDropZone').style.borderStyle = 'solid';
+    document.getElementById('pdfDropZone').style.borderColor = 'var(--green)';
+    showToast('PDF loaded — fill in net salary and save','t-info');
+  };
+  reader.onerror = () => {
+    errEl.textContent='Failed to read file. Please try again.';
+    errEl.style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearPdfFile(){
+  _pdfFileData = null;
+  const input = document.getElementById('ssPdfFile');
+  if(input) input.value='';
+  document.getElementById('pdfFilePreview').style.display='none';
+  document.getElementById('pdfError').style.display='none';
+  const dz = document.getElementById('pdfDropZone');
+  if(dz){ dz.style.borderStyle='dashed'; dz.style.borderColor=''; }
+}
+
+function uploadPdfSlip(){
+  const userId  = document.getElementById('ssEmp').value;
+  const month   = parseInt(document.getElementById('ssMonth').value);
+  const year    = parseInt(document.getElementById('ssYear').value);
+  const netSal  = parseFloat(document.getElementById('ssPdfNet').value)||0;
+  const remarks = document.getElementById('ssPdfRemarks').value.trim();
+  const errEl   = document.getElementById('pdfError');
+  errEl.style.display='none';
+
+  if(!userId){showToast('Please select an employee','t-err');return;}
+  if(!_pdfFileData){
+    errEl.textContent='Please select a PDF file first.';
+    errEl.style.display='block';
+    return;
+  }
+  if(!netSal){
+    errEl.textContent='Please enter the net salary amount.';
+    errEl.style.display='block';
+    return;
+  }
+
+  const monthKey = slipMonthKey(year, month);
+  const existing = DB.salarySlips.find(s=>s.userId===userId&&s.monthKey===monthKey);
+  if(existing && !confirm(`A slip for ${slipMonthLabel(monthKey)} already exists. Replace it?`)) return;
+  if(existing) DB.salarySlips = DB.salarySlips.filter(s=>s.id!==existing.id);
+
+  const slip = {
+    id: uid(), userId, monthKey,
+    pdfData: _pdfFileData.dataUrl,
+    pdfName: _pdfFileData.name,
+    netSalary: netSal,
+    remarks,
+    // No manual fields for PDF slips
+    basic:0, hra:0, sa:0, otherEarnings:0,
+    pf:0, tds:0, otherDeductions:0,
+    earnings:0, deductions:0,
+    daysPresent:0,
+    createdBy: CU.id, createdAt: ts(), seen: false,
+    slipType: 'pdf'
+  };
+  DB.salarySlips.push(slip);
+  saveDB();
+  _pdfFileData = null;
+  showToast(`PDF salary slip saved for ${slipMonthLabel(monthKey)} ✅`,'t-ok');
+  pgSalarySlips();
+}
+
+function downloadPdf(id, forceDownload=false){
+  const s = DB.salarySlips.find(x=>x.id===id);
+  if(!s||!s.pdfData){showToast('No PDF attached to this slip','t-err');return;}
+  s.seen=true; saveDB();
+  if(forceDownload){
+    const a=document.createElement('a');
+    a.href=s.pdfData;
+    a.download=s.pdfName||`SalarySlip_${slipMonthLabel(s.monthKey).replace(' ','_')}.pdf`;
+    a.click();
+    showToast('PDF downloaded','t-ok');
+  } else {
+    // Open in new tab for viewing
+    const w=window.open('','_blank');
+    if(w){
+      w.document.write('<html><head><title>Salary Slip</title></head><body style="margin:0"><iframe src="'+s.pdfData+'" width="100%" height="100%" style="border:none;position:fixed;inset:0"></iframe></body></html>');
+      w.document.close();
+    }
+  }
+}
+
+
+/* ══════════════════════════════════
+   SERVICE SETTINGS
+   HR/Admin can toggle services on/off:
+   - Chat, Leave Request, Work Log, Salary Slips
+   Employee can self-disable their account
+   HR/Admin can re-enable any account
+══════════════════════════════════ */
+
+function isAccountDisabled(userId){
+  return (DB.disabledAccounts||[]).includes(userId);
+}
+
+function isServiceEnabled(key){
+  const s=DB.services||{};
+  return s[key]!==false; // default true
+}
+
+function pgServiceSettings(){
+  if(!requireAccess('serviceSettings'))return;
+  const canManage=(CU.role==='hr'||CU.role==='admin');
+
+  const SERVICES=[
+    {key:'chat',        label:'Team Chat',        icon:'💬', desc:'Real-time messaging between team members. When disabled, the Chat tab is hidden for all employees.'},
+    {key:'leaveRequest',label:'Leave Requests',   icon:'🏖', desc:'Allow employees to submit leave requests. When disabled, agents cannot access the Leave Request page.'},
+    {key:'workLog',     label:'Work Log',          icon:'⏱', desc:'Idle time tracking and work log visibility for employees. When disabled, Work Log tab is hidden.'},
+    {key:'salarySlips', label:'Salary Slips',      icon:'💰', desc:'Employee access to salary slips. When disabled, employees cannot view their slips.'},
+  ];
+
+  const serviceCards=SERVICES.map(svc=>{
+    const on=isServiceEnabled(svc.key);
+    return`<div class="service-card">
+      <div class="service-info">
+        <div class="service-name">${svc.icon} ${svc.label}</div>
+        <div class="service-desc">${svc.desc}</div>
+      </div>
+      <div class="service-toggle-wrap">
+        <span class="svc-status ${on?'on':'off'}">${on?'ON':'OFF'}</span>
+        <button class="svc-toggle ${on?'on':'off'}" onclick="toggleService('${svc.key}')" title="${on?'Disable':'Enable'} ${svc.label}"></button>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('mainContent').innerHTML=`
+  <div class="page-hdr"><h2>Service Settings</h2><p>Toggle app features on or off for employees</p></div>
+  ${canManage?`
+  <div class="card">
+    <div class="card-title">🔧 Feature Toggles</div>
+    <div class="info-box" style="margin-bottom:14px">Disabling a service hides it from all employees immediately. HR, TL and Admin are unaffected.</div>
+    ${serviceCards}
+  </div>`:'<div class="access-denied"><div class="ad-icon">🔒</div><h3>Access Denied</h3><p>Only HR and Admin can manage service settings.</p></div>'}`;
+}
+
+function escHtml(s){ return s.replace(/'/g,"\\'"); }
+
+function toggleService(key){
+  if(!DB.services)DB.services={};
+  const cur=isServiceEnabled(key);
+  DB.services[key]=!cur;
+  saveDB();
+  showToast(`${key} ${!cur?'enabled':'disabled'}`,'t-ok');
+  pgServiceSettings();
+  // Rebuild nav in case service affects visibility
+  buildNavDynamic();
+}
+
+function disableAccount(userId, name){
+  if(userId===CU.id){
+    if(!confirm(`Disable your own account?\n\nYou will be logged out and will need HR or Admin to re-enable it.`))return;
+  } else {
+    if(!confirm(`Disable account for ${name}?\n\nThey will be blocked from logging in.`))return;
+  }
+  if(!DB.disabledAccounts)DB.disabledAccounts=[];
+  if(!DB.disabledAccounts.includes(userId))DB.disabledAccounts.push(userId);
+  saveDB();
+  showToast(`Account disabled`,'t-ok');
+  if(userId===CU.id){ doLogout(); return; }
+  pgServiceSettings();
+}
+
+function reEnableAccount(userId){
+  DB.disabledAccounts=(DB.disabledAccounts||[]).filter(id=>id!==userId);
+  saveDB();
+  const u=getUser(userId);
+  showToast(`${u?fullName(u):'Account'} re-enabled ✅`,'t-ok');
+  pgServiceSettings();
+}
+
+// Rebuild nav dynamically based on service toggles
+function buildNavDynamic(){
+  // Mobile agent/TL: chat only
+  if(isMobileChatOnly()){
+    const chatEnabled=isServiceEnabled('chat');
+    if(!chatEnabled){
+      document.getElementById('sideNav').innerHTML=
+        '<div style="padding:12px 16px;font-size:.72rem;color:rgba(255,255,255,.3);text-align:center;line-height:1.6">Chat is disabled.<br>Contact HR to enable.</div>';
+      return;
+    }
+    document.getElementById('sideNav').innerHTML=
+      `<a onclick="navTo('chat')" id="nav_chat"><span class="ni">💬</span><span>Chat</span></a>`;
+    return;
+  }
+  const items=(NAV_CFG[CU.role]||NAV_CFG.agent).filter(item=>{
+    if(item.id==='chat'&&!isServiceEnabled('chat'))return false;
+    if(item.id==='leave'&&!isServiceEnabled('leaveRequest')&&CU.role==='agent')return false;
+    if(item.id==='workLog'&&!isServiceEnabled('workLog')&&CU.role==='agent')return false;
+    if(item.id==='salarySlips'&&!isServiceEnabled('salarySlips')&&(CU.role==='agent'||CU.role==='tl'))return false;
+    return true;
+  });
+  document.getElementById('sideNav').innerHTML=items.map(i=>
+    `<a onclick="navTo('${i.id}')" id="nav_${i.id}"><span class="ni">${i.icon}</span><span>${i.label}</span></a>`
+  ).join('');
+}
+
+
+/* ══════════════════════════════════
+   TEAM CHAT
+   - Channels: General, Team (per workflow), Direct (DM)
+   - Messages stored in DB.chatMessages
+   - HR/TL/Admin can enable/disable chat globally
+   - Auto-scroll to bottom, unread badges
+══════════════════════════════════ */
+
+let _chatChannel='general'; // current channel
+let _chatTimer=null;        // polling for new messages
+
+function pgChat(){
+  if(!requireAccess('chat'))return;
+  if(!isServiceEnabled('chat')){
+    document.getElementById('mainContent').innerHTML=`
+    <div class="page-hdr"><h2>Team Chat</h2></div>
+    <div class="card" style="text-align:center;padding:40px">
+      <div style="font-size:2.5rem;margin-bottom:12px">💬</div>
+      <div style="font-weight:700;font-size:1rem;color:var(--text2)">Chat is currently disabled</div>
+      <div style="font-size:.82rem;color:var(--text3);margin-top:6px">Contact HR or Admin to enable Team Chat</div>
+    </div>`;
+    return;
+  }
+  renderChatPage();
+}
+
+function getChannels(){
+  const channels=[{key:'general',label:'# General',icon:'🌐'}];
+  // Workflow channel
+  if(CU.workflow) channels.push({key:'wf_'+CU.workflow.replace(/ /g,'_'),label:'# '+CU.workflow,icon:'📁'});
+  // Team channel (TL sees their team, agents see their team)
+  if(CU.role==='tl'){
+    channels.push({key:'team_'+CU.id,label:'# My Team',icon:'👥'});
+  } else if(CU.tlId){
+    channels.push({key:'team_'+CU.tlId,label:'# My Team',icon:'👥'});
+  }
+  // HR/Admin sees all-staff channel
+  if(CU.role==='hr'||CU.role==='admin'){
+    channels.push({key:'hr_channel',label:'# HR Staff',icon:'🏢'});
+  }
+  return channels;
+}
+
+function canPostInChannel(channelKey){
+  if(channelKey==='general')return true;
+  if(channelKey==='hr_channel')return CU.role==='hr'||CU.role==='admin'||CU.role==='tl';
+  if(channelKey.startsWith('wf_'))return true;
+  if(channelKey.startsWith('team_')){
+    const tlId=channelKey.replace('team_','');
+    return CU.id===tlId||CU.tlId===tlId||CU.role==='hr'||CU.role==='admin';
+  }
+  return true;
+}
+
+function renderChatPage(){
+  const channels=getChannels();
+  const channelTabs=channels.map(ch=>{
+    const unread=getUnread(ch.key);
+    return`<button class="chat-channel-tab ${_chatChannel===ch.key?'active':''}" onclick="switchChatChannel('${ch.key}')">${ch.icon} ${ch.label}${unread?`<span class="chat-unread">${unread}</span>`:''}
+    </button>`;
+  }).join('');
+
+  const canManageChat=CU.role==='hr'||CU.role==='tl'||CU.role==='admin';
+
+  const mobileOnlyBanner=isMobileChatOnly()?`
+    <div style="background:var(--brand-bg);border:1px solid rgba(59,79,216,.2);border-radius:var(--r2);padding:10px 14px;margin-bottom:14px;font-size:.8rem;color:var(--brand);display:flex;align-items:center;gap:8px">
+      📱 <span>Mobile mode — only Chat is available. Use a desktop browser to access attendance, leaves and other features.</span>
+    </div>`:'';
+  document.getElementById('mainContent').innerHTML=`
+  <div class="page-hdr"><h2>Team Chat</h2>
+    <p>Real-time messaging with your team${canManageChat?' · <a onclick="navTo(\'serviceSettings\')" style="color:var(--brand);cursor:pointer;font-weight:600">Manage chat settings</a>':''}</p>
+  </div>
+  ${mobileOnlyBanner}
+  <div class="chat-wrap" id="chatWrap">
+    <div class="chat-header">
+      <div class="chat-header-title">
+        <div class="chat-online-dot"></div>
+        <span id="chatChannelLabel">General</span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        ${canManageChat?`<button onclick="clearChannelMessages()" class="act-btn" style="background:var(--red-bg);color:var(--red);border:1px solid rgba(220,38,38,.2);font-size:.72rem">🗑 Clear</button>`:''}
+        <span style="font-size:.75rem;color:var(--text3)" id="chatMsgCount">0 messages</span>
+      </div>
+    </div>
+    <div class="chat-channel-tabs" id="chatChannelTabs">${channelTabs}</div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chatInput" placeholder="Type a message… (Enter to send, Shift+Enter for new line)"
+        onkeydown="chatKeyDown(event)" rows="1" oninput="chatInputResize(this)"></textarea>
+      <button class="chat-send-btn" id="chatSendBtn" onclick="sendChatMessage()" title="Send message">
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>`;
+
+  switchChatChannel(_chatChannel);
+  // Poll for new messages every 3 seconds
+  clearInterval(_chatTimer);
+  _chatTimer=setInterval(()=>{ if(document.getElementById('chatMessages')) refreshChatMessages(); },3000);
+}
+
+function getUnread(channelKey){
+  const lastSeen=parseInt(localStorage.getItem('chat_seen_'+CU.id+'_'+channelKey)||'0');
+  return (DB.chatMessages||[]).filter(m=>m.channel===channelKey&&m.ts>lastSeen&&m.userId!==CU.id).length;
+}
+
+function markChannelSeen(channelKey){
+  localStorage.setItem('chat_seen_'+CU.id+'_'+channelKey, Date.now().toString());
+}
+
+function switchChatChannel(key){
+  _chatChannel=key;
+  document.querySelectorAll('.chat-channel-tab').forEach(t=>t.classList.remove('active'));
+  const activeTab=document.querySelector(`.chat-channel-tab[onclick*="${key}"]`);
+  if(activeTab)activeTab.classList.add('active');
+  markChannelSeen(key);
+  refreshChatMessages();
+  const ch=getChannels().find(c=>c.key===key);
+  const label=document.getElementById('chatChannelLabel');
+  if(label&&ch)label.textContent=ch.icon+' '+ch.label.replace(/^# /,'');
+  setTimeout(()=>{const el=document.getElementById('chatMessages');if(el)el.scrollTop=el.scrollHeight;},50);
+}
+
+function refreshChatMessages(){
+  const box=document.getElementById('chatMessages');
+  if(!box)return;
+  const msgs=(DB.chatMessages||[]).filter(m=>m.channel===_chatChannel).slice(-100);
+  const countEl=document.getElementById('chatMsgCount');
+  if(countEl)countEl.textContent=msgs.length+' message'+(msgs.length!==1?'s':'');
+  const wasAtBottom=box.scrollHeight-box.scrollTop-box.clientHeight<40;
+  let html='';
+  let lastDate='';
+  msgs.forEach(m=>{
+    const d=new Date(m.ts).toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});
+    if(d!==lastDate){html+=`<div class="chat-date-divider">${d}</div>`;lastDate=d;}
+    const u=getUser(m.userId);
+    const isMine=m.userId===CU.id;
+    const time=new Date(m.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    const roleColor={admin:'av-admin',hr:'av-hr',tl:'av-tl',agent:'av-agent'}[u?.role]||'';
+    html+=`<div class="chat-msg ${isMine?'mine':''}">
+      <div class="cm-av avatar ${roleColor}" style="width:30px;height:30px;font-size:.62rem">${u?ini(u):'?'}</div>
+      <div style="max-width:100%">
+        <div class="chat-sender">${u?fullName(u):'Unknown'} <span style="font-weight:400;color:var(--text3);font-size:.68rem">${u?'· '+u.role.toUpperCase():''}</span></div>
+        <div class="chat-bubble">${escMsg(m.text)}</div>
+        <div class="chat-msg-meta">${time}${m.edited?' · edited':''}</div>
+      </div>
+    </div>`;
+  });
+  if(!msgs.length)html=`<div class="chat-disabled-msg"><div style="font-size:2rem;margin-bottom:8px">💬</div>No messages yet — be the first to say something!</div>`;
+  box.innerHTML=html;
+  if(wasAtBottom)box.scrollTop=box.scrollHeight;
+  markChannelSeen(_chatChannel);
+}
+
+function escMsg(text){
+  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\n/g,'<br>').replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline">$1</a>');
+}
+
+function chatKeyDown(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChatMessage();}
+}
+function chatInputResize(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,100)+'px';
+}
+
+function sendChatMessage(){
+  const inp=document.getElementById('chatInput');
+  if(!inp)return;
+  const text=inp.value.trim();
+  if(!text)return;
+  if(!isServiceEnabled('chat')){showToast('Chat is currently disabled','t-err');return;}
+  if(!canPostInChannel(_chatChannel)){showToast('You cannot post in this channel','t-err');return;}
+  if(text.length>1000){showToast('Message too long (max 1000 chars)','t-err');return;}
+  if(!DB.chatMessages)DB.chatMessages=[];
+  DB.chatMessages.push({
+    id:uid(),userId:CU.id,channel:_chatChannel,
+    text,ts:Date.now(),edited:false
+  });
+  // Keep last 500 messages per channel
+  const ch=_chatChannel;
+  const chMsgs=DB.chatMessages.filter(m=>m.channel===ch);
+  if(chMsgs.length>500){
+    const excess=chMsgs.slice(0,chMsgs.length-500).map(m=>m.id);
+    DB.chatMessages=DB.chatMessages.filter(m=>!excess.includes(m.id));
+  }
+  saveDB();
+  inp.value='';inp.style.height='auto';
+  refreshChatMessages();
+  const box=document.getElementById('chatMessages');
+  if(box)box.scrollTop=box.scrollHeight;
+}
+
+function clearChannelMessages(){
+  if(!confirm(`Delete all messages in this channel? This cannot be undone.`))return;
+  DB.chatMessages=(DB.chatMessages||[]).filter(m=>m.channel!==_chatChannel);
+  saveDB();showToast('Channel cleared','t-ok');
+  refreshChatMessages();
+}
+
+
+/* ══════════════════════════════════
+   LOCATION LOCK (Admin-only)
+   - Admin adds named locations with lat/lng
+   - Each location can be toggled active/inactive
+   - Multiple locations can be active simultaneously
+   - On login, non-admin users are checked against
+     ALL active locations. Within radiusKm → allowed.
+   - radiusKm is configurable per location or globally
+   - Admin is never blocked by location
+   - Uses browser Geolocation API
+══════════════════════════════════ */
+
+let _userLat=null, _userLng=null; // cached user location
+let _locCheckPending=false;
+
+function haversineKm(lat1,lon1,lat2,lon2){
+  const R=6371;
+  const dLat=(lat2-lat1)*Math.PI/180;
+  const dLon=(lon2-lon1)*Math.PI/180;
+  const a=Math.sin(dLat/2)*Math.sin(dLat/2)+
+    Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
+    Math.sin(dLon/2)*Math.sin(dLon/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function isLocationLockActive(){
+  const ll=DB.locationLock||{};
+  return ll.enabled===true && (ll.locations||[]).some(l=>l.active);
+}
+
+function checkLocationAccess(isRetry=false){
+  // Admin is never blocked
+  if(CU&&CU.role==='admin')return Promise.resolve(true);
+
+  if(!isLocationLockActive())return Promise.resolve(true);
+
+  return new Promise((resolve)=>{
+    if(!navigator.geolocation){
+      showLocationBlocked('Your browser does not support location services.');
+      resolve(false);return;
+    }
+    document.getElementById('locBlockedDetail').textContent='Checking your location…';
+    navigator.geolocation.getCurrentPosition(
+      pos=>{
+        _userLat=pos.coords.latitude;
+        _userLng=pos.coords.longitude;
+        const ll=DB.locationLock;
+        const activeLocations=(ll.locations||[]).filter(l=>l.active);
+        let closestDist=Infinity, closestName='';
+        let allowed=false;
+        activeLocations.forEach(loc=>{
+          const dist=haversineKm(_userLat,_userLng,loc.lat,loc.lng);
+          const radius=loc.radiusKm||ll.radiusKm||0.3;
+          if(dist<=radius){ allowed=true; }
+          if(dist<closestDist){ closestDist=dist; closestName=loc.name; }
+        });
+        if(allowed){
+          hideLocationBlocked();
+          resolve(true);
+        } else {
+          const distM=Math.round(closestDist*1000);
+          showLocationBlocked(`You are ${distM}m from "${closestName}". Must be within ${Math.round((activeLocations[0]?.radiusKm||ll.radiusKm||0.3)*1000)}m.`);
+          resolve(false);
+        }
+      },
+      err=>{
+        let msg='Location access denied.';
+        if(err.code===1)msg='Please allow location access in your browser settings.';
+        else if(err.code===2)msg='Location unavailable. Check your GPS/WiFi.';
+        else if(err.code===3)msg='Location check timed out. Please retry.';
+        showLocationBlocked(msg);
+        resolve(false);
+      },
+      {timeout:10000,enableHighAccuracy:true,maximumAge:60000}
+    );
+  });
+}
+
+function showLocationBlocked(detail){
+  document.getElementById('locBlockedDetail').textContent=detail||'Location check failed.';
+  document.getElementById('locBlockedScreen').style.display='flex';
+  // Hide app and login screens
+  document.querySelectorAll('.screen').forEach(s=>s.style.visibility='hidden');
+}
+function hideLocationBlocked(){
+  document.getElementById('locBlockedScreen').style.display='none';
+  document.querySelectorAll('.screen').forEach(s=>s.style.visibility='');
+}
+
+
+/* ── Location Lock Admin Page ── */
+function pgLocationLock(){
+  if(!requireAccess('locationLock'))return;
+  const ll=DB.locationLock||{enabled:false,radiusKm:0.3,locations:[]};
+  const isOn=ll.enabled&&(ll.locations||[]).some(l=>l.active);
+  const locs=ll.locations||[];
+
+  const locCards=locs.length?locs.map((loc,i)=>{
+    const checked=loc.active;
+    return`<div class="loc-entry ${checked?'active':'inactive'}">
+      <div class="loc-radio ${checked?'checked':''}" onclick="toggleLocationActive(${i})" title="${checked?'Deactivate':'Activate'} this location"></div>
+      <div class="loc-info">
+        <div class="loc-name">${escMsg(loc.name)} ${checked?'<span class="ena-badge">● Active</span>':''}</div>
+        <div class="loc-coords">📍 ${loc.lat.toFixed(6)}, ${loc.lng.toFixed(6)}</div>
+        <div class="loc-radius">Radius: <strong>${loc.radiusKm||ll.radiusKm||0.3} km</strong> (${Math.round((loc.radiusKm||ll.radiusKm||0.3)*1000)}m)</div>
+        <div class="loc-actions">
+          <button class="act-btn ab-view" onclick="editLocation(${i})">✏️ Edit</button>
+          <button class="act-btn ab-no" onclick="deleteLocation(${i})">🗑 Delete</button>
+          <button class="act-btn" style="background:var(--brand-bg);color:var(--brand);border:1px solid rgba(59,79,216,.2)" onclick="testLocation(${i})">🧭 Test Distance</button>
+        </div>
+      </div>
+    </div>`;
+  }).join(''):`<div class="empty-state" style="padding:24px 0">No locations added yet. Add your first location below.</div>`;
+
+  document.getElementById('mainContent').innerHTML=`
+  <div class="page-hdr"><h2>Location Lock</h2><p>Restrict WorkPulse access to specific physical locations — Admin only</p></div>
+
+  <!-- Master toggle -->
+  <div class="loc-master-toggle">
+    <div>
+      <div class="lmt-title">📍 Location-Based Access Control</div>
+      <div class="lmt-sub">When enabled and at least one location is active, employees must be within the allowed radius to use WorkPulse.<br>Admin is never blocked by this setting.</div>
+    </div>
+    <div class="site-toggle-wrap">
+      <span class="toggle-label ${isOn?'on':'off'}">${isOn?'ENFORCED':'OFF'}</span>
+      <button class="site-toggle ${isOn?'is-on':'is-off'}" onclick="toggleLocationLock()" title="${isOn?'Disable':'Enable'} location lock"></button>
+      <span class="toggle-status-text ${isOn?'on':'off'}">${isOn?'ON':'OFF'}</span>
+    </div>
+  </div>
+
+  <!-- Global radius setting -->
+  <div class="loc-card">
+    <div class="card-title">⚙️ Global Settings</div>
+    <div class="field-row">
+      <div class="field">
+        <label>Default Radius (km) — applies to all locations unless overridden</label>
+        <input type="number" id="llGlobalRadius" value="${ll.radiusKm||0.3}" min="0.05" max="50" step="0.05"
+          style="font-family:'DM Mono',monospace" oninput="updateGlobalRadius()">
+        <div style="font-size:.74rem;color:var(--text3);margin-top:4px" id="llRadiusHint">${Math.round((ll.radiusKm||0.3)*1000)}m radius</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Locations list -->
+  <div class="loc-card">
+    <div class="card-title" style="justify-content:space-between">
+      <span>📍 Saved Locations (${locs.length})</span>
+      <div style="display:flex;gap:6px">
+        <button class="loc-get-btn" onclick="addCurrentLocation()">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          Add Current Location
+        </button>
+      </div>
+    </div>
+    <div id="locList">${locCards}</div>
+  </div>
+
+  <!-- Add location manually -->
+  <div class="loc-card">
+    <div class="card-title">➕ Add Location Manually</div>
+    <div class="field"><label>Location Name</label><input type="text" id="llName" placeholder="e.g. Head Office, Branch 2, Warehouse A"></div>
+    <div class="field-row">
+      <div class="field"><label>Latitude</label><input type="number" id="llLat" placeholder="e.g. 28.6139" step="0.000001" style="font-family:'DM Mono',monospace"></div>
+      <div class="field"><label>Longitude</label><input type="number" id="llLng" placeholder="e.g. 77.2090" step="0.000001" style="font-family:'DM Mono',monospace"></div>
+    </div>
+    <div class="field"><label>Radius for this location (km) — leave blank to use global default</label>
+      <input type="number" id="llRadius" placeholder="e.g. 0.3" step="0.05" min="0.05" max="50" style="font-family:'DM Mono',monospace">
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn-primary" style="max-width:220px" onclick="addLocationManual()">Save Location</button>
+      <button class="loc-get-btn" onclick="pasteCurrentCoords()">📍 Use My Current Location</button>
+    </div>
+  </div>
+
+  <!-- Test panel -->
+  <div class="loc-card" id="locTestPanel" style="display:none">
+    <div class="card-title">🧭 Distance Test</div>
+    <div id="locTestResult"></div>
+  </div>`;
+}
+
+function toggleLocationLock(){
+  if(!DB.locationLock)DB.locationLock={enabled:false,radiusKm:0.3,locations:[]};
+  const locs=DB.locationLock.locations||[];
+  const hasActive=locs.some(l=>l.active);
+  if(!DB.locationLock.enabled&&!hasActive){
+    showToast('Add and activate at least one location first','t-warn');return;
+  }
+  DB.locationLock.enabled=!DB.locationLock.enabled;
+  saveDB();
+  showToast(`Location lock ${DB.locationLock.enabled?'enabled':'disabled'}`,'t-ok');
+  pgLocationLock();
+}
+
+function updateGlobalRadius(){
+  const v=parseFloat(document.getElementById('llGlobalRadius').value)||0.3;
+  document.getElementById('llRadiusHint').textContent=Math.round(v*1000)+'m radius';
+  if(!DB.locationLock)DB.locationLock={enabled:false,radiusKm:0.3,locations:[]};
+  DB.locationLock.radiusKm=v;
+  saveDB();
+}
+
+function toggleLocationActive(idx){
+  const locs=DB.locationLock.locations||[];
+  if(!locs[idx])return;
+  locs[idx].active=!locs[idx].active;
+  saveDB();
+  showToast(`${locs[idx].name} ${locs[idx].active?'activated':'deactivated'}`,'t-ok');
+  pgLocationLock();
+}
+
+function addCurrentLocation(){
+  showToast('Getting your location…','t-info');
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat=pos.coords.latitude,lng=pos.coords.longitude;
+    // Pre-fill the manual form
+    document.getElementById('llLat').value=lat.toFixed(6);
+    document.getElementById('llLng').value=lng.toFixed(6);
+    if(!document.getElementById('llName').value)
+      document.getElementById('llName').value='Location '+(new Date().toLocaleString('default',{month:'short',day:'numeric'}));
+    showToast(`Location captured: ${lat.toFixed(5)}, ${lng.toFixed(5)}`,'t-ok');
+    document.getElementById('llName').focus();
+  },err=>{
+    showToast('Could not get location: '+err.message,'t-err');
+  },{timeout:8000,enableHighAccuracy:true});
+}
+
+function pasteCurrentCoords(){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    document.getElementById('llLat').value=pos.coords.latitude.toFixed(6);
+    document.getElementById('llLng').value=pos.coords.longitude.toFixed(6);
+    showToast('Coordinates filled','t-ok');
+  },err=>showToast('Cannot get location','t-err'),{timeout:8000,enableHighAccuracy:true});
+}
+
+function addLocationManual(){
+  const name=document.getElementById('llName').value.trim();
+  const lat=parseFloat(document.getElementById('llLat').value);
+  const lng=parseFloat(document.getElementById('llLng').value);
+  const radius=parseFloat(document.getElementById('llRadius').value)||null;
+  if(!name){showToast('Please enter a location name','t-err');return;}
+  if(isNaN(lat)||isNaN(lng)){showToast('Please enter valid coordinates','t-err');return;}
+  if(lat<-90||lat>90||lng<-180||lng>180){showToast('Coordinates out of range','t-err');return;}
+  if(!DB.locationLock)DB.locationLock={enabled:false,radiusKm:0.3,locations:[]};
+  DB.locationLock.locations.push({id:uid(),name,lat,lng,radiusKm:radius,active:false,createdAt:ts()});
+  saveDB();
+  showToast(`"${name}" added — click the radio button to activate it`,'t-ok');
+  pgLocationLock();
+}
+
+function editLocation(idx){
+  const loc=DB.locationLock.locations[idx];if(!loc)return;
+  const name=prompt('Location name:',loc.name);if(name===null)return;
+  const lat=parseFloat(prompt('Latitude:',loc.lat.toFixed(6)));if(isNaN(lat))return;
+  const lng=parseFloat(prompt('Longitude:',loc.lng.toFixed(6)));if(isNaN(lng))return;
+  const r=parseFloat(prompt('Radius (km) — blank for global default:',loc.radiusKm||''));
+  DB.locationLock.locations[idx]={...loc,name,lat,lng,radiusKm:isNaN(r)?null:r};
+  saveDB();showToast('Location updated','t-ok');pgLocationLock();
+}
+
+function deleteLocation(idx){
+  const loc=DB.locationLock.locations[idx];if(!loc)return;
+  if(!confirm(`Delete "${loc.name}"?`))return;
+  DB.locationLock.locations.splice(idx,1);
+  saveDB();showToast('Location deleted','t-ok');pgLocationLock();
+}
+
+function testLocation(idx){
+  const loc=DB.locationLock.locations[idx];if(!loc)return;
+  const panel=document.getElementById('locTestPanel');
+  const result=document.getElementById('locTestResult');
+  if(panel)panel.style.display='';
+  if(result)result.innerHTML='<div style="color:var(--text2);font-size:.85rem">Getting your position…</div>';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const dist=haversineKm(pos.coords.latitude,pos.coords.longitude,loc.lat,loc.lng);
+    const radius=loc.radiusKm||DB.locationLock?.radiusKm||0.3;
+    const ok=dist<=radius;
+    const distM=Math.round(dist*1000);
+    result.innerHTML=`
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:8px 0">
+        <div style="font-size:2rem">${ok?'✅':'❌'}</div>
+        <div>
+          <div style="font-weight:700;color:${ok?'var(--green)':'var(--red)'};font-size:.95rem">${ok?'Within range':'Out of range'}</div>
+          <div style="font-size:.81rem;color:var(--text2);margin-top:3px">
+            Distance to <strong>${loc.name}</strong>: <span class="mono" style="font-size:.85rem">${distM}m</span>
+            &nbsp;·&nbsp; Allowed radius: <span class="mono">${Math.round(radius*1000)}m</span>
+          </div>
+          <div style="font-size:.76rem;color:var(--text3);margin-top:2px">
+            Your location: ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}
+            &nbsp;·&nbsp; Accuracy: ±${Math.round(pos.coords.accuracy||0)}m
+          </div>
+        </div>
+      </div>`;
+    panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+  },err=>{
+    if(result)result.innerHTML=`<div class="warning-box">Could not get location: ${err.message}</div>`;
+  },{timeout:8000,enableHighAccuracy:true});
+}
+
 /* ── INIT ── */
 onEnrollRoleChange();populateTLs();
 
@@ -3807,7 +5084,7 @@ document.addEventListener('keydown',function(e){
 
 // Check site lock on load (non-admin users blocked if site deactivated)
 checkSiteLock();
+// Location lock is checked at login time, not on page load
 </script>
 </body>
 </html>
-
