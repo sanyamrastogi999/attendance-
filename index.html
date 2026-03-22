@@ -1450,7 +1450,10 @@ function fmtTime(iso){ if(!iso||iso==='')return '--:--';try{return new Date(iso)
 function fmtDate(s){ if(!s)return '';try{return new Date(s+'T00:00:00').toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'});}catch(e){return s;}}
 function ini(u){ return((u.first||'?')[0]+(u.last||'?')[0]).toUpperCase(); }
 function fullName(u){ return(u.first||'')+' '+(u.last||''); }
-function getUser(id){ return DB.users.find(u=>u.id===id); }
+// O(1) user lookup map — rebuilt after any DB mutation
+let _userMap=new Map();
+function _rebuildUserMap(){ _userMap=new Map(DB.users.map(u=>[u.id,u])); }
+function getUser(id){ return _userMap.get(id)||DB.users.find(u=>u.id===id)||null; }
 function getUserByEmpId(eid){ return DB.users.find(u=>u.empId===eid.toUpperCase()); }
 function greeting(){ const h=new Date().getHours();return h<12?'Morning':h<17?'Afternoon':'Evening'; }
 function msDur(ms){ if(!ms||ms<=0)return '--';const h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000);return h+'h '+m+'m'; }
@@ -1606,7 +1609,16 @@ function approvedLeaveDaysThisYear(userId){
   return total;
 }
 
-function leaveBalanceFor(userId){ return Math.max(0,leavesAccruedThisYear()-approvedLeaveDaysThisYear(userId)); }
+// Cache for leaveBalanceFor — invalidated on every saveDB
+let _lbCache=new Map();
+function _invalidateLbCache(){ _lbCache.clear(); }
+
+function leaveBalanceFor(userId){
+  if(_lbCache.has(userId))return _lbCache.get(userId);
+  const val=Math.max(0,leavesAccruedThisYear()-approvedLeaveDaysThisYear(userId));
+  _lbCache.set(userId,val);
+  return val;
+}
 
 /* Get short leave count for a user (to show 2SL = 1HD rule) */
 function shortLeaveCountThisYear(userId){
@@ -1664,7 +1676,35 @@ function leaveBalanceBanner(userId){
 /* ══════════════════════════════════
    DATABASE
 ══════════════════════════════════ */
-function saveDB(d){ localStorage.setItem('wp6_db',JSON.stringify(d||DB)); }
+function saveDB(d){
+  const data=d||DB;
+  // Keep lookup map in sync whenever DB is saved
+  if(data===DB){ _rebuildUserMap(); _invalidateLbCache(); }
+  try{
+    localStorage.setItem('wp6_db',JSON.stringify(data));
+  }catch(e){
+    // localStorage quota exceeded — emergency trim old data and retry
+    if(e.name==='QuotaExceededError'||e.code===22){
+      console.warn('[WorkPulse] localStorage quota hit — trimming old records…');
+      const cutoff=new Date();cutoff.setDate(cutoff.getDate()-30);
+      const cDate=cutoff.toISOString().slice(0,10);
+      const cTs=cutoff.getTime();
+      data.attendance=(data.attendance||[]).filter(a=>a.date>=cDate);
+      data.workLogs=(data.workLogs||[]).filter(w=>w.date>=cDate);
+      data.chatMessages=(data.chatMessages||[]).filter(m=>m.ts>cTs);
+      try{
+        localStorage.setItem('wp6_db',JSON.stringify(data));
+        showToast('⚠ Storage nearly full — old records auto-trimmed to free space','t-warn');
+      }catch(e2){
+        // If still failing, trim chat completely
+        data.chatMessages=[];
+        try{localStorage.setItem('wp6_db',JSON.stringify(data));}catch(e3){
+          showToast('❌ Storage full! Please export a backup then use DB Manager → Clear Attendance.','t-err');
+        }
+      }
+    }
+  }
+}
 function loadDB(){
   const raw=localStorage.getItem('wp6_db');
   if(raw){ const d=JSON.parse(raw);migrateLegacy(d);return d; }
@@ -1742,20 +1782,28 @@ function migrateLegacy(db){
   });
 }
 function autoCleanOldData(db){
-  // Auto-purge attendance, workLogs, and chatMessages older than 60 days to keep localStorage healthy
+  // Auto-purge attendance, workLogs, and chatMessages older than 90 days to keep localStorage healthy
+  // For 100+ users, per-user data grows fast so we keep a rolling 90-day window
   const cutoff=new Date();
-  cutoff.setDate(cutoff.getDate()-60);
+  cutoff.setDate(cutoff.getDate()-90);
   const cutoffDate=cutoff.toISOString().slice(0,10); // 'YYYY-MM-DD'
   const cutoffTs=cutoff.getTime();
   const before={att:(db.attendance||[]).length,logs:(db.workLogs||[]).length,chat:(db.chatMessages||[]).length};
   db.attendance=(db.attendance||[]).filter(a=>a.date>=cutoffDate);
   db.workLogs=(db.workLogs||[]).filter(w=>w.date>=cutoffDate);
-  db.chatMessages=(db.chatMessages||[]).filter(m=>m.ts>cutoffTs);
+  // Keep only last 500 chat messages to prevent bloat at scale
+  if((db.chatMessages||[]).length>500){
+    db.chatMessages=(db.chatMessages||[]).filter(m=>m.ts>cutoffTs);
+    if(db.chatMessages.length>500) db.chatMessages=db.chatMessages.slice(-500);
+  } else {
+    db.chatMessages=(db.chatMessages||[]).filter(m=>m.ts>cutoffTs);
+  }
   const removed=(before.att-(db.attendance.length))+(before.logs-(db.workLogs.length))+(before.chat-(db.chatMessages.length));
-  if(removed>0) console.log(`[WorkPulse] Auto-cleaned ${removed} old records (>60 days)`);
+  if(removed>0) console.log(`[WorkPulse] Auto-cleaned ${removed} old records (>90 days)`);
 }
 let DB=loadDB();
 autoCleanOldData(DB);
+_rebuildUserMap();
 saveDB();
 
 /* ══════════════════════════════════
@@ -2492,24 +2540,29 @@ function renderLateReport(month,year){
   const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
   const pM=month-1<0?11:month-1,pY=month-1<0?year-1:year;
   const nM=month+1>11?0:month+1,nY=month+1>11?year+1:year;
-  let allRows=[];
-  users.forEach(u=>{
-    const shift=getShiftFor(u);if(!shift)return;
-    DB.attendance.filter(a=>a.userId===u.id&&a.date>=firstDay&&a.date<=lastDay&&a.punchIn).forEach(a=>{
-      const lm=lateMinutes(a.punchIn,shift.start);
-      if(lm>shift.grace)allRows.push({user:u,date:a.date,punchIn:fmtTime(a.punchIn),shiftStart:shift.start,lateBy:lm});
-    });
-  });
-  allRows.sort((a,b)=>a.date.localeCompare(b.date));
+
+  // Build userId set for fast membership test
+  const userSet=new Set(users.map(u=>u.id));
   const summary={};
   users.forEach(u=>{summary[u.id]={user:u,lateDays:0,totalLateMins:0,onTimeDays:0};});
-  allRows.forEach(r=>{if(summary[r.user.id]){summary[r.user.id].lateDays++;summary[r.user.id].totalLateMins+=r.lateBy;}});
-  users.forEach(u=>{
+  let allRows=[];
+
+  // Single pass over attendance — no double loop
+  DB.attendance.forEach(a=>{
+    if(!userSet.has(a.userId))return;
+    if(a.date<firstDay||a.date>lastDay)return;
+    if(!a.punchIn)return;
+    const u=getUser(a.userId);if(!u)return;
     const shift=getShiftFor(u);if(!shift)return;
-    DB.attendance.filter(a=>a.userId===u.id&&a.date>=firstDay&&a.date<=lastDay&&a.punchIn).forEach(a=>{
-      if(lateMinutes(a.punchIn,shift.start)<=shift.grace)summary[u.id].onTimeDays++;
-    });
+    const lm=lateMinutes(a.punchIn,shift.start);
+    if(lm>shift.grace){
+      allRows.push({user:u,date:a.date,punchIn:fmtTime(a.punchIn),shiftStart:shift.start,lateBy:lm});
+      summary[a.userId].lateDays++;summary[a.userId].totalLateMins+=lm;
+    } else {
+      summary[a.userId].onTimeDays++;
+    }
   });
+  allRows.sort((a,b)=>a.date.localeCompare(b.date));
   document.getElementById('mainContent').innerHTML=`
   <div class="page-hdr"><h2>Late Login Report</h2><p>Logins beyond shift start + grace period</p></div>
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap">
@@ -2603,9 +2656,15 @@ function saveShiftTiming(){
 ══════════════════════════════════ */
 function pgMarkAttendance(){
   if(!requireAccess('markAttendance'))return;
+  renderMarkAttPage('');
+}
+function renderMarkAttPage(q){
   const eligible=CU.role==='hr'?DB.users.filter(u=>u.role==='agent'):DB.users.filter(u=>u.tlId===CU.id);
   const td=today();
-  const rows=eligible.map(u=>{
+  const filtered=q?eligible.filter(u=>(fullName(u)+u.empId+u.workflow).toLowerCase().includes(q)):eligible;
+  const presentCount=eligible.filter(u=>DB.attendance.find(a=>a.userId===u.id&&a.date===td&&a.punchIn)).length;
+  const absentCount=eligible.length-presentCount;
+  const rows=filtered.map(u=>{
     const att=DB.attendance.find(a=>a.userId===u.id&&a.date===td);
     const shift=getShiftFor(u);const lm=att?.punchIn&&shift?lateMinutes(att.punchIn,shift.start):0;
     let sp=att?.punchOut?'<span class="pill p-green"><span class="pill-dot"></span>Complete</span>':att?.punchIn?'<span class="pill p-accent"><span class="pill-dot"></span>In</span>':'<span class="pill p-red"><span class="pill-dot"></span>Not In</span>';
@@ -2624,7 +2683,13 @@ function pgMarkAttendance(){
   <div class="page-hdr"><h2>Mark Agent Attendance</h2><p>All actions recorded under your ID: <span class="eid-tag">${CU.empId}</span></p></div>
   <div class="info-box" style="margin-bottom:14px">ℹ️ Marking is attributed to <strong>${CU.empId}</strong> and visible in each agent's attendance log.</div>
   <button onclick="openMarkAtt()" style="width:100%;padding:12px;border:1.5px solid var(--green);border-radius:var(--r2);background:var(--green-bg);color:var(--green);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:.87rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:.2s;margin-bottom:16px">🔍 Search & Mark Agent →</button>
-  <div class="card"><div class="card-title">📋 Today's Status</div>
+  <div class="stat-grid" style="margin-bottom:14px">
+    <div class="stat s-blue"><div class="stat-label">Total Agents</div><div class="stat-val">${eligible.length}</div></div>
+    <div class="stat s-green"><div class="stat-label">Present Today</div><div class="stat-val">${presentCount}</div></div>
+    <div class="stat s-red"><div class="stat-label">Not Punched In</div><div class="stat-val">${absentCount}</div></div>
+  </div>
+  <div class="card"><div class="card-title" style="justify-content:space-between"><span>📋 Today's Status</span><span style="font-size:.78rem;color:var(--text3)">${filtered.length}${q?' matching':''}/${eligible.length}</span></div>
+    <input type="text" id="markAttSearch" placeholder="🔍 Search agent…" value="${q}" oninput="renderMarkAttPage(this.value.toLowerCase())" style="width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r2);padding:8px 13px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.84rem;outline:none;margin-bottom:12px">
     <div class="tbl-wrap"><table>
       <tr><th>Agent</th><th>Emp ID</th><th>Workflow</th><th>In</th><th>Out</th><th>Late</th><th>Break</th><th>Worked</th><th>Marked By</th><th>Status</th><th>Action</th></tr>
       ${rows.join('')||'<tr><td colspan="11" class="empty-state">No agents found</td></tr>'}
@@ -2732,8 +2797,13 @@ function modalToggleBreak(){
    TEAM / ALL ATTENDANCE TABLE
 ══════════════════════════════════ */
 function renderAttTable(users,label){
+  renderAttTableFiltered(users,label,'');
+}
+function renderAttTableFiltered(users,label,q){
   const td=today(),isH=DB.holidays.find(h=>h.date===td);
-  const rows=users.map(u=>{
+  const filtered=q?users.filter(u=>(fullName(u)+u.empId+u.workflow).toLowerCase().includes(q)):users;
+  const presentCount=users.filter(u=>DB.attendance.find(a=>a.userId===u.id&&a.date===td&&a.punchIn)).length;
+  const rows=filtered.map(u=>{
     const att=DB.attendance.find(a=>a.userId===u.id&&a.date===td);
     const onLeave=DB.leaves.find(l=>l.userId===u.id&&l.fromDate<=td&&l.toDate>=td&&l.status==='approved');
     const shift=getShiftFor(u),lm=att?.punchIn&&shift?lateMinutes(att.punchIn,shift.start):0;
@@ -2752,10 +2822,20 @@ function renderAttTable(users,label){
     </tr>`;
   });
   const showMarkBtn=CU.role==='hr'||CU.role==='tl';
+  // Store users+label for the search callback
+  window._attTableUsers=users;window._attTableLabel=label;
   document.getElementById('mainContent').innerHTML=`
   <div class="page-hdr"><h2>${label} Attendance</h2><p>${new Date().toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'})}</p></div>
   ${showMarkBtn?`<button class="btn-mark-agent" style="border-color:var(--green);color:var(--green);background:var(--green-bg)" onclick="openMarkAtt()">✅ Mark Agent Attendance →</button>`:''}
-  <div class="card"><div class="tbl-wrap"><table>
+  <div class="stat-grid" style="margin-bottom:14px">
+    <div class="stat s-blue"><div class="stat-label">Total</div><div class="stat-val">${users.length}</div></div>
+    <div class="stat s-green"><div class="stat-label">Present</div><div class="stat-val">${presentCount}</div></div>
+    <div class="stat s-red"><div class="stat-label">Absent</div><div class="stat-val">${users.length-presentCount}</div></div>
+    ${isH?`<div class="stat s-blue"><div class="stat-label">Today</div><div class="stat-val" style="font-size:.85rem;margin-top:6px">🎌 Holiday</div></div>`:''}
+  </div>
+  <div class="card">
+    <input type="text" id="attSearch" placeholder="🔍 Search employee…" value="${q}" oninput="renderAttTableFiltered(window._attTableUsers,window._attTableLabel,this.value.toLowerCase())" style="width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r2);padding:8px 13px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.84rem;outline:none;margin-bottom:12px">
+    <div class="tbl-wrap"><table>
     <tr><th>Employee</th><th>Emp ID</th><th>Role</th><th>Workflow</th><th>In</th><th>Out</th><th>Late</th><th>Break</th><th>Worked</th><th>Marked By</th><th>Status</th></tr>
     ${rows.join('')||'<tr><td colspan="11" class="empty-state">No employees</td></tr>'}
   </table></div></div>`;
@@ -3093,23 +3173,41 @@ function deleteLeave(id){
 /* ══════════════════════════════════
    EMPLOYEE MANAGEMENT
 ══════════════════════════════════ */
+// Store full emp list for paginated search
+let _empPageList=[];let _empIsHR=false;
 function pgEmployees(){
   if(!requireAccess('employeesMgmt'))return;
-  const isHR=CU.role==='hr'||CU.role==='admin';
-  // Agents see nothing, TL sees only their team (view only), HR/Admin see all
-  let empList;
-  if(CU.role==='admin'||CU.role==='hr')empList=DB.users.filter(u=>u.role!=='admin');
-  else if(CU.role==='tl')empList=DB.users.filter(u=>u.tlId===CU.id);
+  _empIsHR=CU.role==='hr'||CU.role==='admin';
+  if(CU.role==='admin'||CU.role==='hr')_empPageList=DB.users.filter(u=>u.role!=='admin');
+  else if(CU.role==='tl')_empPageList=DB.users.filter(u=>u.tlId===CU.id);
   else{document.getElementById('mainContent').innerHTML='<div class="access-denied"><div class="ad-icon">🔒</div><h3>Access Denied</h3><p>Agents cannot access employee management.</p></div>';return;}
+  renderEmpPage(1,'');
+}
+function renderEmpPage(page,q){
+  const PAGE_SIZE=25;
+  const isHR=_empIsHR;
+  const filtered=q?_empPageList.filter(u=>(fullName(u)+u.empId+u.role+u.workflow).toLowerCase().includes(q)):_empPageList;
+  const totalPages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
+  page=Math.min(Math.max(1,page),totalPages);
+  const slice=filtered.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE);
+  const pagerHtml=totalPages>1?`<div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;flex-wrap:wrap;gap:8px">
+    <div style="font-size:.8rem;color:var(--text2)">Showing ${(page-1)*PAGE_SIZE+1}–${Math.min(page*PAGE_SIZE,filtered.length)} of ${filtered.length} employees</div>
+    <div style="display:flex;gap:6px">
+      ${page>1?`<button class="act-btn" onclick="renderEmpPage(${page-1},document.getElementById('empSearch')?.value.toLowerCase()||'')">← Prev</button>`:''}
+      <span style="padding:6px 12px;background:var(--brand-bg);color:var(--brand);border-radius:var(--r2);font-size:.8rem;font-weight:700">${page}/${totalPages}</span>
+      ${page<totalPages?`<button class="act-btn" onclick="renderEmpPage(${page+1},document.getElementById('empSearch')?.value.toLowerCase()||'')">Next →</button>`:''}
+    </div>
+  </div>`:'';
   document.getElementById('mainContent').innerHTML=`
-  <div class="page-hdr"><h2>Employee Management</h2><p>${isHR?'Full edit access — click Edit on any row':'View-only: your team members'}</p></div>
+  <div class="page-hdr"><h2>Employee Management</h2><p>${isHR?'Full edit access — click Edit on any row':'View-only: your team members'} · ${_empPageList.length} total</p></div>
   ${isHR?'<div class="info-box">HR can edit all employee details. Employee IDs are validated for duplicates in real time.</div>':''}
   <div class="card">
-    ${isHR?`<input type="text" id="empSearch" placeholder="🔍 Search by name or Employee ID…" oninput="filterEmpTable()" style="width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r2);padding:9px 13px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.86rem;outline:none;margin-bottom:14px">`:''}
+    ${isHR?`<input type="text" id="empSearch" placeholder="🔍 Search by name, ID, workflow…" value="${q}" oninput="filterEmpTable()" style="width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r2);padding:9px 13px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.86rem;outline:none;margin-bottom:14px">`:''}
     <div class="tbl-wrap"><table id="empTable">
       <tr><th>Emp ID</th><th>Name</th><th>Role</th><th>Workflow</th><th>Team Leader</th><th>Leave Bal</th><th>Joined</th>${isHR?'<th>Action</th>':''}</tr>
-      ${buildEmpRows(empList,isHR)}
+      ${buildEmpRows(slice,isHR)}
     </table></div>
+    ${pagerHtml}
   </div>
   <div id="editEmpPanel" class="hide">
     <div class="card" style="border-left:3px solid var(--brand)">
@@ -3130,7 +3228,7 @@ function pgEmployees(){
   </div>`;
 }
 function buildEmpRows(list,isHR){
-  if(!list.length)return`<tr><td colspan="${isHR?8:7}" class="empty-state">No employees</td></tr>`;
+  if(!list.length)return`<tr><td colspan="${isHR?8:7}" class="empty-state">No employees found</td></tr>`;
   return list.map(u=>{
     const tl=getUser(u.tlId),bal=leaveBalanceFor(u.id);
     return`<tr id="erow_${u.id}">
@@ -3146,8 +3244,8 @@ function buildEmpRows(list,isHR){
   }).join('');
 }
 function filterEmpTable(){
-  const q=document.getElementById('empSearch').value.toLowerCase();
-  DB.users.forEach(u=>{const row=document.getElementById('erow_'+u.id);if(!row)return;row.style.display=(fullName(u)+u.empId+u.role+u.workflow).toLowerCase().includes(q)?'':'none';});
+  const q=(document.getElementById('empSearch')?.value||'').toLowerCase();
+  renderEmpPage(1,q);
 }
 function openEmpEdit(id){
   const u=getUser(id);if(!u)return;
@@ -3191,29 +3289,47 @@ function deleteEmployee(){
 ══════════════════════════════════ */
 function pgUserAdmin(){
   if(!requireAccess('userAdmin'))return;
-  const users=DB.users;
+  renderUserAdminPage(1,'');
+}
+function renderUserAdminPage(page,q){
+  const PAGE_SIZE=25;
+  const allUsers=DB.users;
+  const filtered=q?allUsers.filter(u=>(fullName(u)+u.empId+u.role+u.workflow).toLowerCase().includes(q)):allUsers;
+  const totalPages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
+  page=Math.min(Math.max(1,page),totalPages);
+  const slice=filtered.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE);
+  const pagerHtml=totalPages>1?`<div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;flex-wrap:wrap;gap:8px">
+    <div style="font-size:.8rem;color:var(--text2)">Showing ${(page-1)*PAGE_SIZE+1}–${Math.min(page*PAGE_SIZE,filtered.length)} of ${filtered.length} users</div>
+    <div style="display:flex;gap:6px">
+      ${page>1?`<button class="act-btn" onclick="renderUserAdminPage(${page-1},document.getElementById('uAdminSearch').value.toLowerCase())">← Prev</button>`:''}
+      <span style="padding:6px 12px;background:var(--brand-bg);color:var(--brand);border-radius:var(--r2);font-size:.8rem;font-weight:700">${page}/${totalPages}</span>
+      ${page<totalPages?`<button class="act-btn" onclick="renderUserAdminPage(${page+1},document.getElementById('uAdminSearch').value.toLowerCase())">Next →</button>`:''}
+    </div>
+  </div>`:'';
   document.getElementById('mainContent').innerHTML=`
   <div class="page-hdr"><h2>User Administration</h2><p>Admin-only: manage users and delete accounts</p></div>
-  <div class="amber-box">⚡ As Admin, you can change roles and delete any user except the admin account. Password resets are handled by each user through their own login. Admin PIN can be changed in DB Manager.</div>
+  <div class="amber-box">⚡ As Admin, you can reset passwords and delete any user except the admin account. Admin PIN can be changed in DB Manager.</div>
   <div class="card">
-    <input type="text" id="uAdminSearch" placeholder="🔍 Search users…" oninput="filterUserAdminTable()" style="width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r2);padding:9px 13px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.86rem;outline:none;margin-bottom:14px">
+    <input type="text" id="uAdminSearch" placeholder="🔍 Search users…" value="${q}" oninput="renderUserAdminPage(1,this.value.toLowerCase())" style="width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r2);padding:9px 13px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.86rem;outline:none;margin-bottom:14px">
     <div class="tbl-wrap"><table id="uAdminTable">
       <tr><th>Emp ID</th><th>Name</th><th>Role</th><th>Workflow</th><th>Actions</th></tr>
-      ${users.map(u=>`<tr id="urow_${u.id}">
+      ${slice.map(u=>`<tr id="urow_${u.id}">
         <td><span class="eid-tag">${u.empId}</span></td>
         <td><div class="emp-chip"><div class="avatar ${avatarClass(u.role)}" style="width:22px;height:22px;font-size:.58rem">${ini(u)}</div>${fullName(u)}</div></td>
         <td><span class="pill ${u.role==='admin'?'p-gold':u.role==='hr'?'p-purple':u.role==='tl'?'p-amber':'p-blue'}"><span class="pill-dot"></span>${u.role.toUpperCase()}</span></td>
         <td>${u.workflow||'—'}</td>
-        <td>
-          ${u.role!=='admin'?`<button class="act-btn ab-no" onclick="adminDeleteUser('${u.id}')">🗑 Delete</button>`:'<span style="color:var(--text3);font-size:.75rem">Protected</span>'}
+        <td style="display:flex;gap:6px;flex-wrap:wrap">
+          ${u.role!=='admin'?`<button class="act-btn ab-ok" onclick="adminResetPass('${u.id}')">🔑 Reset Pass</button>
+          <button class="act-btn ab-no" onclick="adminDeleteUser('${u.id}')">🗑 Delete</button>`:'<span style="color:var(--text3);font-size:.75rem">Protected</span>'}
         </td>
       </tr>`).join('')}
     </table></div>
+    ${pagerHtml}
   </div>`;
 }
 function filterUserAdminTable(){
   const q=document.getElementById('uAdminSearch').value.toLowerCase();
-  DB.users.forEach(u=>{const row=document.getElementById('urow_'+u.id);if(!row)return;row.style.display=(fullName(u)+u.empId+u.role).toLowerCase().includes(q)?'':'none';});
+  renderUserAdminPage(1,q);
 }
 function adminResetPass(id){
   const u=getUser(id);if(!u)return;
@@ -3321,7 +3437,7 @@ function dbImport(input){
       if(!data.users||!data.attendance){showToast('Invalid backup file','t-err');return;}
       if(!confirm('Replace current database with this backup?'))return;
       localStorage.setItem('wp6_db',JSON.stringify(data));
-      DB=data;migrateLegacy(DB);
+      DB=data;migrateLegacy(DB);_rebuildUserMap();
       showToast('Database restored! Reloading…','t-ok');
       setTimeout(()=>location.reload(),1500);
     }catch(err){showToast('Failed to parse backup file','t-err');}
