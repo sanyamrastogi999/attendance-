@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a1f3a">
 <title>WorkPulse — Attendance Management</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -62,9 +65,14 @@
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.55;font-size:14px;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
-button,a,[onclick]{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+html{scroll-behavior:smooth;height:100%;overscroll-behavior:none}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100%;min-height:100dvh;overflow-x:hidden;line-height:1.55;font-size:14px;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:pan-y;overscroll-behavior-y:contain}
+button,a,[onclick]{-webkit-tap-highlight-color:transparent;touch-action:manipulation;cursor:pointer}
+/* Prevent double-tap zoom on buttons */
+button{touch-action:manipulation;-webkit-appearance:none;appearance:none}
+input,select,textarea{-webkit-appearance:none;appearance:none;border-radius:0}
+/* Fix iOS/Android input zoom — keep font-size ≥ 16px inside inputs */
+.field input,.field select,.field textarea{font-size:16px!important}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
@@ -73,7 +81,7 @@ button,a,[onclick]{-webkit-tap-highlight-color:transparent;touch-action:manipula
 input[type="date"],input[type="time"]{color-scheme:light}
 
 /* ── SCREENS ── */
-.screen{display:none;min-height:100vh}
+.screen{display:none;min-height:100vh;min-height:100dvh}
 .screen.active{display:flex}
 
 /* ── AUTH SCREENS ── */
@@ -81,6 +89,9 @@ input[type="date"],input[type="time"]{color-scheme:light}
   align-items:center;justify-content:center;
   background: linear-gradient(135deg, #e8eaf8 0%, #f0f2f7 40%, #e4ecf8 100%);
   position:relative;overflow:hidden;
+  /* Allow scroll when keyboard open on Android */
+  overflow-y:auto;
+  align-items:flex-start;
 }
 #loginScreen::before{
   content:'';position:absolute;inset:0;
@@ -95,7 +106,7 @@ input[type="date"],input[type="time"]{color-scheme:light}
                     linear-gradient(90deg, rgba(59,79,216,.04) 1px, transparent 1px);
   background-size: 40px 40px;
 }
-.auth-wrap{position:relative;z-index:1;width:100%;max-width:440px;padding:24px}
+.auth-wrap{position:relative;z-index:1;width:100%;max-width:440px;padding:24px;margin:auto}
 .auth-card{
   background:var(--surface);border:1px solid var(--border);
   border-radius:24px;padding:40px 36px;
@@ -149,13 +160,13 @@ input[type="date"],input[type="time"]{color-scheme:light}
 .auth-switch a:hover{text-decoration:underline}
 
 /* ══ APP LAYOUT ══ */
-#appScreen{flex-direction:row}
+#appScreen{flex-direction:row;height:100vh;height:100dvh;overflow:hidden}
 /* Prevent double scrollbars on app screen */
-#appScreen .main{overflow-y:auto;height:100vh}
+#appScreen .main{overflow-y:auto;height:100vh;height:100dvh}
 .sidebar{
   width:240px;background:var(--text);
-  display:flex;flex-direction:column;min-height:100vh;
-  flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;
+  display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;
+  flex-shrink:0;position:sticky;top:0;height:100vh;height:100dvh;overflow-y:auto;
 }
 .sb-brand{
   padding:22px 20px 16px;display:flex;align-items:center;gap:10px;
@@ -955,7 +966,7 @@ tr:hover td{background:var(--surface2)}
 ═══════════════════════════════════════ */
 @media(max-width:600px){
   /* App layout: sidebar becomes bottom tab bar */
-  #appScreen{flex-direction:column}
+  #appScreen{flex-direction:column;height:100vh;height:100dvh}
   .sidebar{
     width:100%!important;height:auto;min-height:0;
     position:fixed;bottom:0;left:0;right:0;
@@ -963,6 +974,8 @@ tr:hover td{background:var(--surface2)}
     border-right:none;border-top:1px solid rgba(255,255,255,.1);
     overflow-x:auto;overflow-y:hidden;
     -webkit-overflow-scrolling:touch;
+    /* Safe area inset for notched Android phones */
+    padding-bottom:env(safe-area-inset-bottom,0px);
   }
   .sb-brand{display:none}
   #sideNav{
@@ -972,11 +985,13 @@ tr:hover td{background:var(--surface2)}
   }
   #sideNav::-webkit-scrollbar{display:none}
   nav a{
-    flex-direction:column;padding:6px 10px;gap:2px;
+    flex-direction:column;padding:8px 10px;gap:2px;
     border-left:none!important;border-bottom:none;
-    min-width:52px;flex-shrink:0;font-size:.6rem;
+    min-width:56px;flex-shrink:0;font-size:.6rem;
     border-bottom:2px solid transparent;border-radius:0;
     align-items:center;
+    /* Minimum 44px touch target */
+    min-height:52px;justify-content:center;
   }
   nav a span:not(.ni){display:block!important;font-size:.6rem;line-height:1.2;white-space:nowrap}
   nav a .ni{font-size:1.1rem;width:auto}
@@ -986,15 +1001,19 @@ tr:hover td{background:var(--surface2)}
   /* Main content: full width, padded for bottom nav */
   .main{
     width:100%;min-width:0;
-    padding-bottom:72px; /* space for bottom nav */
+    /* Bottom nav ~60px + safe area */
+    padding-bottom:calc(68px + env(safe-area-inset-bottom,0px));
+    height:100vh;height:100dvh;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
   }
 
   /* Topbar: compact */
-  .topbar{padding:10px 14px;gap:8px}
+  .topbar{padding:10px 14px;gap:8px;position:sticky;top:0;z-index:50}
   .topbar-title{font-size:.92rem}
   .topbar-right{gap:5px}
-  .clock{font-size:.76rem;padding:4px 8px;display:none} /* hide clock on mobile */
-  #passExpiryBtn{padding:5px 8px}
+  .clock{font-size:.76rem;padding:4px 8px;display:none}
+  #passExpiryBtn{padding:5px 8px;min-height:36px}
   #passExpiryBtn svg{width:13px;height:13px}
   #passExpiryBtnTxt{display:none}
 
@@ -1023,6 +1042,11 @@ tr:hover td{background:var(--surface2)}
   /* Punch cards */
   .punch-time{font-size:1.5rem}
 
+  /* Ensure all buttons have minimum 44px touch targets */
+  .btn-punch,.btn-break,.btn-primary,.btn-export,.btn-secondary,.btn-danger,
+  .btn-mark-agent,.act-btn,.loc-get-btn{min-height:44px}
+  .btn-punch{padding:14px}
+
   /* Page header */
   .page-hdr h2{font-size:1.1rem}
 
@@ -1030,48 +1054,62 @@ tr:hover td{background:var(--surface2)}
   .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -12px;padding:0 12px}
   table{min-width:500px}
   th,td{padding:8px 10px;font-size:.78rem}
-  .act-btn{padding:6px 10px;font-size:.72rem;margin-bottom:2px}
+  .act-btn{padding:8px 12px;font-size:.72rem;margin-bottom:2px;min-height:36px}
 
-  /* Modal */
+  /* Modal — sheet from bottom */
   .modal-overlay{align-items:flex-end;padding:0}
-  .modal-box{border-radius:20px 20px 0 0;max-height:88vh;border-bottom:none;padding:20px 18px}
+  .modal-box{
+    border-radius:20px 20px 0 0;max-height:92vh;max-height:92dvh;
+    border-bottom:none;padding:20px 18px;
+    padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));
+    overflow-y:auto;
+  }
   .modal-actions{grid-template-columns:1fr 1fr 1fr}
+  /* Agent list in modal: comfortable touch targets */
+  .agent-card{padding:12px 14px;min-height:56px}
 
-  /* Auth screens */
+  /* Auth screens — full scrollable page on Android */
   #loginScreen,#enrollScreen,#changePassScreen,#adminPinScreen{
     align-items:flex-start;padding-top:0;
-    overflow-y:auto;
+    overflow-y:auto;overflow-x:hidden;
+    display:block;
   }
   .auth-title{font-size:1.4rem;margin-bottom:2px}
   .auth-sub{margin-bottom:16px}
   .hint-box{padding:8px 11px;font-size:.75rem;margin-bottom:14px}
   .brand{margin-bottom:16px}
-  .field{margin-bottom:11px}
-  .btn-primary{padding:11px;margin-top:2px}
+  .field{margin-bottom:12px}
+  /* IMPORTANT: keep font-size 16px on inputs to prevent Android auto-zoom */
+  .field input,.field select,.field textarea{font-size:16px!important;min-height:48px}
+  .btn-primary{padding:14px;margin-top:4px;min-height:50px;font-size:.95rem}
   .auth-switch{margin-top:12px}
   .auth-wrap{
-    padding:0;max-width:100%;
-    height:100vh;overflow-y:auto;
-    display:block; /* not flex — lets card scroll naturally */
+    padding:0;max-width:100%;width:100%;
+    min-height:100%;
+    display:block;
   }
   .auth-card{
     border-radius:0;border:none;box-shadow:none;
-    min-height:100vh;padding:40px 20px 32px;
-    display:flex;flex-direction:column;justify-content:flex-start;
-    overflow:visible;
+    min-height:100vh;min-height:100dvh;padding:48px 20px 40px;
+    display:block;
   }
   .cp-card{
     border-radius:0;border:none;box-shadow:none;
-    min-height:100vh;padding:40px 18px 32px;
-    display:flex;flex-direction:column;justify-content:flex-start;
+    min-height:100vh;min-height:100dvh;padding:48px 18px 40px;
+    display:block;
   }
 
   /* PIN screen */
-  #adminPinScreen .auth-wrap{height:100vh}
-  .pin-card{border-radius:0;border:none;min-height:100vh;
+  #adminPinScreen{display:block;overflow-y:auto}
+  .pin-card{
+    border-radius:0;border:none;min-height:100vh;min-height:100dvh;
     display:flex;flex-direction:column;justify-content:center;
-    padding:32px 24px}
-  .pin-key{padding:14px 6px;font-size:1.1rem}
+    padding:32px 24px;
+    padding-bottom:calc(32px + env(safe-area-inset-bottom,0px));
+  }
+  .pin-key{padding:14px 6px;font-size:1.1rem;min-height:52px}
+  /* PIN input: big touch target */
+  #pinInput{font-size:2.2rem!important;min-height:64px}
 
   /* Leave form */
   .leave-cols{grid-template-columns:1fr!important}
@@ -1085,17 +1123,25 @@ tr:hover td{background:var(--surface2)}
   .site-toggle-card{flex-direction:column;gap:14px;padding:16px}
   .site-toggle-wrap{align-self:flex-start}
 
-  /* Toast: full width on mobile */
-  .toast{top:auto;bottom:80px;right:10px;left:10px;max-width:100%;transform:translateY(80px);border-radius:10px}
+  /* Toast: above bottom nav, full width */
+  .toast{
+    top:auto;
+    bottom:calc(76px + env(safe-area-inset-bottom,0px));
+    right:10px;left:10px;max-width:100%;
+    transform:translateY(80px);border-radius:10px
+  }
   .toast.show{transform:translateY(0)}
 
   /* Idle badge: above bottom nav */
-  .idle-badge{bottom:76px;right:10px;font-size:.76rem;padding:8px 12px}
+  .idle-badge{
+    bottom:calc(76px + env(safe-area-inset-bottom,0px));
+    right:10px;font-size:.76rem;padding:8px 12px
+  }
 
   /* Tabs: scrollable */
   .tabs{overflow-x:auto;width:100%;-webkit-overflow-scrolling:touch}
   .tabs::-webkit-scrollbar{display:none}
-  .tab{white-space:nowrap;flex-shrink:0;padding:7px 12px;font-size:.78rem}
+  .tab{white-space:nowrap;flex-shrink:0;padding:8px 14px;font-size:.78rem;min-height:40px}
 
   /* Divider */
   .divider{margin:10px 0}
@@ -1107,7 +1153,7 @@ tr:hover td{background:var(--surface2)}
   .pass-rules{font-size:.76rem}
   .pass-rule{font-size:.75rem}
   .suggestions-box{padding:10px}
-  .suggestion-chip{font-size:.72rem;padding:4px 9px}
+  .suggestion-chip{font-size:.72rem;padding:4px 9px;min-height:36px}
 
   /* LB banner */
   .lb-banner{flex-direction:column;gap:10px;padding:14px}
@@ -1117,6 +1163,12 @@ tr:hover td{background:var(--surface2)}
   /* HR Panel */
   .wf-block{padding:12px}
   .hol-item{flex-wrap:wrap;gap:4px}
+
+  /* Admin login button on login screen */
+  .btn-admin-pin{min-height:50px;font-size:.88rem}
+
+  /* Select dropdowns: taller for touch */
+  select{min-height:48px!important}
 }
 
 /* ═══════════════════════════════════════
@@ -1425,6 +1477,7 @@ tr:hover td{background:var(--surface2)}
           <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           <span id="passExpiryBtnTxt">Password</span>
         </button>
+        <span id="syncIndicator" title="Cloud sync status" style="font-size:1rem;cursor:default;transition:.3s" title="Cloud sync">☁️</span>
         <button class="btn-xs btn-logout" onclick="doLogout()">Sign Out</button>
       </div>
     </div>
@@ -1670,40 +1723,268 @@ function leaveBalanceBanner(userId){
 }
 
 /* ══════════════════════════════════
-   DATABASE
+   DATABASE — npoint.io cloud sync
+   All machines share one live database.
+   Strategy:
+   • localStorage = fast local cache (instant UI)
+   • npoint.io    = source of truth (syncs all machines)
+   • On load: show local instantly, fetch cloud in background
+   • On save: write local + push cloud (debounced)
+   • Poll every 15s so all machines stay in sync
 ══════════════════════════════════ */
-function saveDB(d){
-  const data=d||DB;
-  // Keep lookup map in sync whenever DB is saved
-  if(data===DB){ _rebuildUserMap(); _invalidateLbCache(); }
+
+const NPOINT_ID  = '4084c0b6188524958cb9';
+const NPOINT_URL = 'https://api.npoint.io/' + NPOINT_ID;
+const LOCAL_KEY  = 'wp6_db';
+let _isSyncing=false, _syncTimer=null, _pollStarted=false;
+let _localTs=0; // timestamp of last local write — used for conflict resolution
+let _binReady=false; // true once we confirm the cloud bin has valid WorkPulse data
+
+/* ── Safe fetch wrapper — handles CORS, timeout, and clear error messages ── */
+async function _cloudFetch(url, options={}){
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(), 8000); // 8s timeout
   try{
-    localStorage.setItem('wp6_db',JSON.stringify(data));
-  }catch(e){
-    // localStorage quota exceeded — emergency trim old data and retry
-    if(e.name==='QuotaExceededError'||e.code===22){
-      console.warn('[WorkPulse] localStorage quota hit — trimming old records…');
-      const cutoff=new Date();cutoff.setDate(cutoff.getDate()-30);
-      const cDate=cutoff.toISOString().slice(0,10);
-      const cTs=cutoff.getTime();
-      data.attendance=(data.attendance||[]).filter(a=>a.date>=cDate);
-      data.workLogs=(data.workLogs||[]).filter(w=>w.date>=cDate);
-      data.chatMessages=(data.chatMessages||[]).filter(m=>m.ts>cTs);
-      try{
-        localStorage.setItem('wp6_db',JSON.stringify(data));
-        showToast('⚠ Storage nearly full — old records auto-trimmed to free space','t-warn');
-      }catch(e2){
-        // If still failing, trim chat completely
-        data.chatMessages=[];
-        try{localStorage.setItem('wp6_db',JSON.stringify(data));}catch(e3){
-          showToast('❌ Storage full! Please export a backup then use DB Manager → Clear Attendance.','t-err');
-        }
+    const res=await fetch(url, {
+      mode:'cors',
+      credentials:'omit',
+      signal:controller.signal,
+      ...options,
+      headers:{
+        'Content-Type':'application/json',
+        'Accept':'application/json',
+        ...(options.headers||{})
       }
+    });
+    clearTimeout(timeout);
+    return res;
+  }catch(e){
+    clearTimeout(timeout);
+    if(e.name==='AbortError') throw new Error('Request timed out after 8s');
+    // Improve the error message for common causes
+    if(e.message==='Failed to fetch'||e.message.includes('NetworkError')){
+      // Check if we're on file:// protocol
+      if(location.protocol==='file:'){
+        throw new Error('CORS_FILE_PROTOCOL');
+      }
+      throw new Error('Network error — check internet connection');
+    }
+    throw e;
+  }
+}
+
+/* ── Detect and explain sync issues to admin ── */
+function _handleSyncError(err, context){
+  if(err.message==='CORS_FILE_PROTOCOL'){
+    // Only show this warning once
+    if(!window._corsWarnShown){
+      window._corsWarnShown=true;
+      console.warn('[WorkPulse] ⚠ Opened as file:// — cloud sync blocked by browser. Serve via a web server for multi-machine sync.');
+      showToast('⚠ Open via a web server (not file://) for cloud sync to work','t-warn');
+    }
+    return;
+  }
+  console.warn('[WorkPulse] '+context+' failed:', err.message);
+}
+
+/* ── Sync status icon ── */
+function _setSyncIcon(state){
+  const el=document.getElementById('syncIndicator');
+  if(!el)return;
+  const icons={syncing:'🔄',ok:'☁️',err:'⚠️',offline:'📴'};
+  const tips={syncing:'Syncing to cloud…',ok:'All data saved to cloud',err:'Cloud sync failed — saved locally',offline:'Offline — data saved locally'};
+  el.textContent=icons[state]||'';el.title=tips[state]||'';
+  el.style.opacity=(state==='ok')?'0.45':'1';
+}
+
+/* ── Safe localStorage write with quota handling ── */
+function _saveLocal(data){
+  try{ localStorage.setItem(LOCAL_KEY,JSON.stringify(data)); }
+  catch(e){
+    if(e.name==='QuotaExceededError'||e.code===22){
+      const c=new Date();c.setDate(c.getDate()-30);
+      const cd=c.toISOString().slice(0,10),ct=c.getTime();
+      data.attendance=(data.attendance||[]).filter(a=>a.date>=cd);
+      data.workLogs=(data.workLogs||[]).filter(w=>w.date>=cd);
+      data.chatMessages=(data.chatMessages||[]).filter(m=>m.ts>ct);
+      try{ localStorage.setItem(LOCAL_KEY,JSON.stringify(data)); }catch(e2){}
     }
   }
 }
+
+/* ── Merge two DB snapshots — keeps most-recent record per id ──
+   This is the core conflict-resolution logic.
+   When two machines both write, we merge their arrays by id,
+   keeping whichever record has the later timestamp (_ts). */
+function _mergeDB(local, cloud){
+  // Helper: merge array by id, prefer newer _ts
+  function mergeArr(la, ca){
+    const map=new Map();
+    (la||[]).forEach(r=>map.set(r.id,r));
+    (ca||[]).forEach(r=>{
+      const ex=map.get(r.id);
+      // Keep cloud record if it has no local equivalent OR cloud is newer
+      if(!ex||(r._ts||0)>=(ex._ts||0)) map.set(r.id,r);
+    });
+    return Array.from(map.values());
+  }
+  // For scalar/config fields: cloud wins if cloud _ts is newer
+  const useCloud=(cloud._ts||0)>(local._ts||0);
+  return {
+    // Merged arrays — combine both machines' records
+    users:      mergeArr(local.users,      cloud.users),
+    attendance: mergeArr(local.attendance, cloud.attendance),
+    leaves:     mergeArr(local.leaves,     cloud.leaves),
+    workLogs:   mergeArr(local.workLogs,   cloud.workLogs),
+    salarySlips:mergeArr(local.salarySlips,cloud.salarySlips),
+    chatMessages:mergeArr(local.chatMessages,cloud.chatMessages),
+    holidays:   mergeArr(local.holidays,   cloud.holidays),
+    occasions:  mergeArr(local.occasions,  cloud.occasions),
+    concerns:   mergeArr(local.concerns,   cloud.concerns),
+    // Config fields: newer machine wins
+    shiftTimings:   useCloud?cloud.shiftTimings:local.shiftTimings,
+    adminCode:      useCloud?cloud.adminCode:local.adminCode,
+    siteActive:     useCloud?cloud.siteActive:local.siteActive,
+    chatEnabled:    useCloud?cloud.chatEnabled:local.chatEnabled,
+    disabledAccounts:mergeArr(
+      (local.disabledAccounts||[]).map(id=>({id})),
+      (cloud.disabledAccounts||[]).map(id=>({id}))
+    ).map(r=>r.id),
+    locationLock:   useCloud?cloud.locationLock:local.locationLock,
+    lastResetYear:  Math.max(local.lastResetYear||0,cloud.lastResetYear||0),
+    leaveArchive:   mergeArr(local.leaveArchive||[], cloud.leaveArchive||[]),
+    // Versioning
+    _ts: Math.max(local._ts||0, cloud._ts||0),
+    _v:  Math.max(local._v||0,  cloud._v||0),
+  };
+}
+
+/* ── Push to cloud — pull-then-merge before writing (prevents overwrite) ── */
+function _pushCloud(localSnapshot){
+  clearTimeout(_syncTimer);
+  // BUG FIX: deep-clone snapshot NOW so later mutations don't affect payload
+  const snapshot=JSON.parse(JSON.stringify(localSnapshot));
+  _syncTimer=setTimeout(async()=>{
+    if(_isSyncing)return;
+    _isSyncing=true; _setSyncIcon('syncing');
+    try{
+      // Step 1: fetch current cloud state
+      const fetchRes=await _cloudFetch(NPOINT_URL+'?_='+Date.now());
+      let merged=snapshot;
+      if(fetchRes.ok){
+        const cloud=await fetchRes.json();
+        if(cloud&&cloud.users){
+          // Step 2: merge cloud + local — no data lost from either machine
+          merged=_mergeDB(snapshot,cloud);
+        }
+      }
+      // Step 3: stamp and push merged result
+      merged._ts=Date.now();
+      merged._v=(merged._v||0)+1;
+      const pushRes=await _cloudFetch(NPOINT_URL,{
+        method:'POST',
+        body:JSON.stringify(merged)
+      });
+      if(!pushRes.ok)throw new Error('HTTP '+pushRes.status);
+      // Step 4: update local DB and cache with merged result
+      migrateLegacy(merged);
+      DB=merged;
+      _saveLocal(merged);
+      _rebuildUserMap();_invalidateLbCache();
+      _setSyncIcon('ok');
+      console.log('[WorkPulse] Cloud sync OK v'+merged._v);
+    }catch(err){
+      _setSyncIcon('err');
+      _handleSyncError(err,'Cloud push');
+      if(err.message!=='CORS_FILE_PROTOCOL')
+        showToast('⚠ Cloud sync failed — data saved locally','t-warn');
+    }finally{ _isSyncing=false; }
+  },1500);
+}
+
+/* ── Pull latest from cloud and merge into local ── */
+async function _pullCloud(){
+  try{
+    _setSyncIcon('syncing');
+    const res=await _cloudFetch(NPOINT_URL+'?_='+Date.now());
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const cloud=await res.json();
+    if(!cloud||!cloud.users){ _setSyncIcon('ok'); return false; }
+    // BUG FIX: only update if cloud has NEWER data (strict >)
+    if((cloud._ts||0)<=(DB._ts||_localTs||0)){ _setSyncIcon('ok'); return false; }
+    // Merge cloud into current local state
+    const merged=_mergeDB(DB, cloud);
+    migrateLegacy(merged);autoCleanOldData(merged);
+    DB=merged;_saveLocal(merged);_rebuildUserMap();_invalidateLbCache();
+    _setSyncIcon('ok');
+    return true;
+  }catch(err){
+    _setSyncIcon('offline');
+    _handleSyncError(err,'Cloud pull');
+    return false;
+  }
+}
+
+/* ── Poll every 15s — BUG FIX: only one interval ever runs ── */
+function startCloudPoll(){
+  if(_pollStarted)return; // prevent duplicate intervals on re-login
+  _pollStarted=true;
+  setInterval(async()=>{
+    if(!CU)return; // only poll when logged in
+    const updated=await _pullCloud();
+    if(updated){
+      // BUG FIX: skip page refresh if user is actively typing in a field
+      const active=document.activeElement;
+      if(active&&['INPUT','TEXTAREA','SELECT'].includes(active.tagName))return;
+      // Silently refresh current page
+      const act=document.querySelector('nav a.active');
+      if(act&&act.dataset&&act.dataset.page){
+        const fn='pg'+act.dataset.page.charAt(0).toUpperCase()+act.dataset.page.slice(1);
+        if(typeof window[fn]==='function') try{window[fn]();}catch(e){}
+      }
+    }
+  },15000);
+}
+
+/* ── Main saveDB — stamp with _ts, save locally, push to cloud ── */
+function saveDB(d){
+  const data=d||DB;
+  if(data===DB){ _rebuildUserMap();_invalidateLbCache(); }
+  data._ts=Date.now(); // stamp every save for conflict resolution
+  _localTs=data._ts;
+  _saveLocal(data);
+  _pushCloud(data);
+}
+
 function loadDB(){
-  const raw=localStorage.getItem('wp6_db');
-  if(raw){ const d=JSON.parse(raw);migrateLegacy(d);return d; }
+  // Load from localStorage instantly so app is immediately usable
+  const raw=localStorage.getItem(LOCAL_KEY);
+  if(raw){
+    try{
+      const d=JSON.parse(raw);migrateLegacy(d);_cloudVer=d._v||0;
+      // Pull cloud in background — only apply if NOT yet logged in
+      setTimeout(async()=>{
+        if(CU)return; // skip if user logged in during the 800ms wait
+        const updated=await _pullCloud();
+        if(updated) console.log('[WorkPulse] Fresh cloud data merged on load');
+      },800);
+      return d;
+    }catch(e){}
+  }
+  // No local cache at all — must wait for cloud
+  return null;
+}
+
+/* Async init for first-ever load (no localStorage) */
+async function _initFromCloud(){
+  showToast('Loading data from cloud…','t-info');
+  try{
+    const res=await _cloudFetch(NPOINT_URL+'?_='+Date.now());
+    if(res.ok){
+      const data=await res.json();
+      if(data&&data.users){ migrateLegacy(data);autoCleanOldData(data);_saveLocal(data);return data; }
+    }
+  }catch(e){ _handleSyncError(e,'Init cloud fetch'); }
   const db={
     users:[
       // Admin — full system access + DB management
@@ -1770,11 +2051,16 @@ function migrateLegacy(db){
   if(!db.users.find(u=>u.role==='admin')){
     db.users.unshift({id:'u_adm1',empId:'ADMIN001',first:'System',last:'Admin',pass:'admin123',role:'admin',workflow:'',tlId:'',createdAt:ts(),passChangedAt:ts(),passHistory:[]});
   }
-  // Migrate: add passChangedAt (set to TODAY so users don't get forced-reset on first access)
-  // and passHistory to existing users
+  // Migrate: add passChangedAt and passHistory
   (db.users||[]).forEach(u=>{
     if(!u.passChangedAt||u.passChangedAt==='2025-01-01T00:00:00.000Z') u.passChangedAt=ts();
     if(!u.passHistory) u.passHistory=[];
+    if(!u._ts) u._ts=Date.now(); // stamp for merge conflict resolution
+  });
+  // Stamp all records that don't have _ts yet
+  const _now=Date.now();
+  ['attendance','leaves','workLogs','salarySlips','chatMessages','holidays','occasions','concerns'].forEach(k=>{
+    (db[k]||[]).forEach(r=>{ if(!r._ts) r._ts=_now; });
   });
 }
 function autoCleanOldData(db){
@@ -1797,10 +2083,41 @@ function autoCleanOldData(db){
   const removed=(before.att-(db.attendance.length))+(before.logs-(db.workLogs.length))+(before.chat-(db.chatMessages.length));
   if(removed>0) console.log(`[WorkPulse] Auto-cleaned ${removed} old records (>90 days)`);
 }
+/* Initialise DB — sync from cloud if first ever load */
 let DB=loadDB();
-autoCleanOldData(DB);
-_rebuildUserMap();
-saveDB();
+if(DB){
+  autoCleanOldData(DB);
+  _rebuildUserMap();
+  // Don't call saveDB() here — loadDB already saves locally and
+  // the background cloud pull will push if needed
+} else {
+  // First-ever load on this machine: show loading overlay, fetch cloud
+  DB={users:[],attendance:[],leaves:[],workLogs:[],holidays:[],occasions:[],
+      shiftTimings:{'NSBI':{start:'09:00',grace:15},'Account Receivable':{start:'09:30',grace:15},'Medical':{start:'08:00',grace:10}},
+      lastResetYear:new Date().getFullYear(),adminCode:'108',siteActive:true,
+      salarySlips:[],chatMessages:[],chatEnabled:true,disabledAccounts:[],concerns:[],
+      locationLock:{enabled:false,radiusKm:0.3,locations:[]}};
+  // Show loading spinner on login screen
+  document.addEventListener('DOMContentLoaded',async()=>{
+    const card=document.querySelector('.auth-card');
+    if(card){
+      const loader=document.createElement('div');
+      loader.id='initLoader';
+      loader.innerHTML='<div style="text-align:center;padding:30px 0"><div style="font-size:2rem;margin-bottom:12px">⚡</div><div style="font-weight:700;color:var(--brand)">Loading WorkPulse…</div><div style="font-size:.82rem;color:var(--text2);margin-top:6px">Fetching data from cloud</div></div>';
+      card.prepend(loader);
+    }
+    const cloudData=await _initFromCloud();
+    if(cloudData){ DB=cloudData; }
+    else {
+      // No cloud data either — create fresh DB with defaults
+      migrateLegacy(DB);
+      saveDB();
+    }
+    _rebuildUserMap();_invalidateLbCache();
+    const loader=document.getElementById('initLoader');
+    if(loader)loader.remove();
+  });
+}
 
 /* ══════════════════════════════════
    SESSION STATE
@@ -2025,7 +2342,7 @@ function doEnroll(){
   if(!/^[A-Z0-9_-]{3,15}$/.test(empId)){showToast('Employee ID: 3-15 alphanumeric characters','t-err');return;}
   if(getUserByEmpId(empId)){showToast('Employee ID already taken','t-err');return;}
   if(role==='agent'&&!tlId){showToast('Please select your Team Leader','t-err');return;}
-  DB.users.push({id:uid(),empId,first,last,pass,role,workflow,tlId,createdAt:ts(),passChangedAt:ts(),passHistory:[]});
+  DB.users.push({id:uid(),empId,first,last,pass,role,workflow,tlId,createdAt:ts(),passChangedAt:ts(),passHistory:[],_ts:Date.now()});
   saveDB();showToast('Account created! You can now sign in.','t-ok');
   showScreen('loginScreen');
   document.getElementById('lgEmpId').value=empId;
@@ -2229,7 +2546,7 @@ function initApp(){
   // Hide password change button for Admin — admin uses PIN, not password resets
   const passBtn=document.getElementById('passExpiryBtn');
   if(passBtn)passBtn.style.display=CU.role==='admin'?'none':'inline-flex';
-  buildNav();startClock();
+  buildNav();startClock();startCloudPoll();
   // Mobile agent/TL → go straight to chat
   if(isMobileChatOnly()){
     navTo('chat');
@@ -2422,7 +2739,7 @@ function pgAttendance(){
 function doPunchInCore(userId,markedById){
   const now=ts();
   let rec=DB.attendance.find(a=>a.userId===userId&&a.date===today());
-  if(!rec){rec={id:uid(),userId,date:today(),punchIn:now,punchOut:'',breaks:[],totalBreakMs:0,status:'present',markedById};DB.attendance.push(rec);}
+  if(!rec){rec={id:uid(),userId,date:today(),punchIn:now,punchOut:'',breaks:[],totalBreakMs:0,status:'present',markedById,_ts:Date.now()};DB.attendance.push(rec);}
   else{rec.punchIn=now;rec.markedById=markedById;}
   saveDB();return now;
 }
@@ -2440,7 +2757,7 @@ function doPunchOut(){
   stopIdleTracking();
   const now=ts();
   const rec=DB.attendance.find(a=>a.userId===CU.id&&a.date===today());
-  if(rec){rec.punchOut=now;rec.totalBreakMs=PS.totalBreak;rec.breaks=PS.breaks;saveDB();}
+  if(rec){rec.punchOut=now;rec.totalBreakMs=PS.totalBreak;rec.breaks=PS.breaks;rec._ts=Date.now();saveDB();}
   PS.punchedOut=true;
   showToast('Punched out at '+fmtTime(now),'t-ok');pgAttendance();
 }
@@ -3023,7 +3340,8 @@ function submitLeave(){
     reason,leaveDays:dv,
     status:autoApprove?'approved':'pending',
     markedById:forUserId?CU.id:null,
-    createdAt:ts(),decidedAt:autoApprove?ts():''
+    createdAt:ts(),decidedAt:autoApprove?ts():'',
+    _ts:Date.now()
   };
   DB.leaves.push(rec);
   saveDB();
@@ -3433,7 +3751,7 @@ function dbImport(input){
       if(!data.users||!data.attendance){showToast('Invalid backup file','t-err');return;}
       if(!confirm('Replace current database with this backup?'))return;
       localStorage.setItem('wp6_db',JSON.stringify(data));
-      DB=data;migrateLegacy(DB);_rebuildUserMap();
+      DB=data;migrateLegacy(DB);_rebuildUserMap();_invalidateLbCache();saveDB();
       showToast('Database restored! Reloading…','t-ok');
       setTimeout(()=>location.reload(),1500);
     }catch(err){showToast('Failed to parse backup file','t-err');}
@@ -5187,6 +5505,28 @@ function testLocation(idx){
 /* ── INIT ── */
 onEnrollRoleChange();populateTLs();
 
+/* ── PROTOCOL CHECK — warn if opened as file:// ── */
+(function(){
+  if(location.protocol!=='file:')return; // served via HTTP — all good
+  // Show a clear banner on the login card
+  document.addEventListener('DOMContentLoaded',function(){
+    const card=document.querySelector('.auth-card');
+    if(!card)return;
+    const banner=document.createElement('div');
+    banner.style.cssText='background:#fef3c7;border:1.5px solid #d97706;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:.82rem;color:#92400e;line-height:1.6';
+    banner.innerHTML='<strong>⚠ Cloud sync disabled</strong><br>'+
+      'This file is opened directly (file://) — browsers block network requests from local files.<br>'+
+      '<strong>To enable multi-machine sync:</strong><br>'+
+      '1. Put the HTML file in a folder<br>'+
+      '2. Open that folder in Windows Explorer<br>'+
+      '3. In the address bar type <code style="background:#fff3;padding:1px 4px;border-radius:3px">cmd</code> and press Enter<br>'+
+      '4. Type: <code style="background:#fff3;padding:1px 4px;border-radius:3px">npx serve .</code> and press Enter<br>'+
+      '5. Open <strong>http://localhost:3000</strong> in every browser<br>'+
+      '<span style="font-size:.76rem;opacity:.7">Or simply ask your IT person to put this file on any web server.</span>';
+    card.prepend(banner);
+  });
+})();
+
 // Keyboard support for PIN — input handles digits natively; just add Escape
 document.addEventListener('keydown',function(e){
   const pin=document.getElementById('adminPinScreen');
@@ -5197,6 +5537,46 @@ document.addEventListener('keydown',function(e){
 // Check site lock on load (non-admin users blocked if site deactivated)
 checkSiteLock();
 // Location lock is checked at login time, not on page load
+
+/* ── ANDROID / MOBILE FIXES ── */
+
+// 1. Scroll focused input into view when Android keyboard opens
+//    (Android Chrome resizes the window when the keyboard appears;
+//     this ensures the active input is still visible)
+if(typeof visualViewport!=='undefined'&&visualViewport){
+  let _lastVVHeight=visualViewport.height;
+  visualViewport.addEventListener('resize',function(){
+    const el=document.activeElement;
+    if(!el||!['INPUT','TEXTAREA','SELECT'].includes(el.tagName))return;
+    // Keyboard opened (viewport shrank)
+    if(visualViewport.height<_lastVVHeight){
+      // Give the layout a tick to settle then scroll input into view
+      requestAnimationFrame(()=>{
+        el.scrollIntoView({behavior:'smooth',block:'center'});
+      });
+    }
+    _lastVVHeight=visualViewport.height;
+  });
+}
+
+// 2. On auth screens, auto-scroll to focused field so it's above keyboard
+document.addEventListener('focusin',function(e){
+  const el=e.target;
+  if(!['INPUT','TEXTAREA','SELECT'].includes(el.tagName))return;
+  // Only on auth screens (login, enroll, change pass, pin)
+  const authScreens=['loginScreen','enrollScreen','changePassScreen','adminPinScreen'];
+  const active=document.querySelector('.screen.active');
+  if(!active||!authScreens.includes(active.id))return;
+  setTimeout(()=>{
+    el.scrollIntoView({behavior:'smooth',block:'center'});
+  },320); // wait for keyboard animation
+},{passive:true});
+
+// 3. Prevent page from scrolling behind modal on Android
+document.getElementById('markAttModal').addEventListener('touchmove',function(e){
+  e.stopPropagation();
+},{passive:true});
+
 </script>
 </body>
 </html>
