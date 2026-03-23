@@ -1736,58 +1736,9 @@ function leaveBalanceBanner(userId){
 const NPOINT_ID  = '4084c0b6188524958cb9';
 const NPOINT_URL = 'https://api.npoint.io/' + NPOINT_ID;
 const LOCAL_KEY  = 'wp6_db';
-let _isSyncing=false, _syncTimer=null, _pollStarted=false;
-let _localTs=0; // timestamp of last local write — used for conflict resolution
-let _binReady=false; // true once we confirm the cloud bin has valid WorkPulse data
+let _cloudVer=0, _isSyncing=false, _syncTimer=null;
 
-/* ── Safe fetch wrapper — handles CORS, timeout, and clear error messages ── */
-async function _cloudFetch(url, options={}){
-  const controller=new AbortController();
-  const timeout=setTimeout(()=>controller.abort(), 8000); // 8s timeout
-  try{
-    const res=await fetch(url, {
-      mode:'cors',
-      credentials:'omit',
-      signal:controller.signal,
-      ...options,
-      headers:{
-        'Content-Type':'application/json',
-        'Accept':'application/json',
-        ...(options.headers||{})
-      }
-    });
-    clearTimeout(timeout);
-    return res;
-  }catch(e){
-    clearTimeout(timeout);
-    if(e.name==='AbortError') throw new Error('Request timed out after 8s');
-    // Improve the error message for common causes
-    if(e.message==='Failed to fetch'||e.message.includes('NetworkError')){
-      // Check if we're on file:// protocol
-      if(location.protocol==='file:'){
-        throw new Error('CORS_FILE_PROTOCOL');
-      }
-      throw new Error('Network error — check internet connection');
-    }
-    throw e;
-  }
-}
-
-/* ── Detect and explain sync issues to admin ── */
-function _handleSyncError(err, context){
-  if(err.message==='CORS_FILE_PROTOCOL'){
-    // Only show this warning once
-    if(!window._corsWarnShown){
-      window._corsWarnShown=true;
-      console.warn('[WorkPulse] ⚠ Opened as file:// — cloud sync blocked by browser. Serve via a web server for multi-machine sync.');
-      showToast('⚠ Open via a web server (not file://) for cloud sync to work','t-warn');
-    }
-    return;
-  }
-  console.warn('[WorkPulse] '+context+' failed:', err.message);
-}
-
-/* ── Sync status icon ── */
+/* Sync status icon in topbar */
 function _setSyncIcon(state){
   const el=document.getElementById('syncIndicator');
   if(!el)return;
@@ -1797,7 +1748,7 @@ function _setSyncIcon(state){
   el.style.opacity=(state==='ok')?'0.45':'1';
 }
 
-/* ── Safe localStorage write with quota handling ── */
+/* Save to localStorage with quota handling */
 function _saveLocal(data){
   try{ localStorage.setItem(LOCAL_KEY,JSON.stringify(data)); }
   catch(e){
@@ -1812,130 +1763,60 @@ function _saveLocal(data){
   }
 }
 
-/* ── Merge two DB snapshots — keeps most-recent record per id ──
-   This is the core conflict-resolution logic.
-   When two machines both write, we merge their arrays by id,
-   keeping whichever record has the later timestamp (_ts). */
-function _mergeDB(local, cloud){
-  // Helper: merge array by id, prefer newer _ts
-  function mergeArr(la, ca){
-    const map=new Map();
-    (la||[]).forEach(r=>map.set(r.id,r));
-    (ca||[]).forEach(r=>{
-      const ex=map.get(r.id);
-      // Keep cloud record if it has no local equivalent OR cloud is newer
-      if(!ex||(r._ts||0)>=(ex._ts||0)) map.set(r.id,r);
-    });
-    return Array.from(map.values());
-  }
-  // For scalar/config fields: cloud wins if cloud _ts is newer
-  const useCloud=(cloud._ts||0)>(local._ts||0);
-  return {
-    // Merged arrays — combine both machines' records
-    users:      mergeArr(local.users,      cloud.users),
-    attendance: mergeArr(local.attendance, cloud.attendance),
-    leaves:     mergeArr(local.leaves,     cloud.leaves),
-    workLogs:   mergeArr(local.workLogs,   cloud.workLogs),
-    salarySlips:mergeArr(local.salarySlips,cloud.salarySlips),
-    chatMessages:mergeArr(local.chatMessages,cloud.chatMessages),
-    holidays:   mergeArr(local.holidays,   cloud.holidays),
-    occasions:  mergeArr(local.occasions,  cloud.occasions),
-    concerns:   mergeArr(local.concerns,   cloud.concerns),
-    // Config fields: newer machine wins
-    shiftTimings:   useCloud?cloud.shiftTimings:local.shiftTimings,
-    adminCode:      useCloud?cloud.adminCode:local.adminCode,
-    siteActive:     useCloud?cloud.siteActive:local.siteActive,
-    chatEnabled:    useCloud?cloud.chatEnabled:local.chatEnabled,
-    disabledAccounts:mergeArr(
-      (local.disabledAccounts||[]).map(id=>({id})),
-      (cloud.disabledAccounts||[]).map(id=>({id}))
-    ).map(r=>r.id),
-    locationLock:   useCloud?cloud.locationLock:local.locationLock,
-    lastResetYear:  Math.max(local.lastResetYear||0,cloud.lastResetYear||0),
-    leaveArchive:   mergeArr(local.leaveArchive||[], cloud.leaveArchive||[]),
-    // Versioning
-    _ts: Math.max(local._ts||0, cloud._ts||0),
-    _v:  Math.max(local._v||0,  cloud._v||0),
-  };
-}
-
-/* ── Push to cloud — pull-then-merge before writing (prevents overwrite) ── */
-function _pushCloud(localSnapshot){
+/* Push to cloud (debounced 1.5s to batch rapid saves) */
+function _pushCloud(data){
   clearTimeout(_syncTimer);
-  // BUG FIX: deep-clone snapshot NOW so later mutations don't affect payload
-  const snapshot=JSON.parse(JSON.stringify(localSnapshot));
   _syncTimer=setTimeout(async()=>{
     if(_isSyncing)return;
     _isSyncing=true; _setSyncIcon('syncing');
     try{
-      // Step 1: fetch current cloud state
-      const fetchRes=await _cloudFetch(NPOINT_URL+'?_='+Date.now());
-      let merged=snapshot;
-      if(fetchRes.ok){
-        const cloud=await fetchRes.json();
-        if(cloud&&cloud.users){
-          // Step 2: merge cloud + local — no data lost from either machine
-          merged=_mergeDB(snapshot,cloud);
-        }
-      }
-      // Step 3: stamp and push merged result
-      merged._ts=Date.now();
-      merged._v=(merged._v||0)+1;
-      const pushRes=await _cloudFetch(NPOINT_URL,{
+      const payload=Object.assign({},data,{_v:(_cloudVer||0)+1,_ts:Date.now()});
+      const res=await fetch(NPOINT_URL,{
         method:'POST',
-        body:JSON.stringify(merged)
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
       });
-      if(!pushRes.ok)throw new Error('HTTP '+pushRes.status);
-      // Step 4: update local DB and cache with merged result
-      migrateLegacy(merged);
-      DB=merged;
-      _saveLocal(merged);
-      _rebuildUserMap();_invalidateLbCache();
+      if(!res.ok)throw new Error('HTTP '+res.status);
+      _cloudVer=payload._v;
+      _saveLocal(payload);
       _setSyncIcon('ok');
-      console.log('[WorkPulse] Cloud sync OK v'+merged._v);
+      console.log('[WorkPulse] Cloud sync OK v'+_cloudVer);
     }catch(err){
       _setSyncIcon('err');
-      _handleSyncError(err,'Cloud push');
-      if(err.message!=='CORS_FILE_PROTOCOL')
-        showToast('⚠ Cloud sync failed — data saved locally','t-warn');
+      console.warn('[WorkPulse] Cloud push failed:',err.message);
+      showToast('⚠ Cloud sync failed — data saved locally','t-warn');
     }finally{ _isSyncing=false; }
   },1500);
 }
 
-/* ── Pull latest from cloud and merge into local ── */
+/* Pull latest from cloud */
 async function _pullCloud(){
   try{
     _setSyncIcon('syncing');
-    const res=await _cloudFetch(NPOINT_URL+'?_='+Date.now());
+    const res=await fetch(NPOINT_URL+'?_='+Date.now());
     if(!res.ok)throw new Error('HTTP '+res.status);
-    const cloud=await res.json();
-    if(!cloud||!cloud.users){ _setSyncIcon('ok'); return false; }
-    // BUG FIX: only update if cloud has NEWER data (strict >)
-    if((cloud._ts||0)<=(DB._ts||_localTs||0)){ _setSyncIcon('ok'); return false; }
-    // Merge cloud into current local state
-    const merged=_mergeDB(DB, cloud);
-    migrateLegacy(merged);autoCleanOldData(merged);
-    DB=merged;_saveLocal(merged);_rebuildUserMap();_invalidateLbCache();
-    _setSyncIcon('ok');
-    return true;
+    const data=await res.json();
+    if(data&&data.users&&(data._v||0)>=(_cloudVer||0)){
+      _cloudVer=data._v||0;
+      migrateLegacy(data);autoCleanOldData(data);
+      DB=data;_saveLocal(data);_rebuildUserMap();_invalidateLbCache();
+      _setSyncIcon('ok');
+      return true;
+    }
+    _setSyncIcon('ok');return false;
   }catch(err){
     _setSyncIcon('offline');
-    _handleSyncError(err,'Cloud pull');
+    console.warn('[WorkPulse] Cloud pull failed:',err.message);
     return false;
   }
 }
 
-/* ── Poll every 15s — BUG FIX: only one interval ever runs ── */
+/* Poll cloud every 15s while logged in — keeps all machines in sync */
 function startCloudPoll(){
-  if(_pollStarted)return; // prevent duplicate intervals on re-login
-  _pollStarted=true;
   setInterval(async()=>{
-    if(!CU)return; // only poll when logged in
+    if(!CU)return;
     const updated=await _pullCloud();
     if(updated){
-      // BUG FIX: skip page refresh if user is actively typing in a field
-      const active=document.activeElement;
-      if(active&&['INPUT','TEXTAREA','SELECT'].includes(active.tagName))return;
       // Silently refresh current page
       const act=document.querySelector('nav a.active');
       if(act&&act.dataset&&act.dataset.page){
@@ -1946,12 +1827,10 @@ function startCloudPoll(){
   },15000);
 }
 
-/* ── Main saveDB — stamp with _ts, save locally, push to cloud ── */
+/* Main saveDB — instant local write + background cloud push */
 function saveDB(d){
   const data=d||DB;
   if(data===DB){ _rebuildUserMap();_invalidateLbCache(); }
-  data._ts=Date.now(); // stamp every save for conflict resolution
-  _localTs=data._ts;
   _saveLocal(data);
   _pushCloud(data);
 }
@@ -1962,11 +1841,12 @@ function loadDB(){
   if(raw){
     try{
       const d=JSON.parse(raw);migrateLegacy(d);_cloudVer=d._v||0;
-      // Pull cloud in background — only apply if NOT yet logged in
+      // Pull cloud in background — merge if newer
       setTimeout(async()=>{
-        if(CU)return; // skip if user logged in during the 800ms wait
         const updated=await _pullCloud();
-        if(updated) console.log('[WorkPulse] Fresh cloud data merged on load');
+        if(updated&&document.getElementById('loginScreen')?.classList.contains('active')){
+          console.log('[WorkPulse] Fresh cloud data loaded');
+        }
       },800);
       return d;
     }catch(e){}
@@ -1979,12 +1859,12 @@ function loadDB(){
 async function _initFromCloud(){
   showToast('Loading data from cloud…','t-info');
   try{
-    const res=await _cloudFetch(NPOINT_URL+'?_='+Date.now());
+    const res=await fetch(NPOINT_URL+'?_='+Date.now());
     if(res.ok){
       const data=await res.json();
       if(data&&data.users){ migrateLegacy(data);autoCleanOldData(data);_saveLocal(data);return data; }
     }
-  }catch(e){ _handleSyncError(e,'Init cloud fetch'); }
+  }catch(e){ console.warn('[WorkPulse] Init cloud fetch failed:',e.message); }
   const db={
     users:[
       // Admin — full system access + DB management
@@ -2051,16 +1931,11 @@ function migrateLegacy(db){
   if(!db.users.find(u=>u.role==='admin')){
     db.users.unshift({id:'u_adm1',empId:'ADMIN001',first:'System',last:'Admin',pass:'admin123',role:'admin',workflow:'',tlId:'',createdAt:ts(),passChangedAt:ts(),passHistory:[]});
   }
-  // Migrate: add passChangedAt and passHistory
+  // Migrate: add passChangedAt (set to TODAY so users don't get forced-reset on first access)
+  // and passHistory to existing users
   (db.users||[]).forEach(u=>{
     if(!u.passChangedAt||u.passChangedAt==='2025-01-01T00:00:00.000Z') u.passChangedAt=ts();
     if(!u.passHistory) u.passHistory=[];
-    if(!u._ts) u._ts=Date.now(); // stamp for merge conflict resolution
-  });
-  // Stamp all records that don't have _ts yet
-  const _now=Date.now();
-  ['attendance','leaves','workLogs','salarySlips','chatMessages','holidays','occasions','concerns'].forEach(k=>{
-    (db[k]||[]).forEach(r=>{ if(!r._ts) r._ts=_now; });
   });
 }
 function autoCleanOldData(db){
@@ -2342,7 +2217,7 @@ function doEnroll(){
   if(!/^[A-Z0-9_-]{3,15}$/.test(empId)){showToast('Employee ID: 3-15 alphanumeric characters','t-err');return;}
   if(getUserByEmpId(empId)){showToast('Employee ID already taken','t-err');return;}
   if(role==='agent'&&!tlId){showToast('Please select your Team Leader','t-err');return;}
-  DB.users.push({id:uid(),empId,first,last,pass,role,workflow,tlId,createdAt:ts(),passChangedAt:ts(),passHistory:[],_ts:Date.now()});
+  DB.users.push({id:uid(),empId,first,last,pass,role,workflow,tlId,createdAt:ts(),passChangedAt:ts(),passHistory:[]});
   saveDB();showToast('Account created! You can now sign in.','t-ok');
   showScreen('loginScreen');
   document.getElementById('lgEmpId').value=empId;
@@ -2739,7 +2614,7 @@ function pgAttendance(){
 function doPunchInCore(userId,markedById){
   const now=ts();
   let rec=DB.attendance.find(a=>a.userId===userId&&a.date===today());
-  if(!rec){rec={id:uid(),userId,date:today(),punchIn:now,punchOut:'',breaks:[],totalBreakMs:0,status:'present',markedById,_ts:Date.now()};DB.attendance.push(rec);}
+  if(!rec){rec={id:uid(),userId,date:today(),punchIn:now,punchOut:'',breaks:[],totalBreakMs:0,status:'present',markedById};DB.attendance.push(rec);}
   else{rec.punchIn=now;rec.markedById=markedById;}
   saveDB();return now;
 }
@@ -2757,7 +2632,7 @@ function doPunchOut(){
   stopIdleTracking();
   const now=ts();
   const rec=DB.attendance.find(a=>a.userId===CU.id&&a.date===today());
-  if(rec){rec.punchOut=now;rec.totalBreakMs=PS.totalBreak;rec.breaks=PS.breaks;rec._ts=Date.now();saveDB();}
+  if(rec){rec.punchOut=now;rec.totalBreakMs=PS.totalBreak;rec.breaks=PS.breaks;saveDB();}
   PS.punchedOut=true;
   showToast('Punched out at '+fmtTime(now),'t-ok');pgAttendance();
 }
@@ -3340,8 +3215,7 @@ function submitLeave(){
     reason,leaveDays:dv,
     status:autoApprove?'approved':'pending',
     markedById:forUserId?CU.id:null,
-    createdAt:ts(),decidedAt:autoApprove?ts():'',
-    _ts:Date.now()
+    createdAt:ts(),decidedAt:autoApprove?ts():''
   };
   DB.leaves.push(rec);
   saveDB();
@@ -5504,28 +5378,6 @@ function testLocation(idx){
 
 /* ── INIT ── */
 onEnrollRoleChange();populateTLs();
-
-/* ── PROTOCOL CHECK — warn if opened as file:// ── */
-(function(){
-  if(location.protocol!=='file:')return; // served via HTTP — all good
-  // Show a clear banner on the login card
-  document.addEventListener('DOMContentLoaded',function(){
-    const card=document.querySelector('.auth-card');
-    if(!card)return;
-    const banner=document.createElement('div');
-    banner.style.cssText='background:#fef3c7;border:1.5px solid #d97706;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:.82rem;color:#92400e;line-height:1.6';
-    banner.innerHTML='<strong>⚠ Cloud sync disabled</strong><br>'+
-      'This file is opened directly (file://) — browsers block network requests from local files.<br>'+
-      '<strong>To enable multi-machine sync:</strong><br>'+
-      '1. Put the HTML file in a folder<br>'+
-      '2. Open that folder in Windows Explorer<br>'+
-      '3. In the address bar type <code style="background:#fff3;padding:1px 4px;border-radius:3px">cmd</code> and press Enter<br>'+
-      '4. Type: <code style="background:#fff3;padding:1px 4px;border-radius:3px">npx serve .</code> and press Enter<br>'+
-      '5. Open <strong>http://localhost:3000</strong> in every browser<br>'+
-      '<span style="font-size:.76rem;opacity:.7">Or simply ask your IT person to put this file on any web server.</span>';
-    card.prepend(banner);
-  });
-})();
 
 // Keyboard support for PIN — input handles digits natively; just add Escape
 document.addEventListener('keydown',function(e){
